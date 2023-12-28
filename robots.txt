@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: https://theminjunchoi.github.io/sitemap-index.xml
+Host: https://theminjunchoi.github.io
