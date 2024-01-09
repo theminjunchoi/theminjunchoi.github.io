@@ -162,9 +162,9 @@ const Comment = ({title}) => {
         <Giscus
               id="comments"
               repo="theminjunchoi/theminjunchoi.github.io"
-              repoId="R_kgDOLBqLNA"
+              repoId="R_kgDOLCr2fA"
               category="General"
-              categoryId="DIC_kwDOLBqLNM4CcP49"
+              categoryId="DIC_kwDOLCr2fM4CcTeP"
               mapping="title"
               term={title}
               reactionsEnabled="1"
@@ -177,9 +177,9 @@ const Comment = ({title}) => {
           <Giscus
               id="comments"
               repo="theminjunchoi/theminjunchoi.github.io"
-              repoId="R_kgDOLBqLNA"
+              repoId="R_kgDOLCr2fA"
               category="General"
-              categoryId="DIC_kwDOLBqLNM4CcP49"
+              categoryId="DIC_kwDOLCr2fM4CcTeP"
               mapping="title"
               term={title}
               reactionsEnabled="1"
