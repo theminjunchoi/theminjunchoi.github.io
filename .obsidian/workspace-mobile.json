@@ -1,0 +1,153 @@
+{
+  "main": {
+    "id": "4e7cd454b3f9893b",
+    "type": "split",
+    "children": [
+      {
+        "id": "5bb7dcfc54a7678e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5210a803cf115a6f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "contents/posts/retrospect-2023.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "13ca624f48e6f399",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "9941d690240dcf87",
+        "type": "leaf",
+        "state": {
+          "type": "file-explorer",
+          "state": {
+            "sortOrder": "alphabetical"
+          }
+        }
+      },
+      {
+        "id": "8e8ee9a0a06202ea",
+        "type": "leaf",
+        "state": {
+          "type": "search",
+          "state": {
+            "query": "",
+            "matchingCase": false,
+            "explainSearch": false,
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical"
+          }
+        }
+      },
+      {
+        "id": "2d822ebe97ba7d6a",
+        "type": "leaf",
+        "state": {
+          "type": "tag",
+          "state": {
+            "sortOrder": "frequency",
+            "useHierarchy": true
+          }
+        }
+      },
+      {
+        "id": "ae992677595e5f7f",
+        "type": "leaf",
+        "state": {
+          "type": "bookmarks",
+          "state": {}
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "right": {
+    "id": "638de54278e008e6",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "7df41cedebaad50f",
+        "type": "leaf",
+        "state": {
+          "type": "backlink",
+          "state": {
+            "file": "contents/posts/retrospect-2023.md",
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical",
+            "showSearch": false,
+            "searchQuery": "",
+            "backlinkCollapsed": false,
+            "unlinkedCollapsed": true
+          }
+        }
+      },
+      {
+        "id": "e8d8d686a3d8d592",
+        "type": "leaf",
+        "state": {
+          "type": "outgoing-link",
+          "state": {
+            "file": "contents/posts/retrospect-2023.md",
+            "linksCollapsed": false,
+            "unlinkedCollapsed": true
+          }
+        }
+      },
+      {
+        "id": "0e7642dcdffc9e2c",
+        "type": "leaf",
+        "state": {
+          "type": "outline",
+          "state": {
+            "file": "contents/posts/retrospect-2023.md"
+          }
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "9941d690240dcf87",
+  "lastOpenFiles": [
+    "contents/posts/why-new-blog.md",
+    "contents/posts/retrospect-2023.md",
+    "src/components/Article/Body/PrismTheme/LightMode.jsx",
+    "src/components/Article/Body/PrismTheme/index.jsx",
+    "src/components/Article/Body/PrismTheme/CommonStyle.jsx",
+    "src/components/Article/Body/PrismTheme/DarkMode.jsx",
+    "src/components/Article/Body/Toc/index.jsx",
+    "src/components/Article/Body/StyledMarkdown/index.jsx",
+    "src/components/Article/Footer/index.jsx",
+    "src/components/Article/Series/index.jsx",
+    "src/components/Article/Body/PrismTheme",
+    "src/components/Article/Body/index.jsx",
+    "static/profile-bl.png",
+    "static/profile.png",
+    "static/favicon.png",
+    "static/og-image.png"
+  ]
+}

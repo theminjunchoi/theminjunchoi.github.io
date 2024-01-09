@@ -1,0 +1,14 @@
+{
+  "dateFormat": "yyyy-MM-dd HH:mm:ss",
+  "enableCreateTime": true,
+  "headerUpdated": "updated",
+  "headerCreated": "date",
+  "minMinutesBetweenSaves": 1,
+  "ignoreGlobalFolder": [],
+  "ignoreCreatedFolder": [],
+  "enableExperimentalHash": false,
+  "fileHashMap": {
+    "template/template.md": "aa335d17aef8c7a0aa921b958ca062284f1b6632d5c43236df9c42d244507108",
+    "posts/retrospect-2023.md": "2df7277f3576b30e262c800e7523cdf69f1dff2c76fdd4335091aae8df247834"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "main": {
+    "id": "de17259a48bcd2c7",
+    "type": "split",
+    "children": [
+      {
+        "id": "95feb741acfc9097",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "59a1d84c28a00f58",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "posts/retrospect-2023.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "2a2a6efd0cdb600c",
+    "type": "split",
+    "children": [
+      {
+        "id": "23d58cb79f1ead4b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "21bf746e90829a3e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "c328842fab7efcbe",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "138dea9f66fd3eea",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "6d077420ed9aa60e",
+    "type": "split",
+    "children": [
+      {
+        "id": "462ba636ac9b60fd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6609487bc3271618",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "posts/retrospect-2023.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "ef34dd897cf8543d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "posts/retrospect-2023.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "173cc065ddd40a6f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "9e90060757ad95e1",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "posts/retrospect-2023.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:퀵 스위처 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 데일리 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "omnisearch:Omnisearch": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "59a1d84c28a00f58",
+  "lastOpenFiles": [
+    "posts/attachments/presentation.png",
+    "posts/retrospect-2023.md",
+    "posts/Untitled.md",
+    "posts/why-new-blog.md",
+    "posts/무제 파일.md",
+    "무제 파일.md",
+    "template/template.md",
+    "template",
+    "posts/hi.md",
+    "posts/test.md",
+    "posts/test2.md",
+    "posts/attachments",
+    "posts/test/test2.md",
+    "posts/test/test.md",
+    "posts/test",
+    "posts/ex.md",
+    "posts/MJ/mj.md",
+    "new-blog.md",
+    "posts/writing-guide-kr/index.md",
+    "new blog.md",
+    "posts/MJ/mj,md",
+    "posts/MJ/mj",
+    "posts/MJ",
+    "posts/quick-start-kr/index.md",
+    "posts/quick-start/index.md",
+    "posts/other-tips-kr/index.md",
+    "posts/other-tips/index.md",
+    "posts/about-hoodie-kr/index.md",
+    "posts/about-hoodie/index.md"
+  ]
+}
