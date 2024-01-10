@@ -11,15 +11,15 @@ module.exports = {
   },
   plugins: [
 	  `gatsby-plugin-cname`,
-    // {
-    //   resolve: `gatsby-plugin-google-gtag`,
-    //   options: {
-    //     trackingIds: ['G-MFJ3E8N4SC'],
-    //     pluginConfig: {
-    //       head: true,
-    //     },
-    //   },
-    // },
+    {
+      resolve: `gatsby-plugin-google-gtag`,
+      options: {
+        trackingIds: ['G-X3KVSNJ43V'],
+        pluginConfig: {
+          head: true,
+        },
+      },
+    },
     `gatsby-plugin-catch-links`,
     `gatsby-plugin-robots-txt`,
     {
