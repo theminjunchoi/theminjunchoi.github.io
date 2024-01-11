@@ -58,7 +58,7 @@ query BlogIndex {
       totalCount
     }
     nodes {
-      excerpt
+      excerpt(pruneLength: 150, truncate: true)
       fields {
         slug
       }

@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { Link } from "gatsby"
 
 const TagListWrapper = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   word-break: break-all;
 `
 

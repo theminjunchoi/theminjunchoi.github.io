@@ -8,7 +8,8 @@
   "ignoreCreatedFolder": [],
   "enableExperimentalHash": false,
   "fileHashMap": {
-    "template/template.md": "aa335d17aef8c7a0aa921b958ca062284f1b6632d5c43236df9c42d244507108",
-    "posts/retrospect-2023.md": "2df7277f3576b30e262c800e7523cdf69f1dff2c76fdd4335091aae8df247834"
+    "template/template.md": "b04869ca5a71504ed17b37ddd08d4545821b81f0ca0d937bd535139d04aeca63",
+    "posts/retrospect-2023.md": "bb4532956ce37b533485d028878978b454bbe66b07a2dad48e5bc41a68fdcc2d",
+    "posts/why-obsidian.md": "4e49cc6aab7e1a44eb3424d0cc3edaf20c3fe4da0e4d1ac7d5db650876a9f0eb"
   }
 }
