@@ -1,7 +1,7 @@
 ---
 title: 기존 블로그 대신 Obsidian을 택한 이유
 date: 2024-01-10 13:23:24
-updated: 2024-01-11 13:29:15
+updated: 2024-01-11 23:47:22
 tags:
   - obsidian
 ---
