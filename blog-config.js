@@ -1,6 +1,6 @@
 module.exports = {
-  title: "minjun.blog",
-  description: "나만의 메모상자, Zettelkasten을 위한 공간입니다.",
+  title: "minjun.blog", 
+  description: "안녕하세요, 최민준입니다 :)", 
   author: "MJ",
   siteUrl: "https://minjun.blog/",
   links: {
@@ -12,9 +12,9 @@ module.exports = {
     instagram: "https://www.instagram.com/_minjun_choi",
     // medium: "https://medium.com",
     // blogger: "https://blogger.com",
-    // email: "mailto:devhudi@gmail.com",
+    email: "mailto:mj043000@naver.com",
     // resume: "https://theminjunchoi.github.io/",
-    link: "https://minjun.blog/",
+    link: "https://solved.ac/profile/mj043000",
   },
   utterances: {
     repo: "theminjunchoi/theminjunchoi.github.io",

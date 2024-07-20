@@ -8,12 +8,13 @@
   "ignoreCreatedFolder": [],
   "enableExperimentalHash": false,
   "fileHashMap": {
-    "template/template.md": "b04869ca5a71504ed17b37ddd08d4545821b81f0ca0d937bd535139d04aeca63",
-    "posts/retrospect-2023.md": "bade8d7c4956c847383091e64405d70bd55e2d46465a1cffce27f67d86b74c63",
+    "template/template.md": "36d6d7188f24b8c58b697ab9a4ed4386b27c6fc74f595ec2c2984c1520f4530e",
+    "posts/retrospect-2023.md": "0f85b889bdfbf7d312b64b33247b0f5b88e68a50530a08d6b79ceb0851fdf367",
     "posts/why-obsidian.md": "41b3369f277bf37fae05b94bdd0654fc67b81056ee08ee61dfd848b412db4b85",
-    "posts/retrospect-2022-1.md": "78ee6200f87fc3b4f3c4158909765a64704182fc16f2e6fb07ab38a9c2c0aea2",
-    "posts/retrospect-2022-2.md": "efcbe919183ad0f645da7c5fdd06757b332064a98fd92676f7d6351201b01cd2",
+    "posts/retrospect-2022-1.md": "18c3f3ea4fd0f4ed6632368412df1bac1c465779b7c6856243c36c602bec78f2",
+    "posts/retrospect-2022-2.md": "56f11ced8ee76df83fc8072b75656da49f050d7ab71e768c63e6e008657ac55b",
     "posts/after-jigeumgeuddae.md": "b7dbe3edabe902e1d10d115d664ac2263e9565ac99ee3e2aba56149f7282d510",
-    "posts/nuxt-katex.md": "f7c4c1951b3263b70a9260e4d383b5c5e9c34830037e162edcd090a991f1ca1f"
+    "posts/nuxt-katex.md": "f7c4c1951b3263b70a9260e4d383b5c5e9c34830037e162edcd090a991f1ca1f",
+    "posts/retrospect-2024-1.md": "1b962bb5664b27c4e8a2976615b0a9c420d24f7917cbf42ceda6f1c2953db747"
   }
 }

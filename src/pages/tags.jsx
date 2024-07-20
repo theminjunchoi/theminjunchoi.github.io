@@ -58,9 +58,9 @@ const TagsPage = ({ data }) => {
     setSelected(q)
   }, [query])
 
-  useEffect(()=> {
-    firstItemRef.current?.scrollIntoView({behavior: 'smooth', block: "start"});
-  }, [selected])
+  // useEffect(()=> {
+  //   firstItemRef.current?.scrollIntoView({behavior: 'smooth', block: "start"});
+  // }, [selected])
 
   return (
     <Layout>
@@ -123,8 +123,8 @@ export const pageQuery = graphql`
           slug
         }
         frontmatter {
-          date(formatString: "YYYY년 MM월 DD일 HH:MM")
-          updated(formatString: "YYYY년 MM월 DD일 HH:MM")
+          date(formatString: "MMMM DD, YYYY")
+          updated(formatString: "MMM DD, YYYY")
           title
           tags
         }
