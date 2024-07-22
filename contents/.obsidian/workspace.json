@@ -4,34 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "faaebba0c327a81c",
+        "id": "ea5a7720bb86346d",
         "type": "tabs",
         "children": [
           {
-            "id": "57a99f40067773fe",
+            "id": "dd6aef4c88cb7ed3",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/retrospect-2023.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          }
-        ]
-      },
-      {
-        "id": "9580fe6303575fad",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "41f31498060406b6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/retrospect-2024-1.md",
+                "file": "posts/1-1. Defining Performance.md",
                 "mode": "source",
                 "source": false
               }
@@ -103,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/retrospect-2024-1.md",
+                "file": "posts/1-1. Defining Performance.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -120,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/retrospect-2024-1.md",
+                "file": "posts/1-1. Defining Performance.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -143,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/retrospect-2024-1.md"
+                "file": "posts/1-1. Defining Performance.md"
               }
             }
           }
@@ -166,17 +148,23 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "41f31498060406b6",
+  "active": "21bf746e90829a3e",
   "lastOpenFiles": [
-    "posts/retrospect-2023.md",
-    "posts/retrospect-2022-2.md",
+    "posts/attachments/performance.jpg",
+    "posts/0-1. CA Intro.md",
+    "posts/1-1. Defining Performance.md",
+    "posts/0-2. CA Overview.md",
+    "MIPS memory allocation & addressing.md",
+    "template/template.md",
     "posts/retrospect-2024-1.md",
+    "posts/attachments/computer-architecture-textbook.jpg",
+    "posts/retrospect-2023.md",
+    "무제 파일.md",
+    "posts/retrospect-2022-2.md",
     "posts/attachments/inbody.jpg",
     "posts/attachments/inbody.png",
     "posts/retrospect-2022-1.md",
-    "무제 파일.md",
     "posts/why-obsidian.md",
-    "template/template.md",
     "posts/nuxt-katex.md",
     "posts/attachments/Nuxt.png",
     "posts/after-jigeumgeuddae.md",
@@ -186,7 +174,6 @@
     "posts/attachments/GDSC.svg",
     "posts/attachments/zp-지금그때-site.jpg",
     "posts/attachments/zp-angelscamp-site.jpg",
-    "posts/attachments/presentation.png",
     "posts/무제 파일.md",
     "template",
     "posts/hi.md",
@@ -204,10 +191,6 @@
     "posts/MJ/mj,md",
     "posts/MJ/mj",
     "posts/MJ",
-    "posts/quick-start-kr/index.md",
-    "posts/quick-start/index.md",
-    "posts/other-tips-kr/index.md",
-    "posts/other-tips/index.md",
-    "posts/about-hoodie-kr/index.md"
+    "posts/quick-start-kr/index.md"
   ]
 }
