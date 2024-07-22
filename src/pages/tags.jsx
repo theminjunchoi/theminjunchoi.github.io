@@ -69,7 +69,7 @@ const TagsPage = ({ data }) => {
       <TagListWrapper>
         {selected ? (
           <Title size="sm">
-          #{selected}에 {filteredPosts.length}개의 글{filteredPosts.length > 1 && "s"}이 있습니다.
+          #{selected}에 {filteredPosts.length}개의 글이 있습니다.
           </Title>
 
           
