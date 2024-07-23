@@ -18,6 +18,8 @@
     "posts/retrospect-2024-1.md": "e102899850995f8ca124f0f6205bd15c55ac0e80a2b3c950149d668faa3006db",
     "posts/0-1. CA Intro.md": "21241dcf2f5a2cb8da23824b563ffc61fe429f9bf6aad6de13fd90362cf3aa12",
     "posts/0-2. CA Overview.md": "258b25d1a9e670f16957b9a5d2ba5b620802d14308742892f78c2c7e4d8dec09",
-    "posts/1-1. Defining Performance.md": "2927ef91e23db27af8aec2f9456dd454611dd8184565e23fc070c0b242f7ee20"
+    "posts/1-1. Defining Performance.md": "2927ef91e23db27af8aec2f9456dd454611dd8184565e23fc070c0b242f7ee20",
+    "posts/1-2. Measuring Performance.md": "e215dfc3d7c853e1f43e60b0a7c8f73bb7fae00709c888c450808995938deda6",
+    "posts/2-1. Designing principles 1~3 of MIPS ISA.md": "97ba360bb381d0e23d2d2c28f503fcb9fb7281d63c2341c1967af32a7b58ffc7"
   }
 }
