@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
+                "file": "posts/2-2. Design principles 4 of MIPS ISA.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 272.5,
-    "collapsed": true
+    "width": 272.5
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
+                "file": "posts/2-2. Design principles 4 of MIPS ISA.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
+                "file": "posts/2-2. Design principles 4 of MIPS ISA.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/2-1. Designing principles 1~3 of MIPS ISA.md"
+                "file": "posts/2-2. Design principles 4 of MIPS ISA.md"
               }
             }
           }
@@ -149,15 +148,19 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "dd6aef4c88cb7ed3",
+  "active": "21bf746e90829a3e",
   "lastOpenFiles": [
-    "posts/attachments/registers.jpg",
-    "posts/0-1. CA Intro.md",
-    "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
+    "posts/attachments/i-format.jpg",
+    "posts/attachments/r-format.jpg",
+    "posts/attachments/signed extension.jpg",
     "posts/1-2. Measuring Performance.md",
-    "posts/1-1. Defining Performance.md",
-    "posts/attachments/performance.jpg",
+    "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
+    "posts/2-2. Design principles 4 of MIPS ISA.md",
     "posts/0-2. CA Overview.md",
+    "posts/1-1. Defining Performance.md",
+    "posts/0-1. CA Intro.md",
+    "posts/attachments/registers.jpg",
+    "posts/attachments/performance.jpg",
     "MIPS memory allocation & addressing.md",
     "template/template.md",
     "posts/retrospect-2024-1.md",
@@ -174,9 +177,6 @@
     "posts/after-jigeumgeuddae.md",
     "posts/attachments/2022 지금그때.jpg",
     "posts/attachments/Computer-Architecture.jpg",
-    "posts/attachments/ZeroPage.svg",
-    "posts/attachments/GDSC.svg",
-    "posts/attachments/zp-지금그때-site.jpg",
     "posts/무제 파일.md",
     "template",
     "posts/hi.md",
@@ -189,7 +189,6 @@
     "posts/ex.md",
     "posts/MJ/mj.md",
     "new-blog.md",
-    "posts/writing-guide-kr/index.md",
     "posts/MJ/mj,md",
     "posts/MJ/mj",
     "posts/MJ"
