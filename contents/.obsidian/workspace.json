@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/2-3. Representing Instructions in computer.md",
+                "file": "posts/1-2. Measuring Performance.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/2-3. Representing Instructions in computer.md",
+                "file": "posts/1-2. Measuring Performance.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/2-3. Representing Instructions in computer.md",
+                "file": "posts/1-2. Measuring Performance.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/2-3. Representing Instructions in computer.md"
+                "file": "posts/1-2. Measuring Performance.md"
               }
             }
           }
@@ -150,8 +150,8 @@
   },
   "active": "dd6aef4c88cb7ed3",
   "lastOpenFiles": [
-    "posts/2-2. Design principles 4 of MIPS ISA.md",
     "posts/2-3. Representing Instructions in computer.md",
+    "posts/2-2. Design principles 4 of MIPS ISA.md",
     "posts/attachments/j-format.jpg",
     "posts/attachments/bne.jpg",
     "posts/attachments/shift operation.jpg",

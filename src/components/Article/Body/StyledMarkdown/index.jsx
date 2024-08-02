@@ -25,6 +25,7 @@ const StyledMarkdown = styled.div`
   & .katex-display {
     margin-top: 0;
     margin-bottom: 24px;
+    word-break: break-all;
   }
 
   & p {
@@ -47,12 +48,12 @@ const StyledMarkdown = styled.div`
 
   & h2 {
     margin-top: 60px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 28px;
   }
 
   & h3 {
-    margin-top: 70px;
+    margin-top: 10px;
     margin-bottom: 16px;
     font-size: 22.4px;
   }
