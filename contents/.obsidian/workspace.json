@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/2-2. Design principles 4 of MIPS ISA.md",
+                "file": "posts/2-3. Representing Instructions in computer.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/2-2. Design principles 4 of MIPS ISA.md",
+                "file": "posts/2-3. Representing Instructions in computer.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/2-2. Design principles 4 of MIPS ISA.md",
+                "file": "posts/2-3. Representing Instructions in computer.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/2-2. Design principles 4 of MIPS ISA.md"
+                "file": "posts/2-3. Representing Instructions in computer.md"
               }
             }
           }
@@ -148,14 +148,20 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "21bf746e90829a3e",
+  "active": "dd6aef4c88cb7ed3",
   "lastOpenFiles": [
+    "posts/2-2. Design principles 4 of MIPS ISA.md",
+    "posts/2-3. Representing Instructions in computer.md",
+    "posts/attachments/j-format.jpg",
+    "posts/attachments/bne.jpg",
+    "posts/attachments/shift operation.jpg",
+    "posts/attachments/nor.jpg",
+    "posts/attachments/HW design.jpg",
+    "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
     "posts/attachments/i-format.jpg",
     "posts/attachments/r-format.jpg",
     "posts/attachments/signed extension.jpg",
     "posts/1-2. Measuring Performance.md",
-    "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
-    "posts/2-2. Design principles 4 of MIPS ISA.md",
     "posts/0-2. CA Overview.md",
     "posts/1-1. Defining Performance.md",
     "posts/0-1. CA Intro.md",
@@ -164,19 +170,13 @@
     "MIPS memory allocation & addressing.md",
     "template/template.md",
     "posts/retrospect-2024-1.md",
-    "posts/attachments/computer-architecture-textbook.jpg",
     "posts/retrospect-2023.md",
     "무제 파일.md",
     "posts/retrospect-2022-2.md",
-    "posts/attachments/inbody.jpg",
-    "posts/attachments/inbody.png",
     "posts/retrospect-2022-1.md",
     "posts/why-obsidian.md",
     "posts/nuxt-katex.md",
-    "posts/attachments/Nuxt.png",
     "posts/after-jigeumgeuddae.md",
-    "posts/attachments/2022 지금그때.jpg",
-    "posts/attachments/Computer-Architecture.jpg",
     "posts/무제 파일.md",
     "template",
     "posts/hi.md",
@@ -188,7 +188,6 @@
     "posts/test",
     "posts/ex.md",
     "posts/MJ/mj.md",
-    "new-blog.md",
     "posts/MJ/mj,md",
     "posts/MJ/mj",
     "posts/MJ"
