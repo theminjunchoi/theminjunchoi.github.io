@@ -8,7 +8,7 @@ const CommonStyle = css`
     color: #ccc;
     background: none;
     font-family: "Bai Jamjuree", monospace;
-    text-align: left;
+    text-align: justify;
     white-space: pre;
     word-spacing: normal;
     word-break: normal;

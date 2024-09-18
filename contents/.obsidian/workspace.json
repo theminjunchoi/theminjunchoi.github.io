@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/1-2. Measuring Performance.md",
+                "file": "posts/interesting topic among sigchi 2024.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,7 +69,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 272.5
+    "width": 272.5,
+    "collapsed": true
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -85,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/1-2. Measuring Performance.md",
+                "file": "posts/interesting topic among sigchi 2024.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/1-2. Measuring Performance.md",
+                "file": "posts/interesting topic among sigchi 2024.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/1-2. Measuring Performance.md"
+                "file": "posts/interesting topic among sigchi 2024.md"
               }
             }
           }
@@ -150,7 +151,11 @@
   },
   "active": "dd6aef4c88cb7ed3",
   "lastOpenFiles": [
+    "posts/1-1. Defining Performance.md",
+    "posts/interesting topic among sigchi 2024.md",
+    "posts/0-1. CA Intro.md",
     "posts/2-3. Representing Instructions in computer.md",
+    "posts/1-2. Measuring Performance.md",
     "posts/2-2. Design principles 4 of MIPS ISA.md",
     "posts/attachments/j-format.jpg",
     "posts/attachments/bne.jpg",
@@ -161,10 +166,7 @@
     "posts/attachments/i-format.jpg",
     "posts/attachments/r-format.jpg",
     "posts/attachments/signed extension.jpg",
-    "posts/1-2. Measuring Performance.md",
     "posts/0-2. CA Overview.md",
-    "posts/1-1. Defining Performance.md",
-    "posts/0-1. CA Intro.md",
     "posts/attachments/registers.jpg",
     "posts/attachments/performance.jpg",
     "MIPS memory allocation & addressing.md",
