@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/interesting topic among sigchi 2024.md",
+                "file": "posts/retrospect-2022-2.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 272.5,
-    "collapsed": true
+    "width": 272.5
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/interesting topic among sigchi 2024.md",
+                "file": "posts/retrospect-2022-2.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/interesting topic among sigchi 2024.md",
+                "file": "posts/retrospect-2022-2.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/interesting topic among sigchi 2024.md"
+                "file": "posts/retrospect-2022-2.md"
               }
             }
           }
@@ -151,8 +150,11 @@
   },
   "active": "dd6aef4c88cb7ed3",
   "lastOpenFiles": [
-    "posts/1-1. Defining Performance.md",
+    "posts/retrospect-2023.md",
+    "posts/retrospect-2024-1.md",
+    "posts/retrospect-2022-1.md",
     "posts/interesting topic among sigchi 2024.md",
+    "posts/1-1. Defining Performance.md",
     "posts/0-1. CA Intro.md",
     "posts/2-3. Representing Instructions in computer.md",
     "posts/1-2. Measuring Performance.md",
@@ -171,11 +173,8 @@
     "posts/attachments/performance.jpg",
     "MIPS memory allocation & addressing.md",
     "template/template.md",
-    "posts/retrospect-2024-1.md",
-    "posts/retrospect-2023.md",
     "무제 파일.md",
     "posts/retrospect-2022-2.md",
-    "posts/retrospect-2022-1.md",
     "posts/why-obsidian.md",
     "posts/nuxt-katex.md",
     "posts/after-jigeumgeuddae.md",

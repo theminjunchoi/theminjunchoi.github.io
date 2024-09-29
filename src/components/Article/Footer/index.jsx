@@ -164,7 +164,7 @@ const Comment = ({title}) => {
               repo="theminjunchoi/theminjunchoi.github.io"
               repoId="R_kgDOLCr2fA"
               category="General"
-              categoryId="DIC_kwDOLCr2fM4CcTeP"
+              categoryId="DIC_kwDOLCr2fM4Ci46V"
               mapping="title"
               term={title}
               reactionsEnabled="1"
@@ -172,6 +172,7 @@ const Comment = ({title}) => {
               lang="ko"
               theme="dark"
             />
+            
         </HiddenWrapper>
         <HiddenWrapper isHidden={theme === "dark"}>
           <Giscus
@@ -179,7 +180,7 @@ const Comment = ({title}) => {
               repo="theminjunchoi/theminjunchoi.github.io"
               repoId="R_kgDOLCr2fA"
               category="General"
-              categoryId="DIC_kwDOLCr2fM4CcTeP"
+              categoryId="DIC_kwDOLCr2fM4Ci46V"
               mapping="title"
               term={title}
               reactionsEnabled="1"
