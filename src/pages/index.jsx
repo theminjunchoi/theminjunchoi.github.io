@@ -52,7 +52,10 @@ query BlogIndex {
   markdownRemark(frontmatter: {title: {eq: "MJ"}}) {
     html
   }
-  allMarkdownRemark(sort: {frontmatter: {date: DESC}}) {
+  allMarkdownRemark(
+  sort: {frontmatter: {date: DESC}}
+  filter: { fileAbsolutePath: { regex: "/contents/posts/" } }
+  ) {
     group(field: {frontmatter: {tags: SELECT}}) {
       fieldValue
       totalCount

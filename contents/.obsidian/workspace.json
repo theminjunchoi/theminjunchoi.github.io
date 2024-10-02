@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/retrospect-2022-2.md",
+                "file": "about/index.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/retrospect-2022-2.md",
+                "file": "about/index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/retrospect-2022-2.md",
+                "file": "about/index.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/retrospect-2022-2.md"
+                "file": "about/index.md"
               }
             }
           }
@@ -150,6 +150,10 @@
   },
   "active": "dd6aef4c88cb7ed3",
   "lastOpenFiles": [
+    "posts/retrospect-2022-2.md",
+    "about/index.md",
+    "about/index.md",
+    "about",
     "posts/retrospect-2023.md",
     "posts/retrospect-2024-1.md",
     "posts/retrospect-2022-1.md",
@@ -174,7 +178,6 @@
     "MIPS memory allocation & addressing.md",
     "template/template.md",
     "무제 파일.md",
-    "posts/retrospect-2022-2.md",
     "posts/why-obsidian.md",
     "posts/nuxt-katex.md",
     "posts/after-jigeumgeuddae.md",
@@ -187,8 +190,6 @@
     "posts/test/test2.md",
     "posts/test/test.md",
     "posts/test",
-    "posts/ex.md",
-    "posts/MJ/mj.md",
     "posts/MJ/mj,md",
     "posts/MJ/mj",
     "posts/MJ"
