@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "ea5a7720bb86346d",
+        "id": "20ba38531a8355f5",
         "type": "tabs",
         "children": [
           {
-            "id": "dd6aef4c88cb7ed3",
+            "id": "81a7aa4f815805f1",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "about/index.md",
+                "file": "posts/5-4. Virtual memory Part 2.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 272.5
+    "width": 348.5
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "about/index.md",
+                "file": "posts/5-4. Virtual memory Part 2.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "about/index.md",
+                "file": "posts/5-4. Virtual memory Part 2.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "about/index.md"
+                "file": "posts/5-4. Virtual memory Part 2.md"
               }
             }
           }
@@ -148,47 +148,47 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "dd6aef4c88cb7ed3",
+  "active": "81a7aa4f815805f1",
   "lastOpenFiles": [
+    "posts/attachments/02 13.jpg",
+    "posts/attachments/01 13.jpg",
+    "posts/5-3. Virtual memory Part 1.md",
+    "posts/attachments/09 3.jpg",
+    "posts/attachments/08 2.jpg",
+    "posts/attachments/07 3.jpg",
+    "posts/attachments/06 4.jpg",
+    "posts/attachments/05 6.jpg",
+    "posts/attachments/04 7.jpg",
+    "posts/attachments/03 10.jpg",
+    "posts/attachments/02 12.jpg",
+    "posts/attachments/01 12.jpg",
+    "posts/5-2. Improving cache performance.md",
+    "posts/5-1. Cache overview.md",
+    "posts/5-4. Virtual memory Part 2.md",
+    "posts/4-6. Exceptions.md",
+    "posts/4-5. Handling hazards.md",
+    "posts/4-4. Pipelining overview.md",
+    "posts/4-3. A single-cycle datapath.md",
+    "posts/4-2. Controlling a datapath.md",
+    "posts/4-1. Processor Overview.md",
+    "posts/3-3. Division.md",
+    "posts/3-2. Multiplication.md",
+    "posts/3-1. Addition and Subtraction.md",
+    "posts/2-5. MIPS memory allocation & addressing.md",
+    "posts/2-4. Supporting procedures in computer HW.md",
+    "posts/2-3. Representing Instructions in computer.md",
+    "posts/after-jigeumgeuddae.md",
+    "posts/nuxt-katex.md",
+    "posts/interesting topic among sigchi 2024.md",
+    "about/index.md",
     "posts/retrospect-2022-2.md",
-    "about/index.md",
-    "about/index.md",
     "about",
     "posts/retrospect-2023.md",
     "posts/retrospect-2024-1.md",
     "posts/retrospect-2022-1.md",
-    "posts/interesting topic among sigchi 2024.md",
     "posts/1-1. Defining Performance.md",
-    "posts/0-1. CA Intro.md",
-    "posts/2-3. Representing Instructions in computer.md",
-    "posts/1-2. Measuring Performance.md",
-    "posts/2-2. Design principles 4 of MIPS ISA.md",
-    "posts/attachments/j-format.jpg",
-    "posts/attachments/bne.jpg",
-    "posts/attachments/shift operation.jpg",
-    "posts/attachments/nor.jpg",
-    "posts/attachments/HW design.jpg",
-    "posts/2-1. Designing principles 1~3 of MIPS ISA.md",
-    "posts/attachments/i-format.jpg",
-    "posts/attachments/r-format.jpg",
-    "posts/attachments/signed extension.jpg",
-    "posts/0-2. CA Overview.md",
-    "posts/attachments/registers.jpg",
-    "posts/attachments/performance.jpg",
-    "MIPS memory allocation & addressing.md",
-    "template/template.md",
-    "무제 파일.md",
-    "posts/why-obsidian.md",
-    "posts/nuxt-katex.md",
-    "posts/after-jigeumgeuddae.md",
-    "posts/무제 파일.md",
     "template",
-    "posts/hi.md",
-    "posts/test.md",
-    "posts/test2.md",
     "posts/attachments",
-    "posts/test/test2.md",
-    "posts/test/test.md",
     "posts/test",
     "posts/MJ/mj,md",
     "posts/MJ/mj",
