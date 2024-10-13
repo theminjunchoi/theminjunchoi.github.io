@@ -175,7 +175,7 @@ module.exports = {
             {
               allMarkdownRemark(
                 sort: {frontmatter: {updated: DESC}}
-                filter: { fileAbsolutePath: { regex: "/contents/posts/" } }
+                
                 filter: {fileAbsolutePath: {nin: "/template/"}}
               ) {
                 edges {
