@@ -1,4 +1,171 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 12 Oct 2024 13:45:28 GMT</lastBuildDate><item><title><![CDATA[Virtual memory Part 2]]></title><description><![CDATA[contents: 0-1. CA Intro Integrating TLB, Cache, Memory Aliasing in virtually addressed cache The same virtual address of different processes…]]></description><link>https://minjun.blog/5-4. Virtual memory Part 2/</link><guid isPermaLink="false">https://minjun.blog/5-4. Virtual memory Part 2/</guid><pubDate>Sat, 24 Aug 2024 12:35:24 GMT</pubDate><content:encoded>&lt;p&gt;contents: &lt;a href=&quot;/0-1.%20CA%20Intro&quot; data-wiki-link=&quot;true&quot;&gt;0-1. CA Intro&lt;/a&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 14 Oct 2024 11:09:09 GMT</lastBuildDate><item><title><![CDATA[Respiratory Sound Database 유효성 분석]]></title><description><![CDATA[기존 HCSLAB 폐음 연구팀에서 사용하던 데이터의 질이 좋지 않아 다른 폐음 데이터셋을 찾던 와중 ICBHI Respiratory Sound Database (The Respiratory Sound database - ICBHI 201…]]></description><link>https://minjun.blog/Respiratory Sound Database 유효성 분석/</link><guid isPermaLink="false">https://minjun.blog/Respiratory Sound Database 유효성 분석/</guid><pubDate>Sun, 13 Oct 2024 12:35:24 GMT</pubDate><content:encoded>&lt;p&gt;기존 &lt;a href=&quot;https://sites.google.com/view/hcslab-cau/home?authuser=0&quot;&gt;HCSLAB&lt;/a&gt; 폐음 연구팀에서 사용하던 데이터의 질이 좋지 않아 다른 폐음 데이터셋을 찾던 와중 &lt;a href=&quot;https://paperswithcode.com/dataset/icbhi-respiratory-sound-database&quot;&gt;ICBHI Respiratory Sound Database (The Respiratory Sound database - ICBHI 2017 Challenge)&lt;/a&gt;을 발견했다. 폐음 연구 분야에서는 유명한 데이터셋이고 &lt;a href=&quot;https://www.kaggle.com/datasets/swapnilpanda/respiratory-sound-location&quot;&gt;Kaggle&lt;/a&gt;에서도 여러 사람들이 활발히 분석을 해놓은 게 많아서 우리 연구에도 쓸 수 있을지 그 결과를 보고자 한다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;알고자 하는 건 2개다.&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Dataset에서 wheeze와 crackle을 분류할 수 있는지&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1번과의 연관성 유무에 상관없이, 질병과 폐음 사이에 연관성이 있는지&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Respiratory Sound Database&lt;/h2&gt;
+&lt;p&gt;본 데이터는 원본 dataset 중 일부이다.&lt;/p&gt;
+&lt;h3&gt;요약&lt;/h3&gt;
+&lt;h4&gt;Contents 개요&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;126명 대상 (어린이, 성인, 노인 등 전연령대)&lt;/li&gt;
+&lt;li&gt;920개 .wav sound files&lt;/li&gt;
+&lt;li&gt;920개 annotation .txt files&lt;/li&gt;
+&lt;li&gt;각 환자별 질병 설명 .txt files&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;수집 기기&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;AKG C417L Microphone (AKGC417L)&lt;/li&gt;
+&lt;li&gt;3M Littmann Classic II SE Stethoscope (LittC2SE)&lt;/li&gt;
+&lt;li&gt;3M Litmmann 3200 Electronic Stethoscope (Litt3200)&lt;/li&gt;
+&lt;li&gt;WelchAllyn Meditron Master Elite Electronic Stethoscope (Meditron)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;질병 종류 및 숫자&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;Disease&lt;/th&gt;
+&lt;th align=&quot;right&quot;&gt;Num of People&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;COPD (만성폐쇄성폐질환)&lt;/td&gt;
+&lt;td align=&quot;right&quot;&gt;64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;Healthy&lt;/td&gt;
+&lt;td align=&quot;right&quot;&gt;26&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;URTI (상기도감염)&lt;/td&gt;
+&lt;td align=&quot;right&quot;&gt;14&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;Bronchiectasis (기관지 확장증)&lt;/td&gt;
+&lt;td align=&quot;right&quot;&gt;7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;Bronchiolitis (모세기관지염)&lt;/td&gt;
+&lt;td align=&quot;right&quot;&gt;6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;Pneumonia (폐렴)&lt;/td&gt;
+&lt;td align=&quot;right&quot;&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;Asthma (천식)&lt;/td&gt;
+&lt;td align=&quot;right&quot;&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4&gt;Chest Location&lt;/h4&gt;
+&lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/e81c07b86da68eab6e3287648863d3af/bc563/chest%20location.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 78.82352941176471%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAAA7DAAAOwwHHb6hkAAADYElEQVR42mWU20vTYRjHd1ADD5dCRNcOD5vnQ6FeiIS4vJA8VmKNQmidELqwQMhAE0Fv1BC6ETMPoEikSTptpqlzuekObnPqdB6SCCL/gG/P85SadPHyvnsPn+f7fZ5nP4VCoYBSqURcXBzS0tKQnJyMlNRU6FJSkETrxMREaLVaJCQkyNDS70Q6T09PRyrNPPhdREQEmKU4BsbGxsqBQJOSUEjAK7m5KKuowN07d2AwGHD95k2UFBZCT7AECpJCd/g+Q/8DssKsrCzoSEH25cuwvHgB6+goFpeXYaNhXVqStYP2PJ2deN7YiJzsbHGQkZGB8PDws0CdTockUpafn4+RkRF4PR5sBwLwb2zA6/XCbrPB6XQiQHset1vWw8PDcp/TFBkZeQpUq9XQaDTIy8sTmN/vl4crKyuYn5/HwsICrFYrHA4HPBTIZrfL2fr6Onp7e5GZmfm/Zc7b0NCQPNrc3MTe3p5A19bWYCN1rHhnZwe7u7tyx2KxwE1KXS4X6urqoFap/gBVBOPF0/p6ib5BFhnGD3dp5vVmMAjv9jY2SDnbP1bOUDupHf/4EdHnz58qzL1wAYs9PVilaPv7+wgSQIA0Bw8O8IMe7Y2PY4XOHaurYn+JisTF8lAQz9wcnuTk/AO8eBFf/gIDW1sCZHsHBHOS6jdNTQi8fw8bwZZI1RwB2A0H9JNyH6l9fOnSKTA0LAxv+vvFDl88PDwUq99o7qFAr16/RvD7d8nj7OysKGQHx/ZZiIba7gR4joD9fX1SXbPZDJPJhC1SOjExgZfNzVKcXz9/YmZmBl1dXRgbG5PKT05OYplsMzT+X2BoaCgGBwdPKsqqmshmW1ubtBGn4OjoSAI1NDSgmYJ0UnMzlO9zYeLj4/8AlX+rXFtbK5HcBGUrpqkpWCjxrI7zySngmYthJqU8c8tw6/A6JibmbGNzhAr633Z3d8P69atcZNucBlbOj30+n/Qo73N7cXpaW1tRXFx8trFV1JRFRUWorKyE/upVPDAa4W5vx/TAAEapxz5NT2OK7L778AGf376Fq6MDjS0tMNy+Db1ej6qqKkRHR58CQ0JC5MNQUFCA0tJSlJSU4NmNGzDeugUDfWlqampgvHcP9x89wkPaq6+uxrWyMhFQXl4u76KiogT4G896LUsPvUv9AAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;chest location.png&apos; title=&apos;&apos; src=&apos;/static/e81c07b86da68eab6e3287648863d3af/ca1dc/chest%20location.png&apos; srcset=&apos;/static/e81c07b86da68eab6e3287648863d3af/e7570/chest%20location.png 170w,
+/static/e81c07b86da68eab6e3287648863d3af/f46e7/chest%20location.png 340w,
+/static/e81c07b86da68eab6e3287648863d3af/ca1dc/chest%20location.png 680w,
+/static/e81c07b86da68eab6e3287648863d3af/bc563/chest%20location.png 736w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;chest location.png&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a. Trachea (Tc)&lt;/li&gt;
+&lt;li&gt;b. Anterior left (Al)&lt;/li&gt;
+&lt;li&gt;c. Anterior right (Ar)&lt;/li&gt;
+&lt;li&gt;d. Posterior left (Pl)&lt;/li&gt;
+&lt;li&gt;e. Posterior right (Pr)&lt;/li&gt;
+&lt;li&gt;f. Lateral left (Ll)&lt;/li&gt;
+&lt;li&gt;g. Lateral right (Lr)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;&lt;a href=&quot;https://www.kaggle.com/code/eatmygoose/cnn-detection-of-wheezes-and-crackles&quot;&gt;CNN: Detection of wheezes and crackles&lt;/a&gt;&lt;/h2&gt;
+&lt;h3&gt;Overview&lt;/h3&gt;
+&lt;p&gt;wheeze와 crackle을 식별하는 CNN 구현에 관한 코드. crackle 감지는 평이한데, wheeze와 wheeze &amp;#x26; crackle이 같이 있는 소리의 경우 분류의 정확도가 비교적 낮음. 전반적인 검증 정확도는 약 70%.
+&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/b3258835cb84a5629d4b99bdc1f9f8c8/41d99/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 38.23529411764706%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAABcRAAAXEQHKJvM/AAABGklEQVR42m1SWXLFIAzj/udM//rSLYBZVcmEvnamnvHgeJGFQjAz5JxRa0WMEed5ojHurcFK9bys9Y7GnL51qjelhMo43xidPeH97cRxHF7EnCgEsdqRbs9WmJ6I15cPTcC/NTzGpA+8Ph44Xl68HrRtWx1AbpNsBhs7JwfZkC2HjM0lXVxogvTly9nXEkYl21oQtEkmJsaByQKa/XgjQOcCvwGBLHMwR9YyGeR1EnRyueQIvS0gb8JwVr75Nt1ASxfgskwpJMuza8nggOn6QLmF/88EKJ2kz598nwSmJNRx3X56b/i8Lh/47WK0RB/UrPgphjv37OOiyj9ufCG5+A8NGhBVPR/5jsVo52Tq2/Ud+6xi6hy5UAy/AfqcdODKftdIAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Accuracy and Loss about detection of wheezes and crackles.png&apos; title=&apos;&apos; src=&apos;/static/b3258835cb84a5629d4b99bdc1f9f8c8/ca1dc/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png&apos; srcset=&apos;/static/b3258835cb84a5629d4b99bdc1f9f8c8/e7570/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png 170w,
+/static/b3258835cb84a5629d4b99bdc1f9f8c8/f46e7/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png 340w,
+/static/b3258835cb84a5629d4b99bdc1f9f8c8/ca1dc/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png 680w,
+/static/b3258835cb84a5629d4b99bdc1f9f8c8/02d09/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png 1020w,
+/static/b3258835cb84a5629d4b99bdc1f9f8c8/9d567/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png 1360w,
+/static/b3258835cb84a5629d4b99bdc1f9f8c8/41d99/Accuracy%20and%20Loss%20about%20detection%20of%20wheezes%20and%20crackles.png 1712w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Accuracy and Loss about detection of wheezes and crackles.png&lt;/figcaption&gt;
+  &lt;/figure&gt;
+&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/b9f260e83773c0faa2217cef955a8072/e2f49/Result%20of%20detection%20of%20wheezes%20and%20crackles.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 35.29411764705882%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAYAAAAIy204AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAA70lEQVR42n1R2Y7EMAjL/3/pjrrpkTttEi+mzcw+DVIFBWMMMfhntRSEEHBdl8Y5ZRTx/LTmPcYY+GZmBqMP9N5xnidaa/qRmDn6wVqtb0Lml2WBtRbrumr8JvTO4/Xz0kTwTlVSlX8U2V+LG+dQhZR2yWD+x5iQUhIfFauEUQhmEwtctdYP4bZt9zDBTcKcM3bJ79uOkguckHM7wwbKL+WZLOtx3f6szDqBNHpiNZYaB/CuFMHhPIlhk5X93XFgqiVgPhBvSyUkPvZdiWitdVVLpfTB3+oNm9nAZtr9olVudGlMohii1pJgqf7bK/8BRAMkKXx/8aMAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Result of detection of wheezes and crackles.png&apos; title=&apos;&apos; src=&apos;/static/b9f260e83773c0faa2217cef955a8072/ca1dc/Result%20of%20detection%20of%20wheezes%20and%20crackles.png&apos; srcset=&apos;/static/b9f260e83773c0faa2217cef955a8072/e7570/Result%20of%20detection%20of%20wheezes%20and%20crackles.png 170w,
+/static/b9f260e83773c0faa2217cef955a8072/f46e7/Result%20of%20detection%20of%20wheezes%20and%20crackles.png 340w,
+/static/b9f260e83773c0faa2217cef955a8072/ca1dc/Result%20of%20detection%20of%20wheezes%20and%20crackles.png 680w,
+/static/b9f260e83773c0faa2217cef955a8072/02d09/Result%20of%20detection%20of%20wheezes%20and%20crackles.png 1020w,
+/static/b9f260e83773c0faa2217cef955a8072/9d567/Result%20of%20detection%20of%20wheezes%20and%20crackles.png 1360w,
+/static/b9f260e83773c0faa2217cef955a8072/e2f49/Result%20of%20detection%20of%20wheezes%20and%20crackles.png 1366w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Result of detection of wheezes and crackles.png&lt;/figcaption&gt;
+  &lt;/figure&gt;
+iteration을 돌려도 Loss가 불규칙하게 튀는 이유가 뭔지 모르겠다. 정확도도 그리 높은 편은 아니라서 추후 연구할 때 wheeze와 crackle을 학습하는 용도로는 부적하지 않을까 생각 중. 폐음이 측정 위치에 따라 소리의 질 차이가 큰데 본 코드에서는 위치에 상관없이 cnn 모델에 학습을 시켜서 이런 결과가 나오지 않았나 추측 중. d, e 구역에서 측정한 wav 파일이 뚜렷하게 잘 들리므로 이것들만 학습을 시켜서 다시 테스트 해볼 필요는 있어보임.&lt;/p&gt;
+&lt;h2&gt;&lt;a href=&quot;https://www.kaggle.com/code/markdenton/cnn-disease-classification-linked-features-95/notebook&quot;&gt;CNN: Disease Classification, Linked Features (95%)&lt;/a&gt;&lt;/h2&gt;
+&lt;h3&gt;Overview&lt;/h3&gt;
+&lt;p&gt;음성 데이터를 기반으로 질병을 식별하는 CNN 구현에 관한 코드. 식별이 잘되는 편, 정확도는 95%, loss는 0.2.
+&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/9c1bce4062191e0082dee0817d1b7000/c9d4d/Accuracy%20and%20Loss%20about%20disease%20claaification.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 37.05882352941176%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAYAAAAIy204AAAACXBIWXMAABcRAAAXEQHKJvM/AAAA8klEQVR42n2RC47DIAxEc/+jbmnC14YAmfVQVdtK3SJZWOR57Iw3VUWKEe6+o50nRATeR0i1vDaIfR9jYM4JrRWnMQzWlVLQe0cIAc65lW98zClgdz/QdKDEHRIc1G4t0SJhGMhmWSt4Lvyd67oQY8Dt5tBawxa8ieS4upYiVtiNmobOVcrJOCEFk1T8d8itCYUTakOf751fQQoygrSPzJtgSskEz+8gPRzdvPbrF78KHt78S/p4NPi1gDknIzjGhJjXWjJqfSzKgCV0mUX0eQlW22TKxaC6NvcMbvt5018KMBcTLCkih32F3x38cV/BpfwCAlQkq6TmdIQAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Accuracy and Loss about disease claaification.png&apos; title=&apos;&apos; src=&apos;/static/9c1bce4062191e0082dee0817d1b7000/ca1dc/Accuracy%20and%20Loss%20about%20disease%20claaification.png&apos; srcset=&apos;/static/9c1bce4062191e0082dee0817d1b7000/e7570/Accuracy%20and%20Loss%20about%20disease%20claaification.png 170w,
+/static/9c1bce4062191e0082dee0817d1b7000/f46e7/Accuracy%20and%20Loss%20about%20disease%20claaification.png 340w,
+/static/9c1bce4062191e0082dee0817d1b7000/ca1dc/Accuracy%20and%20Loss%20about%20disease%20claaification.png 680w,
+/static/9c1bce4062191e0082dee0817d1b7000/02d09/Accuracy%20and%20Loss%20about%20disease%20claaification.png 1020w,
+/static/9c1bce4062191e0082dee0817d1b7000/9d567/Accuracy%20and%20Loss%20about%20disease%20claaification.png 1360w,
+/static/9c1bce4062191e0082dee0817d1b7000/c9d4d/Accuracy%20and%20Loss%20about%20disease%20claaification.png 1686w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Accuracy and Loss about disease claaification.png&lt;/figcaption&gt;
+  &lt;/figure&gt;
+&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/7dc7a1773ea6509809c59e3fe3bba0be/49f2a/Result%20of%20Disease%20classification.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 38.82352941176471%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABqElEQVR42o2RTWsTURSGb5JpkknTUKxWEzO2WqkVpTtBFPwdLlRc+S9c+LFzVxFXgtpNq/aDkkVX/oOClFQETVAQqoLENna+k8dzZqbuBA88nHMG7nvf947hP8p3D+Bgl1s37nC8Ps/s3BXOzl7m3PmrXLh4jakzl3i7uQnDAKMHBoMBge8TxzFhGBJFEUEQJLNW51OHm9dv4zTnyeVOYFl1jDmGyU3KPokpNGi9eAbuT4we9DxPcPFF1JdZUTG9RKvdfi8C41Rsh9rYDKPVaaziSUZKTUpC3p6i9XgBvn3B7P3aw3XdTDRFd3Ub+EEiuL29Q7nsUFQB+xSV6mmKugulkoMpN1l5IILdr5her5fGyyJq97P4Gv1QsCoihZFGQr5QZ0yc2uJM57zd5Pm9p7id76lDdaWHo+z9dA+DEM/1/gpamZhGVfLyjvboNLXaDJY4XHj4hB/dXYzGiyJxE0epKyHOOHS4tfVO4jbkHSeEI1k/mjGBXXG4f/cR3Y+f07/8rxoOh0nf3++zutri9ZsNVqQvLa3xcnGZ5Vfryazf2zsf6Pd/8wdHjsxy6CsPLgAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Result of Disease classification.png&apos; title=&apos;&apos; src=&apos;/static/7dc7a1773ea6509809c59e3fe3bba0be/ca1dc/Result%20of%20Disease%20classification.png&apos; srcset=&apos;/static/7dc7a1773ea6509809c59e3fe3bba0be/e7570/Result%20of%20Disease%20classification.png 170w,
+/static/7dc7a1773ea6509809c59e3fe3bba0be/f46e7/Result%20of%20Disease%20classification.png 340w,
+/static/7dc7a1773ea6509809c59e3fe3bba0be/ca1dc/Result%20of%20Disease%20classification.png 680w,
+/static/7dc7a1773ea6509809c59e3fe3bba0be/02d09/Result%20of%20Disease%20classification.png 1020w,
+/static/7dc7a1773ea6509809c59e3fe3bba0be/9d567/Result%20of%20Disease%20classification.png 1360w,
+/static/7dc7a1773ea6509809c59e3fe3bba0be/49f2a/Result%20of%20Disease%20classification.png 1875w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Result of Disease classification.png&lt;/figcaption&gt;
+  &lt;/figure&gt;
+질병 종류 중 가장 많이 있는 상위 6개의 class에 한해서 학습 및 테스트함. 정확도도 높아서 추후 새로 생긴 데이터도 이 모델로 테스트를 해봐도 되지 않을까... 생각 중.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[sigchi 2024 관심 주제]]></title><description><![CDATA[SIGCHI 2024 1. Touching the Moon: Leveraging Passive Haptics, Embodiment and Presence for Operational Assessments in Virtual Reality Intro…]]></description><link>https://minjun.blog/interesting topic among sigchi 2024/</link><guid isPermaLink="false">https://minjun.blog/interesting topic among sigchi 2024/</guid><pubDate>Sat, 07 Sep 2024 12:35:24 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024&quot;&gt;SIGCHI 2024&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/147838&quot;&gt;1. Touching the Moon: Leveraging Passive Haptics, Embodiment and Presence for Operational Assessments in Virtual Reality&lt;/a&gt;&lt;/h2&gt;
+&lt;h3&gt;Intro 요약&lt;/h3&gt;
+&lt;p&gt;다시금 달에 가기 위해 인력, 통신, 하드웨어, 소프트웨어 및 데이터 등 새로운 솔루션들이 뒷받침되고 있음. 달과 같은 더 밝은 빛, 더 어두운 그림자, 감소된 중력이 있는 상황 속에서 우주인이 부피가 크고 제한적인 우주복을 입고 장애물을 탐색해야함. 이러한 독특한 상황들을 시뮬레이션 하기 위해 VR이 활용되고 있음.&lt;/p&gt;
+&lt;p&gt;VR은 달의 환경 조건을 시각화하고 예상되는 시나리오를 테스트하는데 이상적인 도구이지만 시청각적 특성만 제현가능하다는 점 때문에 달을 완벽히 구현하는데 한계가 있음.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;본 연구에서는 장갑과 물리적 모형을 이용해 실제와 비슷한 촉각적, 운동 감각을 구현&lt;/strong&gt;하고 가상 신체에 대한 구체화 감각을 향상시키려는 노력을 함.&lt;/p&gt;
+&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/146728&quot;&gt;2. Mindfulness-based Embodied Tangible Interactions for Stroke Rehabilitation at Home&lt;/a&gt;&lt;/h2&gt;
+&lt;h3&gt;Intro 요약&lt;/h3&gt;
+&lt;p&gt;전 세계적으로 뇌졸중 환자 수가 증가하며 재활 비용이 상승하고 있음. 경제적인 문제 이외에도 물리 치료사도 부족하기 때문에 가정에서 재활 활동을 하기 어려움. 최근에는 촉각으로 상호 작용할 수 있는 도구를 통해 재활을 하기 시작했는데, HCI 분야에서 웨어러블 기기 분야로 연구를 하고 있음.&lt;/p&gt;
+&lt;p&gt;Mindfulness-based interventions는 신체적, 심리적으로 뇌졸중 회복에 도움이 된다고 함. 본 연구에서는 &lt;strong&gt;Mindfulness-based interventions와 촉각을 결합하여 가정에서 재활을 위해 구체화할 수 있는 기술 설계를 연구함.&lt;/strong&gt; 이 연구는 Mindfulness-based Embodied Tangible Interactions(MBETI)에 대한 디자인 원칙 개발에 기여함.&lt;/p&gt;
+&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/147082&quot;&gt;3. “I know I have this till my Last Breath”: Unmasking the Gaps in Chronic Obstructive Pulmonary Disease (COPD) Care in India&lt;/a&gt;&lt;/h2&gt;
+&lt;h3&gt;Intro 요약&lt;/h3&gt;
+&lt;p&gt;비전염성 질환(NCD: Non-communicable disease)은 전 세계 사망자의 74%를 차지함. 이러한 비전염성 질환 중 만성 호흡기 질환(CRD: Chronic Respiratory Diseases)은 사망률에 크게 기여함. 최근 20년 사이에 사망률 28.5%, 유병률 39.8% 증가. 그 중 만성 폐쇄성 폐질환(COPD: Chronic Obstructive Pulmonary Disease)은 흔하지만 진단하기가 어려워 전 세계 사망 원인 중 3위를 차지함. 세계보건기구(WHO)는 심각성을 인지하고 NCD 예방  및 관리를 위한 세계 행동 계획과 지속 가능한 개발을 UN 2030 의제에 포함 시킴.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;COPD와 같은 CRD로 인한 사망의 90%는 저소득 및 중소득 국가에서 발생&lt;/strong&gt;. 2016년, CRD는 인도의 총 사망 및 장애 조정 생명 연수(DALY)의 10.9%와 6.4%를 차지, 이 중 CRD로 인한 총 DALY의 75.6%가 COPD에 기인. &lt;strong&gt;인도의 의료 인프라에 불균형이 있기 때문&lt;/strong&gt;. 대기 오염이 심화되면서 인도에 상당한 사회경제적 부담이 생김. 2016년 인도에서 COPD로 인한 총 DALY 중 53.7%가 대기 오염에 기인. 병원과 병상이 인도 인구에 비해 현저히 적음.&lt;/p&gt;
+&lt;p&gt;HCI 연구원들은 최근 몇 년 동안 CRD에 점점 더 관심을 보이고 있으며 디지털 건강 모니터링 및 웨어러블 장치, 원격 진료 및 원격 의료 솔루션, 행동 개입 및 게임화, 자기 관리를 포함한 CRD 치료의 다양한 측면을 다루고 있음.&lt;/p&gt;
+&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/146904&quot;&gt;4. Evaluating ActuAir: Building Occupants&apos; Experiences of a Shape-Changing Air Quality Display&lt;/a&gt;&lt;/h2&gt;
+&lt;h3&gt;Intro 요약&lt;/h3&gt;
+&lt;p&gt;건물이 점점 더 센서가 많아지고 기후 변화 압박 속에서 인식 및 웰빙 목적으로 건물 내 환경 데이터를 사용하는 데 대한 관심이 커지고 있음. 그에 비해 대형 모양 변경 디스플레이를 중심으로 한 연구에서는 거주자의 공기 질 데이터 경험에 대한 연구는 별로 없음.&lt;/p&gt;
+&lt;p&gt;ActuAir 시스템은 생체 모방 개념에서 영감을 받은 모듈식 맞춤형 룸 디바이더로, 팽창과 LED 애니메이션으로 AQ(Air Quality)를 표시. 이와 같은 대규모 소프트 로봇 및 모양 변경 반응형 아키텍쳐는 미래 스마트 빌딩 설계 및 HCI/HBI 연구에 기여함.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Virtual memory Part 2]]></title><description><![CDATA[contents: 0-1. CA Intro Integrating TLB, Cache, Memory Aliasing in virtually addressed cache The same virtual address of different processes…]]></description><link>https://minjun.blog/5-4. Virtual memory Part 2/</link><guid isPermaLink="false">https://minjun.blog/5-4. Virtual memory Part 2/</guid><pubDate>Sat, 24 Aug 2024 12:35:24 GMT</pubDate><content:encoded>&lt;p&gt;contents: &lt;a href=&quot;/0-1.%20CA%20Intro&quot; data-wiki-link=&quot;true&quot;&gt;0-1. CA Intro&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Integrating TLB, Cache, Memory&lt;/h2&gt;
 &lt;h3&gt;Aliasing in virtually addressed cache&lt;/h3&gt;
 &lt;ul&gt;
@@ -3107,27 +3274,7 @@ beq $t0, $zero, LABEL&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></it
 &lt;h2&gt;마무리&lt;/h2&gt;
 &lt;p&gt;아무리 구글링을 해도 답이 안나오길래 Github에 Nuxt content로 빌드된 페이지 레포 중에 markdown에서 수식을 지원해줄 수 있게 작업한 것들을 찾아봤다. 유일하게 한 개가 있었는데 그 레포에서는 &lt;code class=&quot;language-text&quot;&gt;katex&lt;/code&gt; package를 추가로 설치해서 적용해주길래 똑같이 적용시켜보았다.&lt;/p&gt;
 &lt;p&gt;이럴 때 보면 확실히 Nuxt가 React에 비해 커뮤니티 활성도가 조금 낮은 듯하다. 지금은 Nuxt가 너무 익숙해져서 넘어갈 생각은 없지만 프로그래밍을 하는데에 있어 커뮤니티가 기여하는 점이 크다는 것을 알았다.&lt;/p&gt;
-&lt;p&gt;적게 잡아도 5시간정도는 이 작업만 한 것 같다. 중간에 던질까 생각도 많았는데 모든 경우를 시도해보지 않으면 나중에 후회할 것 같아서 광기어린 눈으로 지구끝까지 삽질을 해보았다. 나처럼 Nuxt content에 mathtype을 적용하고자 하는 사람이 많을 것 같은데 도움이 됐으면 좋겠다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[sigchi 2024 관심 주제]]></title><description><![CDATA[SIGCHI 2024 1. Touching the Moon: Leveraging Passive Haptics, Embodiment and Presence for Operational Assessments in Virtual Reality Intro…]]></description><link>https://minjun.blog/interesting topic among sigchi 2024/</link><guid isPermaLink="false">https://minjun.blog/interesting topic among sigchi 2024/</guid><pubDate>Sat, 07 Sep 2024 12:35:24 GMT</pubDate><content:encoded>&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024&quot;&gt;SIGCHI 2024&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/147838&quot;&gt;1. Touching the Moon: Leveraging Passive Haptics, Embodiment and Presence for Operational Assessments in Virtual Reality&lt;/a&gt;&lt;/h2&gt;
-&lt;h3&gt;Intro 요약&lt;/h3&gt;
-&lt;p&gt;다시금 달에 가기 위해 인력, 통신, 하드웨어, 소프트웨어 및 데이터 등 새로운 솔루션들이 뒷받침되고 있음. 달과 같은 더 밝은 빛, 더 어두운 그림자, 감소된 중력이 있는 상황 속에서 우주인이 부피가 크고 제한적인 우주복을 입고 장애물을 탐색해야함. 이러한 독특한 상황들을 시뮬레이션 하기 위해 VR이 활용되고 있음.&lt;/p&gt;
-&lt;p&gt;VR은 달의 환경 조건을 시각화하고 예상되는 시나리오를 테스트하는데 이상적인 도구이지만 시청각적 특성만 제현가능하다는 점 때문에 달을 완벽히 구현하는데 한계가 있음.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;본 연구에서는 장갑과 물리적 모형을 이용해 실제와 비슷한 촉각적, 운동 감각을 구현&lt;/strong&gt;하고 가상 신체에 대한 구체화 감각을 향상시키려는 노력을 함.&lt;/p&gt;
-&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/146728&quot;&gt;2. Mindfulness-based Embodied Tangible Interactions for Stroke Rehabilitation at Home&lt;/a&gt;&lt;/h2&gt;
-&lt;h3&gt;Intro 요약&lt;/h3&gt;
-&lt;p&gt;전 세계적으로 뇌졸중 환자 수가 증가하며 재활 비용이 상승하고 있음. 경제적인 문제 이외에도 물리 치료사도 부족하기 때문에 가정에서 재활 활동을 하기 어려움. 최근에는 촉각으로 상호 작용할 수 있는 도구를 통해 재활을 하기 시작했는데, HCI 분야에서 웨어러블 기기 분야로 연구를 하고 있음.&lt;/p&gt;
-&lt;p&gt;Mindfulness-based interventions는 신체적, 심리적으로 뇌졸중 회복에 도움이 된다고 함. 본 연구에서는 &lt;strong&gt;Mindfulness-based interventions와 촉각을 결합하여 가정에서 재활을 위해 구체화할 수 있는 기술 설계를 연구함.&lt;/strong&gt; 이 연구는 Mindfulness-based Embodied Tangible Interactions(MBETI)에 대한 디자인 원칙 개발에 기여함.&lt;/p&gt;
-&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/147082&quot;&gt;3. “I know I have this till my Last Breath”: Unmasking the Gaps in Chronic Obstructive Pulmonary Disease (COPD) Care in India&lt;/a&gt;&lt;/h2&gt;
-&lt;h3&gt;Intro 요약&lt;/h3&gt;
-&lt;p&gt;비전염성 질환(NCD: Non-communicable disease)은 전 세계 사망자의 74%를 차지함. 이러한 비전염성 질환 중 만성 호흡기 질환(CRD: Chronic Respiratory Diseases)은 사망률에 크게 기여함. 최근 20년 사이에 사망률 28.5%, 유병률 39.8% 증가. 그 중 만성 폐쇄성 폐질환(COPD: Chronic Obstructive Pulmonary Disease)은 흔하지만 진단하기가 어려워 전 세계 사망 원인 중 3위를 차지함. 세계보건기구(WHO)는 심각성을 인지하고 NCD 예방  및 관리를 위한 세계 행동 계획과 지속 가능한 개발을 UN 2030 의제에 포함 시킴.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;COPD와 같은 CRD로 인한 사망의 90%는 저소득 및 중소득 국가에서 발생&lt;/strong&gt;. 2016년, CRD는 인도의 총 사망 및 장애 조정 생명 연수(DALY)의 10.9%와 6.4%를 차지, 이 중 CRD로 인한 총 DALY의 75.6%가 COPD에 기인. &lt;strong&gt;인도의 의료 인프라에 불균형이 있기 때문&lt;/strong&gt;. 대기 오염이 심화되면서 인도에 상당한 사회경제적 부담이 생김. 2016년 인도에서 COPD로 인한 총 DALY 중 53.7%가 대기 오염에 기인. 병원과 병상이 인도 인구에 비해 현저히 적음.&lt;/p&gt;
-&lt;p&gt;HCI 연구원들은 최근 몇 년 동안 CRD에 점점 더 관심을 보이고 있으며 디지털 건강 모니터링 및 웨어러블 장치, 원격 진료 및 원격 의료 솔루션, 행동 개입 및 게임화, 자기 관리를 포함한 CRD 치료의 다양한 측면을 다루고 있음.&lt;/p&gt;
-&lt;h2&gt;&lt;a href=&quot;https://programs.sigchi.org/chi/2024/program/content/146904&quot;&gt;4. Evaluating ActuAir: Building Occupants&apos; Experiences of a Shape-Changing Air Quality Display&lt;/a&gt;&lt;/h2&gt;
-&lt;h3&gt;Intro 요약&lt;/h3&gt;
-&lt;p&gt;건물이 점점 더 센서가 많아지고 기후 변화 압박 속에서 인식 및 웰빙 목적으로 건물 내 환경 데이터를 사용하는 데 대한 관심이 커지고 있음. 그에 비해 대형 모양 변경 디스플레이를 중심으로 한 연구에서는 거주자의 공기 질 데이터 경험에 대한 연구는 별로 없음.&lt;/p&gt;
-&lt;p&gt;ActuAir 시스템은 생체 모방 개념에서 영감을 받은 모듈식 맞춤형 룸 디바이더로, 팽창과 LED 애니메이션으로 AQ(Air Quality)를 표시. 이와 같은 대규모 소프트 로봇 및 모양 변경 반응형 아키텍쳐는 미래 스마트 빌딩 설계 및 HCI/HBI 연구에 기여함.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Measuring Performance]]></title><description><![CDATA[contents: 0-1. CA Intro Measuring CPU performance Clock period: the duration of a clock cycle How long the computer takes to perform a…]]></description><link>https://minjun.blog/1-2. Measuring Performance/</link><guid isPermaLink="false">https://minjun.blog/1-2. Measuring Performance/</guid><pubDate>Mon, 22 Jul 2024 15:40:24 GMT</pubDate><content:encoded>&lt;p&gt;contents: &lt;a href=&quot;/0-1.%20CA%20Intro&quot; data-wiki-link=&quot;true&quot;&gt;0-1. CA Intro&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;적게 잡아도 5시간정도는 이 작업만 한 것 같다. 중간에 던질까 생각도 많았는데 모든 경우를 시도해보지 않으면 나중에 후회할 것 같아서 광기어린 눈으로 지구끝까지 삽질을 해보았다. 나처럼 Nuxt content에 mathtype을 적용하고자 하는 사람이 많을 것 같은데 도움이 됐으면 좋겠다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Measuring Performance]]></title><description><![CDATA[contents: 0-1. CA Intro Measuring CPU performance Clock period: the duration of a clock cycle How long the computer takes to perform a…]]></description><link>https://minjun.blog/1-2. Measuring Performance/</link><guid isPermaLink="false">https://minjun.blog/1-2. Measuring Performance/</guid><pubDate>Mon, 22 Jul 2024 15:40:24 GMT</pubDate><content:encoded>&lt;p&gt;contents: &lt;a href=&quot;/0-1.%20CA%20Intro&quot; data-wiki-link=&quot;true&quot;&gt;0-1. CA Intro&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Measuring CPU performance&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Clock period: the duration of a clock cycle
