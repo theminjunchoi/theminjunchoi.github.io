@@ -23,7 +23,7 @@
     "posts/2-1. Designing principles 1~3 of MIPS ISA.md": "69d87dfd33eac9fedab19d99ac8743122a6d785c0c0c81d3d01b5b0d9f3130d4",
     "posts/2-2. Design principles 4 of MIPS ISA.md": "24876c1d33be1071d970c49e872254f17de50f5ca86da8633b5fbbe0d31809f9",
     "posts/2-3. Representing Instructions in computer.md": "4c7670c85af7b6622897acc9f935f6139c8933b2e447c72562196a1ae4ff23e4",
-    "posts/interesting topic among sigchi 2024.md": "ea78fe83bd8be42490369e95609cda987ed3e12447f775d0d11a04c1716c9000",
+    "posts/interesting topic among sigchi 2024.md": "0ba071b022ef3aa2a0a5bd6eb73f1c677df0ccd5663cc71eb91290e4b53ad28c",
     "about/index.md": "8cabd6af5c16013d495eb4c20cd874d23415eaaf1cf8c948f5a9eb68393d0e19",
     "posts/2-4. Supporting procedures in computer HW.md": "3fa2f922c33de3867f8df6cfb922f0653301e8d33b1fb10c056d456f564be79d",
     "posts/2-5. MIPS memory allocation & addressing.md": "fd9c4862f9ecb59822430a666bb238022d2562ca3d70d20aba47de42d11004da",
@@ -39,6 +39,7 @@
     "posts/5-1. Cache overview.md": "e786928ea1bc7e08762712be75184da41bbc67224a3c4edc9310c30822d107bf",
     "posts/5-2. Improving cache performance.md": "e39794f1d00986722eef534137806de40dfc771c0077d409c5fc92dced35e92c",
     "posts/5-3. Virtual memory Part 1.md": "c5a76984f70326d79cfd2989afcd50859f7503c703ab18f032d973977bdc5251",
-    "posts/5-4. Virtual memory Part 2.md": "7e8e7e530623a4e5779e9489043ff253101eec8d2e3f868d7780510d18de62b1"
+    "posts/5-4. Virtual memory Part 2.md": "7e8e7e530623a4e5779e9489043ff253101eec8d2e3f868d7780510d18de62b1",
+    "posts/Respiratory Sound Database 유효성 분석.md": "86c1494cc99d06e5b1af3cfc28afe2327e550947727d757f8ef6cf2c917ecdd6"
   }
 }
