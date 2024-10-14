@@ -9,6 +9,7 @@ import PostList from "components/PostList"
 import SideTagList from "components/SideTagList"
 import Divider from "components/Divider"
 import VerticalSpace from "components/VerticalSpace"
+import Tab from "components/Tab"
 
 import { title, description, siteUrl } from "../../blog-config"
 
@@ -33,7 +34,8 @@ const BlogIndex = ({ data }) => {
       <SEO title={title} description={description} url={siteUrl} />
       <VerticalSpace size={48} />
       <Bio />
-      <Divider />
+      <Tab postsCount={posts.length} activeTab="posts" />
+      {/* <Divider /> */}
       <SideTagList tags={tags} postCount={posts.length} />
       <PostList postList={posts} />
     </Layout>

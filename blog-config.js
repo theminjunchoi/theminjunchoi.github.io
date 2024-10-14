@@ -5,10 +5,10 @@ module.exports = {
   siteUrl: "https://minjun.blog/",
   links: {
     github: "https://github.com/theminjunchoi",
-    // linkedIn: "https://linkedin.com",
+    linkedIn: "https://www.linkedin.com/in/minjunchoi/",
     // facebook: "https://www.facebook.com",
     // twitter: "https://twitter.com",
-    // x: "https://x.com",
+    x: "https://x.com/_minjun_choi",
     instagram: "https://www.instagram.com/_minjun_choi",
     // medium: "https://medium.com",
     // blogger: "https://blogger.com",
@@ -16,6 +16,7 @@ module.exports = {
     // resume: "https://theminjunchoi.github.io/",
     link: "https://solved.ac/profile/mj043000",
   },
+  useAbout: true,
   utterances: {
     repo: "theminjunchoi/theminjunchoi.github.io",
     type: "pathname",
