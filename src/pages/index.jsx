@@ -51,9 +51,6 @@ query BlogIndex {
       title
     }
   }
-  markdownRemark(frontmatter: {title: {eq: "MJ"}}) {
-    html
-  }
   allMarkdownRemark(
   sort: {frontmatter: {date: DESC}}
   filter: { fileAbsolutePath: { regex: "/contents/posts/" } }

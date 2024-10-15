@@ -17,7 +17,7 @@ module.exports = {
     link: "https://solved.ac/profile/mj043000",
   },
   useAbout: true,
-  utterances: {
+  giscus: {
     repo: "theminjunchoi/theminjunchoi.github.io",
     type: "pathname",
   },

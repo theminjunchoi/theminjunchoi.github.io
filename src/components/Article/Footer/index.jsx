@@ -163,9 +163,9 @@ const Comment = ({title}) => {
               id="comments"
               repo="theminjunchoi/theminjunchoi.github.io"
               repoId="R_kgDOLCr2fA"
-              category="General"
+              category="Comments"
               categoryId="DIC_kwDOLCr2fM4Ci46V"
-              mapping="title"
+              mapping="pathname"
               term={title}
               reactionsEnabled="1"
               emitMetadata="0"
@@ -179,9 +179,9 @@ const Comment = ({title}) => {
               id="comments"
               repo="theminjunchoi/theminjunchoi.github.io"
               repoId="R_kgDOLCr2fA"
-              category="General"
+              category="Comments"
               categoryId="DIC_kwDOLCr2fM4Ci46V"
-              mapping="title"
+              mapping="pathname"
               term={title}
               reactionsEnabled="1"
               emitMetadata="0"

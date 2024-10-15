@@ -50,9 +50,9 @@ const BlogIndex = ({ data }) => {
           <ArticleTitle>{aboutPost.frontmatter.title}</ArticleTitle>
         </Wrapper> */}
         <Article.Body html={aboutPost.html} hideToc />
-        <Wrapper>
+        {/* <Wrapper>
           <Divider />
-        </Wrapper>
+        </Wrapper> */}
       </Article>
     </Layout>
   )
