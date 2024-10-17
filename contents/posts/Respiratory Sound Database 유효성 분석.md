@@ -1,7 +1,7 @@
 ---
 title: Respiratory Sound Database 유효성 분석
 date: 2024-10-13 12:35:24
-updated: 2024-10-14 19:52:27
+updated: 2024-10-17 10:48:08
 tags:
   - research
   - 폐음연구
@@ -13,7 +13,7 @@ tags:
 2. **1번과의 연관성 유무에 상관없이, 질병과 폐음 사이에 연관성이 있는지**
 
 ## Respiratory Sound Database 
-본 데이터는 원본 dataset 중 일부이다. 
+본 데이터는 원본 dataset 중 일부이다. 아쉽지만 기존 데이터 중 어떤 근거로 이 부분만 골라왔는지에 대한 설명이 없다.
 
 ### 요약
 #### Contents 개요
@@ -61,4 +61,8 @@ iteration을 돌려도 Loss가 불규칙하게 튀는 이유가 뭔지 모르겠
 음성 데이터를 기반으로 질병을 식별하는 CNN 구현에 관한 코드. 식별이 잘되는 편, 정확도는 95%, loss는 0.2.
 ![[Accuracy and Loss about disease claaification.png]]
 ![[Result of Disease classification.png]]
-질병 종류 중 가장 많이 있는 상위 6개의 class에 한해서 학습 및 테스트함. 정확도도 높아서 추후 새로 생긴 데이터도 이 모델로 테스트를 해봐도 되지 않을까... 생각 중.
+질병 종류 중 가장 많이 있는 상위 6개의 class에 한해서 학습 및 테스트함. 오른쪽 자료를 보면, COPD를 제외한 다른 질병에 대한 학습 데이터 수가 너무나도 적어서 유의미한 데이터라고는 보기 힘들 것 같음. 
+
+## 생각해볼 것들
+COPD를 제외한 다른 질병에 대한 음성 파일이 너무 적은 것 같다. 본 데이터만으로 CNN 모델을 학습시키기에는 부적절하다고 생각이 들고, 원본 데이터셋에 질병별로 음성 파일이 골고루 있는지 확인해볼 필요가 있어보인다. 또 원본 데이터셋에 대한 [Benchmark](https://paperswithcode.com/dataset/icbhi-respiratory-sound-database)가 있는데 이것들에 대해 알아보는 것도 좋을 것 같다.
+
