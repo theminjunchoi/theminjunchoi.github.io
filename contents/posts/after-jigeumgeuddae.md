@@ -1,7 +1,8 @@
 ---
 title: 2022 ZeroPage 지금그때
 date: 2022-11-26 20:00:00
-updated: 2024-06-24 22:15:25
+updated: 2024-10-20 18:52:35
+publish: true
 tags:
   - club
 ---

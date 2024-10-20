@@ -1,8 +1,9 @@
 ---
 title: 2022년 상반기 회고
 date: 2022-09-05 12:30:00
-updated: 2024-07-20 20:34:11
+updated: 2024-10-20 18:52:12
 series: 기록과 방향성에 대한 회고
+publish: true
 tags:
   - 회고
   - club

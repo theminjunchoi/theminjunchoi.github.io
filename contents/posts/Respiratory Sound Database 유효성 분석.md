@@ -1,7 +1,8 @@
 ---
 title: Respiratory Sound Database 유효성 분석
 date: 2024-10-13 12:35:24
-updated: 2024-10-17 10:48:08
+updated: 2024-10-20 19:19:16
+publish: true
 tags:
   - research
   - 폐음연구

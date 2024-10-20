@@ -53,7 +53,8 @@ query BlogIndex {
   }
   allMarkdownRemark(
   sort: {frontmatter: {date: DESC}}
-  filter: { fileAbsolutePath: { regex: "/contents/posts/" } }
+  filter: {
+  frontmatter: {publish: {eq: true}}}
   ) {
     group(field: {frontmatter: {tags: SELECT}}) {
       fieldValue

@@ -112,6 +112,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     updated: Date @dateformat
     tags: [String!]
     series: String
+    publish: Boolean!
   }
   `
   createTypes(typeDefs)

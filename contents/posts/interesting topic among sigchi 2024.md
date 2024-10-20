@@ -1,7 +1,8 @@
 ---
 title: sigchi 2024 관심 주제
 date: 2024-09-07 12:35:24
-updated: 2024-10-13 22:45:00
+updated: 2024-10-20 18:52:31
+publish: true
 tags:
   - research
 ---
