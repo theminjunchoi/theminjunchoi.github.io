@@ -112,7 +112,10 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+    allMarkdownRemark(
+    sort: { fields: [frontmatter___date], order: DESC }
+    filter: {frontmatter: {publish: {eq: true}}}
+    ) {
       group(field: frontmatter___tags) {
         fieldValue
         totalCount

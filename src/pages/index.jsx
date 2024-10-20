@@ -53,8 +53,7 @@ query BlogIndex {
   }
   allMarkdownRemark(
   sort: {frontmatter: {date: DESC}}
-  filter: {
-  frontmatter: {publish: {eq: true}}}
+  filter: {frontmatter: {publish: {eq: true}}}
   ) {
     group(field: {frontmatter: {tags: SELECT}}) {
       fieldValue
