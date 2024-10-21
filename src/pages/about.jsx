@@ -69,7 +69,7 @@ export const pageQuery = graphql`
       }
     }
     allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/contents/posts/" } }
+      filter: {frontmatter: {publish: {eq: true}}}
     ) {
       totalCount
     }

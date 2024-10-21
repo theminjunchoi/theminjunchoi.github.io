@@ -2,7 +2,7 @@
 title: README
 date: 2024-01-01 22:38:31
 updated: 2024-10-20 18:52:24
-publish: true
+publish: false
 ---
 ## 😄 Introduction  
 Hi! I'm **Minjun Choi**, I constantly reflect on whether the services I create are solving problems effectively and making a positive impact on the community I belong to. With this mindset I strive to develop better solutions and become a developer who makes a meaningful contribution to society. You can check out my [blog](https://minjun.blog/)!
