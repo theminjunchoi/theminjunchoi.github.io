@@ -13,18 +13,18 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
+                "file": "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "우아한테크코스_7기_BE_프리코스_1주차_회고"
+              "title": "우아한테크코스_7기_BE_프리코스_2주차_회고"
             }
           }
         ]
       },
       {
-        "id": "4bd4dd26d8a8089e",
+        "id": "6e81488acd1ddae6",
         "type": "tabs",
         "children": [
           {
@@ -33,12 +33,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
+                "file": "posts/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "우아한테크코스_7기_BE_프리코스_2주차_회고"
+              "title": "우아한테크코스_7기_BE_프리코스_3주차_회고"
             }
           }
         ]
@@ -97,7 +97,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 348.5
+    "width": 660.5
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -186,8 +186,12 @@
   },
   "active": "abaa1b2dbb9f1211",
   "lastOpenFiles": [
-    "posts/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
+    "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_49.png",
+    "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_49 1.png",
+    "posts/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
+    "posts/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
+    "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_49 2.png",
     "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_46.png",
     "template/template.md",
     "posts/attachments/Pasted image 20241020194900.png",
@@ -199,10 +203,7 @@
     "posts/attachments/chest location.png",
     "posts/interesting topic among sigchi 2024.md",
     "posts/5-4. Virtual memory Part 2.md",
-    "posts/attachments/02 13.jpg",
-    "posts/attachments/01 13.jpg",
     "posts/5-3. Virtual memory Part 1.md",
-    "posts/attachments/09 3.jpg",
     "posts/5-2. Improving cache performance.md",
     "posts/5-1. Cache overview.md",
     "posts/4-6. Exceptions.md",
@@ -220,7 +221,6 @@
     "posts/after-jigeumgeuddae.md",
     "posts/nuxt-katex.md",
     "about/index.md",
-    "posts/retrospect-2022-2.md",
     "about",
     "template",
     "posts/attachments",
