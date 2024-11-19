@@ -208,7 +208,7 @@ const StyledMarkdown = styled.div`
   & figcaption {
     margin-top: 5px;
     text-align: center;
-    color: #868e96;
+    color: ${props => props.theme.colors.figcaption};
     font-size: 12px;
     font-style: italic;
   }

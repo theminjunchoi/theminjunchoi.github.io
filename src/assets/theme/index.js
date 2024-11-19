@@ -47,7 +47,8 @@ export const light = {
     blockQuoteBackground: GRAY1,
     textFieldBorder: GRAY4,
     textFieldActivatedBorder: GRAY5,
-    tableBackground: GRAY1,
+    tableBackground: "#FFFFFF",
+    figcaption: "#FFFFFF"
   },
 }
 
@@ -86,6 +87,7 @@ export const dark = {
     blockQuoteBackground: GRAY8,
     textFieldBorder: GRAY7,
     textFieldActivatedBorder: GRAY6,
-    tableBackground: "#292e33",
+    tableBackground: "#191919",
+    figcaption: "#191919"
   },
 }
