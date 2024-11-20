@@ -1,11 +1,11 @@
 ---
 title: Respiratory Sound Database 유효성 분석
 date: 2024-10-13 12:35:24
-updated: 2024-10-20 19:19:16
+updated: 2024-11-20 00:17:15
 publish: true
 tags:
-  - research
   - 폐음연구
+  - 학부연구생
 ---
 기존 [HCSLAB](https://sites.google.com/view/hcslab-cau/home?authuser=0) 폐음 연구팀에서 사용하던 데이터의 질이 좋지 않아 다른 폐음 데이터셋을 찾던 와중 [ICBHI Respiratory Sound Database (The Respiratory Sound database - ICBHI 2017 Challenge)](https://paperswithcode.com/dataset/icbhi-respiratory-sound-database)을 발견했다. 폐음 연구 분야에서는 유명한 데이터셋이고 [Kaggle](https://www.kaggle.com/datasets/swapnilpanda/respiratory-sound-location)에서도 여러 사람들이 활발히 분석을 해놓은 게 많아서 우리 연구에도 쓸 수 있을지 그 결과를 보고자 한다.
 

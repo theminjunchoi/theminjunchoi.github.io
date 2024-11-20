@@ -1,12 +1,12 @@
 ---
 title: sigchi 2024 관심 주제
 date: 2024-09-07 12:35:24
-updated: 2024-10-20 18:52:31
+updated: 2024-11-20 00:17:01
 publish: true
 tags:
-  - research
+  - 학부연구생
 ---
->[SIGCHI 2024](https://programs.sigchi.org/chi/2024)
+학>[SIGCHI 2024](https://programs.sigchi.org/chi/2024)
 ## [1. Touching the Moon: Leveraging Passive Haptics, Embodiment and Presence for Operational Assessments in Virtual Reality](https://programs.sigchi.org/chi/2024/program/content/147838)
 
 ### Intro 요약
