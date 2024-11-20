@@ -1,13 +1,14 @@
 ---
 title: "논문 요약 - SpiroSmart: Using a Microphone to Measure\rLung Function on a Mobile Phone"
 date: 2024-11-19 17:35:24
-updated: 2024-11-21 00:11:39
+updated: 2024-11-21 01:15:00
 publish: true
 tags:
   - 폐음연구
   - 논문리뷰
   - 학부연구생
 ---
+**[[mobile spirometry 관련 자료]]로 돌아가기**
 
 | 과제명  | SpiroSmart: Using a Microphone to Measure Lung Function on a Mobile |
 | ---- | ------------------------------------------------------------------- |
@@ -16,6 +17,7 @@ tags:
 
 ## 요약
 - SpiroSmart는 내장 마이크를 활용해 폐활량 측정을 수행하는 저가용 모바일 폰 애플리케이션
+- 데이터 변환 과정 아래 참고
 -  측정 파라미터
 	- FVC
 	- FEV1
@@ -36,7 +38,7 @@ tags:
 - 입에서 스마트폰 마이크까지의 거리에서 발생하는 압력 손실을 보정
 - 사용자의 머리 주변에서 발생하는 소리 반사와 회절 효과도 모델링.
 
-#### **(2) 방사 모델링(Inverse Radiation Modeling)**
+#### **(2) Inverse Radiation Modeling**
 - 소리의 전파를 구체적으로 모델링하기 위해 구형 장애물(spherical baffle)의 음향 전달 함수를 사용 (함수 내용은 논문 참고)
 - 이 모델은 시간 도메인에서 역변환하여 FIR 필터링을 통해 신호에 적용
 
@@ -59,14 +61,14 @@ SpiroSmart는 신호로부터 의미 있는 특징을 추출하기 위해 세 �
 - LPC를 사용하여 신호의 원천 파워와 음성 통로 필터(vocal tract filter)를 분리
 - 음성 통로 필터의 "소스 파워"는 폐에서 발생하는 흐름 속도의 근사값을 제공
 
-### **5. 머신 러닝 기반 회귀 모델**
+### **5. 머신 러닝 모델**
 
 #### **(1) 폐 기능 지표 회귀**
-- 추출된 특징(예: 외피, 공명, LPC 파워)을 사용하여 강제 폐활량(FVC), 1초 강제 호기량(FEV1), 최대 호기 속도(PEF)를 예측
-- 특징 값은 회귀 모델(배깅 결정 트리)을 통해 지표로 변환
+- 추출된 특징(예: 신호 Envelope, 공명, LPC)을 사용하여 강제 폐활량(FVC), 1초 강제 호기량(FEV1), 최대 호기 속도(PEF)를 예측
+- 특징 값은 모델(bagged decision tree)을 통해 지표로 변환
 
 #### **(2) 곡선 모양 회귀**
-- 폐 기능 곡선의 모양(예: Flow-Volume 곡선)을 예측하기 위해 조건부 랜덤 필드(CRF)를 사용
+- 폐 기능 곡선의 모양(예: Flow-Volume 곡선)을 예측하기 위해 CRF(Conditional Random Field를 사용
 - 곡선의 형상을 정규화한 후, 예측된 지표 값을 사용해 곡선을 스케일링
 
 ### **6. 결과 후처리**
