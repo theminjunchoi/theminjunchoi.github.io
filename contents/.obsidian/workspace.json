@@ -8,32 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "14782d8d8f1e47d5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/spirosmart.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "spirosmart"
-            }
-          },
-          {
-            "id": "0640a7e0d2be4aca",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.7.7"
-              },
-              "icon": "lucide-file",
-              "title": "Release Notes 1.7.7"
-            }
-          },
-          {
             "id": "f3e2f4eedb7b0eb6",
             "type": "leaf",
             "state": {
@@ -47,8 +21,27 @@
               "title": "스마트기기 내장 마이크기반 폐질환 진단기기 개발"
             }
           }
-        ],
-        "currentTab": 1
+        ]
+      },
+      {
+        "id": "c34b5820793409fc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "14782d8d8f1e47d5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "posts/spirosmart.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "spirosmart"
+            }
+          }
+        ]
       }
     ],
     "direction": "vertical"
@@ -104,8 +97,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 373.5,
-    "collapsed": true
+    "width": 373.5
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -192,10 +184,11 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "0640a7e0d2be4aca",
+  "active": "14782d8d8f1e47d5",
   "lastOpenFiles": [
     "posts/스마트기기 내장 마이크기반 폐질환 진단기기 개발.md",
     "posts/spirosmart.md",
+    "posts/attachments/Pasted image 20241120232901.png",
     "posts/retrospect-2024-1.md",
     "posts/Respiratory Sound Database 유효성 분석.md",
     "posts/readme.md",
@@ -216,7 +209,6 @@
     "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_49 2.png",
     "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_46.png",
     "template/template.md",
-    "posts/attachments/Pasted image 20241020194900.png",
     "posts/5-4. Virtual memory Part 2.md",
     "posts/5-3. Virtual memory Part 1.md",
     "posts/5-2. Improving cache performance.md",
@@ -229,7 +221,6 @@
     "posts/4-1. Processor Overview.md",
     "posts/3-3. Division.md",
     "posts/3-2. Multiplication.md",
-    "posts/3-1. Addition and Subtraction.md",
     "about",
     "template",
     "posts/attachments",
