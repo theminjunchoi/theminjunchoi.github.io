@@ -154,6 +154,7 @@ const StyledMarkdown = styled.div`
   & ul,
   & ol {
     padding-left: 25px;
+    margin-top: 5px;
   }
 
   & ol {
@@ -161,7 +162,8 @@ const StyledMarkdown = styled.div`
   }
 
   & ul {
-    list-style: disc;
+    margin-bottom: 30px;
+    list-style: square;
   }
 
   & ul ul {
@@ -169,7 +171,7 @@ const StyledMarkdown = styled.div`
   }
 
   & ul ul ul {
-    list-style: square;
+    list-style: disc;
   }
 
   & li {
