@@ -4,55 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "6e81488acd1ddae6",
+        "id": "a88c0d426031fb9b",
         "type": "tabs",
         "children": [
           {
-            "id": "f3e2f4eedb7b0eb6",
+            "id": "c678bc07833ad308",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/mobile spirometry 관련 자료.md",
+                "file": "posts/20241122_미팅내용정리.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "mobile spirometry 관련 자료"
-            }
-          }
-        ]
-      },
-      {
-        "id": "c34b5820793409fc",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "e2026727311f6393",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/스마트기기 내장 마이크기반 폐질환 진단기기 개발.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "스마트기기 내장 마이크기반 폐질환 진단기기 개발"
-            }
-          },
-          {
-            "id": "14782d8d8f1e47d5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/spirosmart.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "spirosmart"
+              "title": "20241122_미팅내용정리"
             }
           }
         ]
@@ -198,17 +164,19 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "f3e2f4eedb7b0eb6",
+  "active": "c678bc07833ad308",
   "lastOpenFiles": [
+    "무제 파일.canvas",
+    "posts/20241122_미팅내용정리.md",
+    "posts/spirosmart.md",
+    "posts/mobile spirometry 관련 자료.md",
+    "posts/스마트기기 내장 마이크기반 폐질환 진단기기 개발.md",
+    "posts/Respiratory Sound Database 유효성 분석.md",
     "posts/attachments/Pasted image 20241121013623.png",
     "posts/attachments/Pasted image 20241121012724.png",
     "posts/attachments/Pasted image 20241121012439.png",
-    "posts/스마트기기 내장 마이크기반 폐질환 진단기기 개발.md",
-    "posts/mobile spirometry 관련 자료.md",
-    "posts/spirosmart.md",
     "posts/attachments/Pasted image 20241120232901.png",
     "posts/retrospect-2024-1.md",
-    "posts/Respiratory Sound Database 유효성 분석.md",
     "posts/readme.md",
     "posts/interesting topic among sigchi 2024.md",
     "posts/after-jigeumgeuddae.md",
@@ -222,7 +190,6 @@
     "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_52.png",
     "posts/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
     "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_49.png",
-    "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_49 1.png",
     "template/template.md",
     "posts/5-4. Virtual memory Part 2.md",
     "posts/5-3. Virtual memory Part 1.md",
@@ -235,7 +202,6 @@
     "posts/4-2. Controlling a datapath.md",
     "posts/4-1. Processor Overview.md",
     "posts/3-3. Division.md",
-    "posts/3-2. Multiplication.md",
     "about",
     "template",
     "posts/attachments",

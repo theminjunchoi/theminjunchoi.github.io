@@ -1,5 +1,6 @@
 {
   "attachmentFolderPath": "posts/attachments",
   "alwaysUpdateLinks": true,
-  "showUnsupportedFiles": false
+  "showUnsupportedFiles": false,
+  "promptDelete": false
 }
