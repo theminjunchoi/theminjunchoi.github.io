@@ -1,7 +1,7 @@
 ---
 title: README
 date: 2024-01-01 22:38:31
-updated: 2024-11-20 00:17:11
+updated: 2024-12-03 00:09:03
 publish: false
 ---
 ## 😄 Introduction  
@@ -11,7 +11,8 @@ Hi! I'm **Minjun Choi**, I constantly reflect on whether the services I create a
 * [Software (Computer Science & Engineering)](https://cse.cau.ac.kr/main.php), Chung-Ang University (2021.03. ~ )
   
 ## 💻 Activity
-* CAU ZeroPage 31st Regular Member & 32nd vice-President (2022.03. ~ 2023.02.)
+* CAU ZeroPage 31st Regular Member (2021.03. ~ )
+* CAU ZeroPage 32nd vice-President (2022.03. ~ 2023.02.)
 * GDSC CAU 1st Member (2021.06. ~ 2022.07.)
 * GDG on Campus CAU 4th Core Member (2024.09. ~ )
 * CECOM Member (2024.09. ~ )

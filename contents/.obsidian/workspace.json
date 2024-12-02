@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/ZeroPage_지금그때_2024.md",
+                "file": "posts/readme.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ZeroPage_지금그때_2024"
+              "title": "readme"
             }
           }
         ],
@@ -181,9 +181,10 @@
   },
   "active": "5ef40851e2f7d6a5",
   "lastOpenFiles": [
-    "posts/attachments/Pasted image 20241202230437.png",
-    "posts/ZeroPage_지금그때_2022.md",
     "posts/ZeroPage_지금그때_2024.md",
+    "posts/attachments/Pasted image 20241203000143.png",
+    "posts/ZeroPage_지금그때_2022.md",
+    "posts/attachments/Pasted image 20241202230437.png",
     "posts/retrospect-2022-1.md",
     "posts/attachments/2022 지금그때.jpg",
     "posts/20241122_미팅내용정리.md",
@@ -205,8 +206,6 @@
     "posts/우아한테크코스_7기_BE_프리코스_4주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
-    "posts/attachments/Pasted image 20241111004043.png",
-    "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_52.png",
     "posts/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
     "template/template.md",
     "posts/5-4. Virtual memory Part 2.md",
