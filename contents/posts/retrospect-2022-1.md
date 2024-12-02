@@ -1,12 +1,13 @@
 ---
 title: 2022년 상반기 회고
 date: 2022-09-05 12:30:00
-updated: 2024-10-20 18:52:12
+updated: 2024-12-01 20:24:21
 series: 기록과 방향성에 대한 회고
 publish: true
 tags:
   - 회고
-  - club
+  - ZeroPage
+  - GDG
 ---
 
 *[기존 블로그](https://choiminjun.netlify.app/blog/retrospect-2022-1)에서 이전해온 글입니다.*

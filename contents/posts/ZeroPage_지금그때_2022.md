@@ -1,10 +1,10 @@
 ---
 title: 2022 ZeroPage 지금그때
 date: 2022-11-26 20:00:00
-updated: 2024-10-20 18:52:35
+updated: 2024-12-01 20:24:26
 publish: true
 tags:
-  - club
+  - ZeroPage
 ---
 
 *[기존 블로그](https://choiminjun.netlify.app/blog/after-jigeumgeuddae)에서 이전해온 글입니다.*
