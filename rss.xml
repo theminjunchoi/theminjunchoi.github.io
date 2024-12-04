@@ -1,4 +1,81 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 02 Dec 2024 15:40:20 GMT</lastBuildDate><item><title><![CDATA[README]]></title><description><![CDATA[😄 Introduction Hi! I'm Minjun Choi, I constantly reflect on whether the services I create are solving problems effectively and making a…]]></description><link>https://minjun.blog/readme/</link><guid isPermaLink="false">https://minjun.blog/readme/</guid><pubDate>Mon, 01 Jan 2024 22:38:31 GMT</pubDate><content:encoded>&lt;h2&gt;😄 Introduction&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 04 Dec 2024 13:28:59 GMT</lastBuildDate><item><title><![CDATA[폐음연구 - 폐기능검사 지침 요약]]></title><description><![CDATA[2016 폐기능검사 지침 연구 간에 소프트웨어적으로 구현할 사항들 중 기존 지침에서 반영할 수 있는 내용을 알고자 2016년에 대한결액 및 호흡기학회에서 발간된 폐기능검사 지침을 참고하고자 한다. 검사 적합성  오류가 없는 적합한 검사가…]]></description><link>https://minjun.blog/폐기능검사_지침_요약/</link><guid isPermaLink="false">https://minjun.blog/폐기능검사_지침_요약/</guid><pubDate>Wed, 04 Dec 2024 12:35:24 GMT</pubDate><content:encoded>&lt;h2&gt;2016 폐기능검사 지침&lt;/h2&gt;
+&lt;p&gt;연구 간에 소프트웨어적으로 구현할 사항들 중 기존 지침에서 반영할 수 있는 내용을 알고자 2016년에 대한결액 및 호흡기학회에서 발간된 폐기능검사 지침을 참고하고자 한다.&lt;/p&gt;
+&lt;h2&gt;검사 적합성&lt;/h2&gt;
+&lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/1500fa932bc53d77a25220ed3f78c629/5f301/Pasted%20image%2020241204203703.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 58.235294117647065%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAA7DAAAOwwHHb6hkAAABdElEQVR42o1T2Y6DMAzk/39stY/dt1VPCuEO903B63GbqqWVupGsJB7P2CbGyvOckiShLMtIa02az2mq5Z7yHRgsjmPBoyiiMAzlHoURJbwDh68sS7J832eBVARgINj2WYLOvPt+QEHAxnHAPd49z6P4QRg4fEVRkPX1vblWw6Ko4Hg80W53YkJM2+2RXFcJCQLAsfsQhM9Ux4IorCy4QvusqGkaquv6VmFM+70t2ZUbMEFLZnwatIQzkmOHwZfxHb62bcmi1SpyJjO4LMuTfxxHsU/LWtaCnLGqyjvZ4B1nR8t931HXtWzdS1IRfLwMwyCC6rCn380PzTdFENFyXdUSN8+z2EdBIWYphQ6/Mn/oeZnvGCqCmbh3YteWb6AJuBIbmqbn74Xq/yW4dgx9z8ReXh1tmTVNkwhWVSXTgBd92zKeHkEws2QUmHS5XF4qWmMvgq7jkuM4pJSSWTJ/jZlLvGzNycwswnAGLjOpU/HhR4DvD6q/nwTdXvprAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Pasted image 20241204203703.png&apos; title=&apos;&apos; src=&apos;/static/1500fa932bc53d77a25220ed3f78c629/ca1dc/Pasted%20image%2020241204203703.png&apos; srcset=&apos;/static/1500fa932bc53d77a25220ed3f78c629/e7570/Pasted%20image%2020241204203703.png 170w,
+/static/1500fa932bc53d77a25220ed3f78c629/f46e7/Pasted%20image%2020241204203703.png 340w,
+/static/1500fa932bc53d77a25220ed3f78c629/ca1dc/Pasted%20image%2020241204203703.png 680w,
+/static/1500fa932bc53d77a25220ed3f78c629/02d09/Pasted%20image%2020241204203703.png 1020w,
+/static/1500fa932bc53d77a25220ed3f78c629/5f301/Pasted%20image%2020241204203703.png 1146w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Pasted image 20241204203703.png&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;오류가 없는 적합한 검사가 3회 이상 나올 때까지 검사를 반복&lt;/li&gt;
+&lt;li&gt;기류-용적과 용적-시간 곡선을 보고 적합성 판정&lt;/li&gt;
+&lt;li&gt;가장 높은 FVC와 FEV1을 결정하고 이 두 합이 최대인 결과를 선정&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1. 검사 시작: 추정용적의 산출&lt;/h3&gt;
+&lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 395px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/34f71bd456a7fa001df249fb7924d52c/50f4b/Pasted%20image%2020241204204230.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 68.82352941176471%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAOCAYAAAAvxDzwAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABTklEQVR42o1T2W6EMAzM//8cb/tEqYACyw3hPr0eS1FbLcdaMkqwNR6PHUVs4zhSFEXUdR2utO87Xdk8z7RvGzVa07Is/2IKn42DwzBQVVW3gIght20b0nX9FleGoee6lGXZLeC6rlL4CEwAkYAW+r7/iKHmNvM8R9IxIBKSJKGYXRIvAFE4DAJheWaqLEuK41gY4nwEaO4o3OjmsqiCbgFXRbtXGqJg/IxvJVFFUVCaprIyRwzNOU1S6rue7kymPE2TtHOmoYl/YjJlDKbmlsEUi2ocQGAOSbB7V2ZIKLB6PB68V5qe/Fpw//F9cZd389txyGE34G3bvvnfYtIyfniuR7ZtU80LO/CiIxEg8DAIyfM8GRo6wj+sEBxnn2NGEmWozhzAgJAE6xjwiwtEYSivyLIsYXo0tLqqmYj+ZXimCXQEI5whBTowgzsbygsvy0avaLlJoAAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Pasted image 20241204204230.png&apos; title=&apos;&apos; src=&apos;/static/34f71bd456a7fa001df249fb7924d52c/50f4b/Pasted%20image%2020241204204230.png&apos; srcset=&apos;/static/34f71bd456a7fa001df249fb7924d52c/e7570/Pasted%20image%2020241204204230.png 170w,
+/static/34f71bd456a7fa001df249fb7924d52c/f46e7/Pasted%20image%2020241204204230.png 340w,
+/static/34f71bd456a7fa001df249fb7924d52c/50f4b/Pasted%20image%2020241204204230.png 395w&apos; sizes=&apos;(max-width: 395px) 100vw, 395px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Pasted image 20241204204230.png&lt;/figcaption&gt;
+  &lt;/figure&gt;
+추적용적법을 통해 검사 시작 시간을 추정한다. 용적-시간 곡선에서 가장 기울기가 높은 곳에 접선을 그었을 때, 그 접선의 x절편이 검사 시작시간이 된다. 이때 EV값 (추정용적, back extrapolated volume)은 FVC의 5%와 150ml 중에 큰 수치보다 작아야한다.&lt;/p&gt;
+&lt;h3&gt;2. 검사 과정&lt;/h3&gt;
+&lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 585px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/6ffd6b8f930bef85890cab14ac25d2f8/51d84/Pasted%20image%2020241204211754.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 60%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAA7DAAAOwwHHb6hkAAABaElEQVR42n2TC4+CMBCE+f8/UaPo0fIQefgWQdZ+myzx4HKblJbtdmY6bSMJ8Xq9JM9zGYaBXxnHURvRNI3c7/dFnlxd14t8xOdyuch+v5e2baXv+18Fm81GG/F+v7URgO12O3k8Hn8DFkWhxRTaJMqTJJGu6+R0Ok2gRFVVcjwe5Xw+T/UT4PP5lMPhoAAUoZTAAqxgnp45WwwQ5AAzNqLIPMCTsizler2qInIUQYKPLKaGHHOQUQsgOzT/o7mpBL6gah4GAsl3vWEsAC15u910Ie0bGCAUZVk25U3xv4BsDU/p7eQJeuecApNH8XxtZF7NFbrEKSAHYfcNVavVSj2D0A5vofDbByOAnasCuBXbPICAz4UoIEzr9VoZszRVNd47PfEqjIu8UJVZmkkT/hlzhdpw8loTPGWMr03dSFSHRBzHsg2vwTuvC51LdJz6VC+8917i7VbSQPgTXhTq8NMau8HXoe/lAye8pAD+H03zAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Pasted image 20241204211754.png&apos; title=&apos;&apos; src=&apos;/static/6ffd6b8f930bef85890cab14ac25d2f8/51d84/Pasted%20image%2020241204211754.png&apos; srcset=&apos;/static/6ffd6b8f930bef85890cab14ac25d2f8/e7570/Pasted%20image%2020241204211754.png 170w,
+/static/6ffd6b8f930bef85890cab14ac25d2f8/f46e7/Pasted%20image%2020241204211754.png 340w,
+/static/6ffd6b8f930bef85890cab14ac25d2f8/51d84/Pasted%20image%2020241204211754.png 585w&apos; sizes=&apos;(max-width: 585px) 100vw, 585px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Pasted image 20241204211754.png&lt;/figcaption&gt;
+  &lt;/figure&gt;
+검사 대상자는 최대 흡기 상태에서 시작해야하고, 부드럽고 지속적인 호기를 해야한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;조급함, 거짓시작, 최고오기기류속도 도달 시간이 120msec을 초과 시 재검&lt;/li&gt;
+&lt;li&gt;기침, 성대 폐쇄시 재검&lt;/li&gt;
+&lt;li&gt;호기의 조기 중단 또는 종료 없음: 용적-시간 곡선의 정상 부위를 보고 마지막 호기 최소 1초 동안 또는 적합한 호기 시간 후 용적 변화가 없으면 종료 시점으로 간주, 젊은 정산인의 경우 6초 이내에 끝날 수도 있음. 고령이나 폐쇄적 폐질환자는 6초보다 긴 호기가 여러번 나타날 수도 있는데, 이 경우는 검사자가 보고 더 이상 호기 불가능한 시점을 종료로 간주&lt;/li&gt;
+&lt;li&gt;기류가 새지 않음: 마우스피스 밖으로 새면 안됨&lt;/li&gt;
+&lt;li&gt;검사 도중 흡기가 있으면 안됨&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. 검사 종료&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;용적-시간 곡선에서 1초 이상 용적 변화가 없는 상태(25mL 미만 변화)를 유지해야함.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;검사 재현성&lt;/h3&gt;
+&lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 576px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/ed5b6e35716ec627e6630a33903cf9f9/694da/Pasted%20image%2020241204212429.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 97.05882352941177%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAA7DAAAOwwHHb6hkAAACiUlEQVR42o1UiVLbMBDN//9UO7Sl0HSAAAnkdGzsyJdsy1fsxPbrrkIgoeHQzI6klbTa473t4WDUdY35ZIzSs7GJPJS+A3f+CGcyxNPjHcT0AZvYRy0F8tBD07R4O3r7xXazgVgJFFmGUkVaikRCSR9S2JCugyRwd2ekLzOFruv+N7hXxnGMIAiQkUGVpkeXWLder/GV8eKhlBJ5nsN3XShhQbk2jNEtXGOCxXCg1zaFHJhzlIFARp637TshN02DKIq0Yl0UqOIAqefAHA/hLWcQxhTWeIT5/QDSMVGGLvIoIIPd+waVUqiqShem3m6PLrG+LEs9fylkNliWBYVcwKOQg5VNBYmRJ5EWYZmQnqCCJHpfUUHqMj9dlFeDpQ5BRRKJvcD46gLG3RVuz88wvfmDUf8cg1/fMRv0EZlTneOm/QA2XBA2DPq0pbnrWvqA9qSo6woZVZ7Twns+P1WQYxxS3lJ6FIYhkiQ5usT6PWw4zL18aFAzhcDtixVSxyCGPOgwZ4O/mF73dQrGV5fwiDmFZyH5LORXxlCVc6UZwcxIJUGIMOc7FpzlHOs0ofMUVZ59XJQXoV/b54vdAVMKwueWc/ys5wK+facNcu6Y6KU8FBcRAZjDYhGLCUJ7CUVgj1aWPltHx2+y0Nce95gZTewCKtDSJT5igsXw4gcWBJHZ9aWW+U1f6+5/n2Hw8xvkcrK7z+/SEDl1KPa0x10mJ26yVyxFKCDJm1cxED4ZCKwFzQs9++ZMr/nu/l1KdNQe7nNyKG9Hzvw+QbtT73qnsFSoGAWRn/teSrkxp2MI06AIvV2f5LNMfY5DPFc3I7hUgaO7dkzhmtS6nMkIIXUe7thVsCKj4clo/gF43rZdQNahegAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;Pasted image 20241204212429.png&apos; title=&apos;&apos; src=&apos;/static/ed5b6e35716ec627e6630a33903cf9f9/694da/Pasted%20image%2020241204212429.png&apos; srcset=&apos;/static/ed5b6e35716ec627e6630a33903cf9f9/e7570/Pasted%20image%2020241204212429.png 170w,
+/static/ed5b6e35716ec627e6630a33903cf9f9/f46e7/Pasted%20image%2020241204212429.png 340w,
+/static/ed5b6e35716ec627e6630a33903cf9f9/694da/Pasted%20image%2020241204212429.png 576w&apos; sizes=&apos;(max-width: 576px) 100vw, 576px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;Pasted image 20241204212429.png&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;가장 높은 2개 FVC 수치들의 차이가 5%이내 또는 150 mL 이내여야 함.&lt;/li&gt;
+&lt;li&gt;FVC가 1.0 L 미만인 경우에는, 가장 높은 2개 수치들의 차이가 100 mL 이내여야 함.&lt;/li&gt;
+&lt;li&gt;가장 높은 2개 FEV1 수치들의 차이도 150 mL 이내이어야 함.&lt;/li&gt;
+&lt;li&gt;가장 높은 FVC와 FEV1 은 각기 다른 검사 결과에서 얻을 수 있음&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;3개의 검사들이 재현성 기준에 안맞으면 최대 8번까지 검사를 반복한다. 검사를 하지 않기를 원하거나, 더 좋은 결과를 얻지 못할 것 같으면 가장 나은 검사 3개를 택한다.
+반복 검사 중에 FVC와 FEV1이 점점 감소하는 경우가 있는데 최초 검사치보다 20%이상 감소하는 경우 검사를 중단해야한다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[README]]></title><description><![CDATA[😄 Introduction Hi! I'm Minjun Choi, I constantly reflect on whether the services I create are solving problems effectively and making a…]]></description><link>https://minjun.blog/readme/</link><guid isPermaLink="false">https://minjun.blog/readme/</guid><pubDate>Mon, 01 Jan 2024 22:38:31 GMT</pubDate><content:encoded>&lt;h2&gt;😄 Introduction&lt;/h2&gt;
 &lt;p&gt;Hi! I&apos;m &lt;strong&gt;Minjun Choi&lt;/strong&gt;, I constantly reflect on whether the services I create are solving problems effectively and making a positive impact on the community I belong to. With this mindset I strive to develop better solutions and become a developer who makes a meaningful contribution to society. You can check out my &lt;a href=&quot;https://minjun.blog/&quot;&gt;blog&lt;/a&gt;!&lt;/p&gt;
 &lt;h2&gt;✏️ Education&lt;/h2&gt;
 &lt;ul&gt;
