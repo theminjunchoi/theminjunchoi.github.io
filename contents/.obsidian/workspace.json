@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/readme.md",
+                "file": "posts/폐기능검사_지침_요약.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "readme"
+              "title": "폐기능검사_지침_요약"
             }
           }
         ],
@@ -181,6 +181,12 @@
   },
   "active": "5ef40851e2f7d6a5",
   "lastOpenFiles": [
+    "posts/attachments/Pasted image 20241204212429.png",
+    "posts/attachments/Pasted image 20241204211754.png",
+    "posts/attachments/Pasted image 20241204204230.png",
+    "posts/attachments/Pasted image 20241204203703.png",
+    "posts/readme.md",
+    "posts/폐기능검사_지침_요약.md",
     "posts/ZeroPage_지금그때_2024.md",
     "posts/attachments/Pasted image 20241203000143.png",
     "posts/ZeroPage_지금그때_2022.md",
@@ -198,11 +204,7 @@
     "posts/attachments/Pasted image 20241121012439.png",
     "posts/attachments/Pasted image 20241120232901.png",
     "posts/retrospect-2024-1.md",
-    "posts/readme.md",
     "posts/interesting topic among sigchi 2024.md",
-    "posts/attachments/Pasted image 20241119223351.png",
-    "posts/attachments/Pasted image 20241119221206.png",
-    "posts/attachments/Pasted image 20241119221121.png",
     "posts/우아한테크코스_7기_BE_프리코스_4주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
@@ -216,7 +218,6 @@
     "posts/4-5. Handling hazards.md",
     "posts/4-4. Pipelining overview.md",
     "posts/4-3. A single-cycle datapath.md",
-    "posts/4-2. Controlling a datapath.md",
     "about",
     "template",
     "posts/attachments",
