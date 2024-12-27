@@ -162,7 +162,7 @@ const StyledMarkdown = styled.div`
   }
 
   & ul {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     list-style: square;
   }
 

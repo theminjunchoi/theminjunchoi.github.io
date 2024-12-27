@@ -4,39 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "0b9f61f14e1b6a8b",
+        "id": "4fc534730ad5bbfd",
         "type": "tabs",
         "children": [
           {
-            "id": "87b52b834c5b91ff",
+            "id": "ef87b1f3ea84dc9b",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/ZeroPage_지금그때_2022.md",
+                "file": "posts/20241220_분당서울대병원_참관.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ZeroPage_지금그때_2022"
-            }
-          },
-          {
-            "id": "5ef40851e2f7d6a5",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/폐기능검사_지침_요약.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "폐기능검사_지침_요약"
+              "title": "20241220_분당서울대병원_참관"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -169,6 +154,8 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "omnisearch:Omnisearch": false,
+      "templater-obsidian:Templater": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -177,45 +164,47 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "5ef40851e2f7d6a5",
+  "active": "ef87b1f3ea84dc9b",
   "lastOpenFiles": [
+    "posts/attachments/민준_검사수치.jpg",
+    "posts/attachments/민준_검사결과.jpg",
+    "posts/20241220_분당서울대병원_참관.md",
+    "posts/5-4. Virtual memory Part 2.md",
+    "posts/20241122_미팅내용정리.md",
+    "posts/attachments/민준_검사수치.heic",
+    "template/template.md",
+    "posts/ZeroPage_지금그때_2022.md",
+    "Untitled.md",
+    "template",
+    "posts/template",
+    "posts/폐기능검사_지침_요약.md",
     "posts/attachments/Pasted image 20241204212429.png",
     "posts/attachments/Pasted image 20241204211754.png",
     "posts/attachments/Pasted image 20241204204230.png",
     "posts/attachments/Pasted image 20241204203703.png",
     "posts/readme.md",
-    "posts/폐기능검사_지침_요약.md",
     "posts/ZeroPage_지금그때_2024.md",
     "posts/attachments/Pasted image 20241203000143.png",
-    "posts/ZeroPage_지금그때_2022.md",
     "posts/attachments/Pasted image 20241202230437.png",
     "posts/retrospect-2022-1.md",
     "posts/attachments/2022 지금그때.jpg",
-    "posts/20241122_미팅내용정리.md",
     "무제 파일.canvas",
     "posts/spirosmart.md",
     "posts/mobile spirometry 관련 자료.md",
     "posts/스마트기기 내장 마이크기반 폐질환 진단기기 개발.md",
     "posts/Respiratory Sound Database 유효성 분석.md",
     "posts/attachments/Pasted image 20241121013623.png",
-    "posts/attachments/Pasted image 20241121012724.png",
-    "posts/attachments/Pasted image 20241121012439.png",
-    "posts/attachments/Pasted image 20241120232901.png",
     "posts/retrospect-2024-1.md",
     "posts/interesting topic among sigchi 2024.md",
     "posts/우아한테크코스_7기_BE_프리코스_4주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
-    "template/template.md",
-    "posts/5-4. Virtual memory Part 2.md",
     "posts/5-3. Virtual memory Part 1.md",
     "posts/5-2. Improving cache performance.md",
     "posts/5-1. Cache overview.md",
     "posts/4-6. Exceptions.md",
     "posts/4-5. Handling hazards.md",
-    "posts/4-4. Pipelining overview.md",
-    "posts/4-3. A single-cycle datapath.md",
     "about",
     "template",
     "posts/attachments",

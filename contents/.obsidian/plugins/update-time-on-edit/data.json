@@ -8,7 +8,6 @@
   "ignoreCreatedFolder": [],
   "enableExperimentalHash": false,
   "fileHashMap": {
-    "template/template.md": "c4727000eb4b8a38a683160bad391658e1b19ce5255dd012d5e06ee7dc7b615b",
     "posts/retrospect-2023.md": "205df464ecb27cbeba164db25707aebfe7f0470c39a929beb35795296ee182ec",
     "posts/why-obsidian.md": "99ac4b8f98eb71599d5df346e3f103a95c0c777d366e6993bf35b7f7144cfd19",
     "posts/retrospect-2022-1.md": "0e7ad6a3d48decc4ae4ec6ce1b601ff30837107909bbda72dda9e0345e58ecbc",
@@ -48,9 +47,11 @@
     "posts/스마트기기 내장 마이크기반 폐질환 진단기기 개발.md": "71ba05fccbfd374910a1bc31ecb91793448cb6b8759f2f8dd16d2b730f74c312",
     "posts/mobile spirometry 관련 자료.md": "182fd6488af2c030e7f04aebc5d934efdba6ece7f3e5e3adc44d8b6ff0e249c0",
     "posts/spirosmart.md": "7ae5b72f67368cbb8781fd517933e7fc59210e5b41fa6f627a487438242755c7",
-    "posts/20241122_미팅내용정리.md": "e15417e9417e6b30e57269d6004dfedfb59990f52660bce2f2ec7b12dc9c23f8",
+    "posts/20241122_미팅내용정리.md": "ce8b7a6dd0b0a5a52bad89d5d7557a11363f4f1dcb1f00d378d8b9bfbf94ab54",
     "posts/ZeroPage_지금그때_2022.md": "a34dd4d1076ce8427c9bf55b232058c5f114aa769b7554d29e90f391558895a2",
     "posts/ZeroPage_지금그때_2024.md": "6a3bcb384be267d3befff6f57d04c7624728f98f16be5a45e20f5ae76734d94d",
-    "posts/폐기능검사_지침_요약.md": "e87a2c1e376e2a03df11f2c7dc6fb0d14ea713d1250f8ecf8797c6b77e454978"
+    "posts/폐기능검사_지침_요약.md": "1870068c3b521e21635708ca22d7ca1205c28a5650f6617c646eeab6a1e850e8",
+    "template/template.md": "09fd53b31f52e74f81e8dd911c2edf6993d06f2dfc683b3387b50700de86ff04",
+    "posts/20241220_분당서울대병원_참관.md": "e5f5137f304ab0d5aada13040118abc8591be29b3117dfdc5eaac4dcf700bae2"
   }
 }
