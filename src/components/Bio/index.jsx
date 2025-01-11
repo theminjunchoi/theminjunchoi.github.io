@@ -38,7 +38,7 @@ const profileImageRoot =
 
 const Profile = styled.div`
   flex: 0 0 auto;
-  margin-right: 16px;
+  margin-right: 30px;
   width: 128px;
   height: 128px;
   border-radius: 999px;

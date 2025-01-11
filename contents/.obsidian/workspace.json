@@ -27,15 +27,16 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/retrospect-2024-1.md",
+                "file": "posts/retrospect-2024-2.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "retrospect-2024-1"
+              "title": "retrospect-2024-2"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -178,15 +179,15 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "904529e54d4cf79c",
+  "active": "4af7db8d9a624572",
   "lastOpenFiles": [
+    "posts/retrospect-2024-1.md",
+    "posts/retrospect-2023.md",
     "posts/attachments/Pasted image 20241229004038.png",
     "posts/attachments/Pasted image 20241229001718.png",
     "posts/attachments/Pasted image 20241202230437.png",
     "posts/attachments/스크린샷 2024-12-29 오전 12.40.35.png",
     "posts/retrospect-2024-2.md",
-    "posts/retrospect-2023.md",
-    "posts/retrospect-2024-1.md",
     "posts/우아한테크코스_7기_BE_프리코스_4주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
     "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
@@ -212,7 +213,6 @@
     "posts/attachments/Pasted image 20241204203703.png",
     "posts/readme.md",
     "posts/ZeroPage_지금그때_2024.md",
-    "posts/attachments/Pasted image 20241203000143.png",
     "무제 파일.canvas",
     "posts/spirosmart.md",
     "posts/mobile spirometry 관련 자료.md",
