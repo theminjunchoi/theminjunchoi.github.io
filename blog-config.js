@@ -14,7 +14,7 @@ module.exports = {
     // blogger: "https://blogger.com",
     email: "mailto:mj043000@naver.com",
     // resume: "https://theminjunchoi.github.io/",
-    link: "https://solved.ac/profile/mj043000",
+    // link: "https://solved.ac/profile/mj043000",
   },
   useAbout: true,
   giscus: {
