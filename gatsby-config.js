@@ -1,14 +1,18 @@
 const blogConfig = require("./blog-config")
-const { title, description, author, siteUrl } = blogConfig
+const { title, description, author, info, siteUrl } = blogConfig
+const metaConfig = require('./gatsby-meta-config');
 
 module.exports = {
   pathPrefix: "/minjun.blog",
-  siteMetadata: {
-    title,
-    description,
-    author,
-    siteUrl: 'https://minjun.blog',
-  },
+  // siteMetadata: {
+  //   title,
+  //   description,
+  //   author,
+  //   info,
+  //   siteUrl: 'https://minjun.blog',
+  // },
+  siteMetadata: metaConfig,
+
   plugins: [
 	  `gatsby-plugin-cname`,
     {
@@ -143,6 +147,7 @@ module.exports = {
     },
     `gatsby-plugin-resolve-src`,
     `gatsby-plugin-sitemap`,
+    `gatsby-plugin-sass`,
     {
       resolve: `gatsby-plugin-feed`,
       options: {

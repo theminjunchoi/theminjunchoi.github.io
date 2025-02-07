@@ -8,6 +8,7 @@ import VerticalSpace from "components/VerticalSpace"
 import Article from "components/Article"
 import Comment from "components/Article/Footer/Comment"
 import Tab from "components/Tab"
+import Info from "components/Info"
 
 import NotFoundPage from "pages/404"
 
@@ -35,15 +36,17 @@ const Wrapper = styled.div`
 const BlogIndex = ({ data }) => {
   const aboutPost = data.markdownRemark
   const postsCount = data.allMarkdownRemark.totalCount
- 
+  const { author, language } = data.site.siteMetadata;
+
 
   if (!useAbout) return <NotFoundPage />
 
   return (
     <Layout>
       <SEO title={title} description={description} url={siteUrl} />
-      <VerticalSpace size={48} />
-      <Bio />
+      {/* <VerticalSpace size={48} /> */}
+      {/* <Bio /> */}
+      <Info author={author} language={language} />
       <Tab postsCount={postsCount} activeTab="about" />
       <Article>
         {/* <Wrapper>
@@ -61,6 +64,7 @@ const BlogIndex = ({ data }) => {
 export default BlogIndex
 
 export const pageQuery = graphql`
+
   query {
     markdownRemark(frontmatter: {title: {eq: "README"}}) {
       html
@@ -72,6 +76,25 @@ export const pageQuery = graphql`
       filter: {frontmatter: {publish: {eq: true}}}
     ) {
       totalCount
+    }
+    site {
+      siteMetadata {
+        title
+        language
+        author {
+          name
+          bio {
+            role
+            description
+            thumbnail
+          }
+          social {
+            github
+            linkedIn
+            email
+          }
+        }
+      }
     }
   }
 `

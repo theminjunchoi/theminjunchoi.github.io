@@ -8,6 +8,7 @@ import Bio from "components/Bio"
 import PostList from "components/PostList"
 import SideTagList from "components/SideTagList"
 import Divider from "components/Divider"
+import Info from "components/Info"
 import VerticalSpace from "components/VerticalSpace"
 import Tab from "components/Tab"
 
@@ -16,7 +17,7 @@ import { title, description, siteUrl } from "../../blog-config"
 const BlogIndex = ({ data }) => {
   const posts = data.allMarkdownRemark.nodes
   const tags = _.sortBy(data.allMarkdownRemark.group, ["totalCount"]).reverse()
-
+  const { author, language } = data.site.siteMetadata;
 
   if (posts.length === 0) {
     return (
@@ -32,8 +33,9 @@ const BlogIndex = ({ data }) => {
 
     <Layout>
       <SEO title={title} description={description} url={siteUrl} />
-      <VerticalSpace size={48} />
-      <Bio />
+      {/* <VerticalSpace size={48} /> */}
+      <Info author={author} language={language} />
+      {/* <Bio author={author} language={language}/> */}
       <Tab postsCount={posts.length} activeTab="posts" />
       {/* <Divider /> */}
       <SideTagList tags={tags} postCount={posts.length} />
@@ -49,8 +51,23 @@ query BlogIndex {
   site {
     siteMetadata {
       title
+      language
+      author {
+        name
+        bio {
+          role
+          description
+          thumbnail
+        }
+        social {
+          github
+          linkedIn
+          email
+        }
+      }
     }
   }
+    
   allMarkdownRemark(
   sort: {frontmatter: {date: DESC}}
   filter: {frontmatter: {publish: {eq: true}}}
