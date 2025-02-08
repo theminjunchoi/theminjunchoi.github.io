@@ -5,7 +5,7 @@ import { Link } from "gatsby"
 
 import Divider from "components/Divider"
 
-import { useAbout } from "../../../blog-config"
+import { useAbout } from "../../../gatsby-meta-config"
 
 const TabWrapper = styled.div`
   display: flex;

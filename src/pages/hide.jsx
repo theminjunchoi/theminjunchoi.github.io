@@ -11,7 +11,7 @@ import Divider from "components/Divider"
 import VerticalSpace from "components/VerticalSpace"
 import Tab from "components/Tab"
 
-import { title, description, siteUrl } from "../../blog-config"
+import { title, description, siteUrl } from "../../gatsby-meta-config"
 
 const BlogIndex = ({ data }) => {
   const posts = data.allMarkdownRemark.nodes

@@ -5,7 +5,7 @@ import { graphql } from "gatsby"
 import Layout from "components/Layout"
 import Article from "components/Article"
 
-import { siteUrl } from "../../blog-config"
+import { siteUrl } from "../../gatsby-meta-config"
 
 const Post = ({ data }) => {
   const post = data.markdownRemark

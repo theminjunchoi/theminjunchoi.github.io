@@ -19,7 +19,7 @@ import {
   FaLink,
 } from "react-icons/fa6"
 
-import { siteUrl, description, author, links } from "../../../blog-config"
+import { siteUrl, description, writer, links } from "../../../gatsby-meta-config"
 
 
 const BioWrapper = styled.div`
@@ -110,9 +110,9 @@ const Bio = () => {
   return (
     <BioWrapper id="bio">
       <Profile />
-      
+    
       <div>
-        <Author>@{author}</Author>
+        <Author>@{writer}</Author>
         <Description>{description}</Description>
         <LinksWrapper>
           <Link link={github}>

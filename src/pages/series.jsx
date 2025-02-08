@@ -11,7 +11,7 @@ import SeriesList from "components/SeriesList"
 import VerticleSpace from "components/VerticalSpace"
 import NoContent from "components/NoContent"
 
-import { title, description, siteUrl } from "../../blog-config"
+import { title, description, siteUrl } from "../../gatsby-meta-config"
 
 const TagListWrapper = styled.div`
   margin-top: 20px;

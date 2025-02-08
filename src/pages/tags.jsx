@@ -14,7 +14,7 @@ import TagList from "components/TagList"
 import PostList from "components/PostList"
 import VerticleSpace from "components/VerticalSpace"
 
-import { title, description, siteUrl } from "../../blog-config"
+import { title, description, siteUrl } from "../../gatsby-meta-config"
 
 const TagListWrapper = styled.div`
   margin-top: 20px;

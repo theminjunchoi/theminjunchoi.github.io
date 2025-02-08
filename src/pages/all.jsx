@@ -8,7 +8,7 @@ import SEO from "components/SEO"
 import PostList from "components/PostList"
 import VerticalSpace from "components/VerticalSpace"
 
-import { title, description, siteUrl } from "../../blog-config"
+import { title, description, siteUrl } from "../../gatsby-meta-config"
 
 const PostsCount = styled.p`
     margin-bottom: 25.6px;

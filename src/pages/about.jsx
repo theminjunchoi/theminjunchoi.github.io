@@ -14,7 +14,7 @@ import NotFoundPage from "pages/404"
 
 import styled from "styled-components"
 
-import { title, description, siteUrl, useAbout } from "../../blog-config"
+import { title, description, siteUrl, useAbout } from "../../gatsby-meta-config"
 import Divider from "components/Divider"
 
 
@@ -88,11 +88,11 @@ export const pageQuery = graphql`
             description
             thumbnail
           }
-          social {
-            github
-            linkedIn
-            email
-          }
+        }
+        links {
+          github
+          linkedIn
+          email
         }
       }
     }

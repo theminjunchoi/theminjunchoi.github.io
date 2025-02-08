@@ -4,7 +4,7 @@ import styled from "styled-components"
 import Layout from "components/Layout"
 import SEO from "components/SEO"
 
-import { title, description, siteUrl } from "../../blog-config"
+import { title, description, siteUrl } from "../../gatsby-meta-config"
 
 const NotFound = styled.div`
   height: 800px;

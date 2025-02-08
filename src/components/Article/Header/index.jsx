@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import { author } from "../../../../blog-config"
+import { writer } from "../../../../gatsby-meta-config"
 
 import Divider from "components/Divider"
 import TagList from "components/TagList"
@@ -52,7 +52,7 @@ const Header = ({ title, date, tags, minToRead, updated }) => {
       <ArticleTitle> {title} </ArticleTitle>
       <Information>
         <div>
-          <Author> @{author} </Author>
+          <Author> @{writer} </Author>
           <Date>· {minToRead} min read </Date>
         </div>
         

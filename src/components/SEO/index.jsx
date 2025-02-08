@@ -1,6 +1,6 @@
 import React from "react"
 import { Helmet } from "react-helmet"
-import { siteUrl } from "../../../blog-config"
+import { siteUrl } from "../../../gatsby-meta-config"
 
 const SEO = ({ title, description, url }) => {
   return (

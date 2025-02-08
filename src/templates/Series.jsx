@@ -8,7 +8,7 @@ import SEO from "components/SEO"
 import PostList from "components/PostList"
 import Divider from "components/Divider"
 
-import { description, siteUrl } from "../../blog-config"
+import { description, siteUrl } from "../../gatsby-meta-config"
 
 const Header = styled.div`
   @media (max-width: 768px) {

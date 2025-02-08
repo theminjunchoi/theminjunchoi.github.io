@@ -2,7 +2,7 @@ import React from 'react';
 import ReactRotatingText from 'react-rotating-text';
 import styled from "styled-components"
 import './style.scss';
-import { siteUrl, links } from "../../../blog-config"
+import { siteUrl, links } from "../../../gatsby-meta-config"
 import {
     FaGithub,
     FaKaggle,
@@ -80,7 +80,7 @@ const Link = ({ link, children }) => {
 
 function Info({ author, language = 'ko' }) {
   if (!author) return null;
-  const { bio, social, name } = author;
+  const { bio, name } = author;
   const {
     github,
     kaggle,

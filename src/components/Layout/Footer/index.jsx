@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import { title } from "../../../../blog-config"
+import { title } from "../../../../gatsby-meta-config"
 
 const FooterWrapper = styled.footer`
   margin-top: 32px;

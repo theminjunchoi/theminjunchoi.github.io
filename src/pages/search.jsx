@@ -9,7 +9,7 @@ import TextField from "components/TextField"
 import Title from "components/Title"
 import VerticalSpace from "components/VerticalSpace"
 
-import { title, description, siteUrl } from "../../blog-config"
+import { title, description, siteUrl } from "../../gatsby-meta-config"
 
 const SearchWrapper = styled.div`
   margin-top: 20px;

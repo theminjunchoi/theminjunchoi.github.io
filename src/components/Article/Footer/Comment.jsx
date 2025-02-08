@@ -2,7 +2,7 @@ import React from "react"
 import { useSelector } from "react-redux"
 import Giscus from "@giscus/react"
 
-import { giscus } from "../../../../blog-config"
+import { giscus } from "../../../../gatsby-meta-config"
 
 const Comment = () => {
   const { theme } = useSelector(state => state.theme)

@@ -1,6 +1,6 @@
-const blogConfig = require("./blog-config")
-const { title, description, author, info, siteUrl } = blogConfig
 const metaConfig = require('./gatsby-meta-config');
+const { title, description, author, info, siteUrl } = metaConfig
+
 
 module.exports = {
   pathPrefix: "/minjun.blog",

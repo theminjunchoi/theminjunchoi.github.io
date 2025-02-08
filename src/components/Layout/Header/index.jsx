@@ -3,7 +3,7 @@ import styled, { useTheme } from "styled-components"
 
 import { Link } from "gatsby"
 
-import { title } from "../../../../blog-config"
+import { title } from "../../../../gatsby-meta-config"
 
 import {
   FaSun,
