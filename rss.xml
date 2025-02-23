@@ -1,4 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 11 Feb 2025 14:06:52 GMT</lastBuildDate><item><title><![CDATA[2024년 하반기 회고]]></title><description><![CDATA[지난 회고: retrospect-2024-1 돌아보기 이제 25년이라는 게 믿기지 않을 정도로 24년이 빨리 지나갔다. 돌아보니 작년 7월에 전역을 하고 남은 반년을 의미있게 보내려고 나름대로 부지런히 산 것 같은데 우선, 2…]]></description><link>https://minjun.blog/retrospect-2024-2/</link><guid isPermaLink="false">https://minjun.blog/retrospect-2024-2/</guid><pubDate>Fri, 27 Dec 2024 22:00:50 GMT</pubDate><content:encoded>&lt;p&gt;지난 회고: &lt;a href=&quot;/retrospect-2024-1&quot; data-wiki-link=&quot;true&quot;&gt;retrospect-2024-1&lt;/a&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 23 Feb 2025 11:49:35 GMT</lastBuildDate><item><title><![CDATA[우아한테크코스 레벨1 고민거리와 자료들]]></title><description><![CDATA[TODO 검색 없이 git, github를 할 수 있을 정도로 공부하기 유연성 강화 목표 & 실험 계회 세우기 1~4장 읽기 (3/4 전까지) 고민거리와 자료들 해결 전 getter 없이 extracting으로 필드 검사가 안좋을 수도 있나? TDD…]]></description><link>https://minjun.blog/우아한테크코스 레벨1 고민거리와 자료들/</link><guid isPermaLink="false">https://minjun.blog/우아한테크코스 레벨1 고민거리와 자료들/</guid><pubDate>Fri, 14 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;TODO&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;검색 없이 git, github를 할 수 있을 정도로 공부하기&lt;/li&gt;
+&lt;li&gt;유연성 강화 목표 &amp;#x26; 실험 계회 세우기 1~4장 읽기 (3/4 전까지)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;고민거리와 자료들&lt;/h2&gt;
+&lt;h3&gt;해결 전&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.baeldung.com/java-extract-values-assertj&quot;&gt;getter 없이 extracting으로 필드 검사&lt;/a&gt;가 안좋을 수도 있나?&lt;/li&gt;
+&lt;li&gt;TDD는 바텀업?
+&lt;ul&gt;
+&lt;li&gt;바텀업으로 구현을 하되, 뭐부터 해야할지 막히는 시점에서는 탑다운을 해도 좋다!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;질문 잘하는 법이란?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;해결 중&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;mvc패턴에서 validation의 책임은 누구에게? &lt;a href=&quot;https://velog.io/@pengoose_dev/MVC-Pattern%EC%97%90%EC%84%9C-%EC%9C%A0%ED%9A%A8%EC%84%B1-%EA%B2%80%EC%82%AC%EB%8A%94-%EB%88%84%EA%B5%AC%EC%9D%98-%EC%B1%85%EC%9E%84%EC%9D%B8%EA%B0%80#230724---%EC%B2%AB-%EA%B2%B0%EB%A1%A0%EC%9D%80-controller&quot;&gt;참고 자료&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;우선, model에서는 model에 관련된 validation만!
+&lt;ul&gt;
+&lt;li&gt;ex) Lotto에서는 로또번호의 개수 및 중복체크만, LottoNumber는 범위체크&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;나머지 validation, 예를 들어 문자열, 정수와 같은 형식이나 null 및 공백과 같은 체크는 Controller!&lt;/li&gt;
+&lt;li&gt;서비스의 흐름을 제어하는 주체는 Controller라고 생각함.&lt;/li&gt;
+&lt;li&gt;대신 Controller의 로직이 너무 복잡해지고 길어지면 View에 validation 책임을 넘겨줘도 된다고 생각함&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;해결 완료&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://tecoble.techcourse.co.kr/post/2020-04-28-ask-instead-of-getter/&quot;&gt;getter 대신 객체에게 메시지를 보내자&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;toList() vs collect(Collectors.toList())
+&lt;ul&gt;
+&lt;li&gt;toList() : UnModifiableList 또는 UnmodifiableRandomAccessList 반환&lt;/li&gt;
+&lt;li&gt;collect(Collectors.toList()) : ArrayList 반환&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;순서에 맞게 정렬해서 출력을 해야하면, &quot;정렬&quot;은 view에서 하는 게 맞는가? 아니면 미리 해서 view에게 넘겨줘야하는가?
+&lt;ul&gt;
+&lt;li&gt;설계에 따라 다르다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;모든 원시값을 포장한다&lt;/code&gt;의 의미는, 역할이 있는 원시값이면 포장해야한다라고 생각함. 역할이 없고, 이 인스턴스 변수를 갖는 클래스의 하나의 역할로써 존재한다면 굳이 포장할 필요는 없다고 생각함.&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[2024년 하반기 회고]]></title><description><![CDATA[지난 회고: retrospect-2024-1 돌아보기 이제 25년이라는 게 믿기지 않을 정도로 24년이 빨리 지나갔다. 돌아보니 작년 7월에 전역을 하고 남은 반년을 의미있게 보내려고 나름대로 부지런히 산 것 같은데 우선, 2…]]></description><link>https://minjun.blog/retrospect-2024-2/</link><guid isPermaLink="false">https://minjun.blog/retrospect-2024-2/</guid><pubDate>Fri, 27 Dec 2024 22:00:50 GMT</pubDate><content:encoded>&lt;p&gt;지난 회고: &lt;a href=&quot;/retrospect-2024-1&quot; data-wiki-link=&quot;true&quot;&gt;retrospect-2024-1&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;돌아보기&lt;/h2&gt;
 &lt;p&gt;이제 25년이라는 게 믿기지 않을 정도로 24년이 빨리 지나갔다. 돌아보니 작년 7월에 전역을 하고 남은 반년을 의미있게 보내려고 나름대로 부지런히 산 것 같은데 우선, 24년 하반기에는 드디어 자취를 시작했다. 자취를 한 여러 이유가 있지만 무엇보다 그동안 못 해왔던 공부를 할 수 있는 공간을 만들고 싶었다. 군복무를 하면서 항상 코딩이든, 운동이든 자기계발에 대한 갈증이 있었는데 그럴 수 있는 공간이 없어서 아쉬웠다. 또 노트북과 한 몸인 컴공생들은 다들 이런 로망이 하나쯤은 있을 것 같은데, 내가 원하는 세팅을 맞추고 작업을 하고 싶다는 생각을 오래 해왔어서 사실 자취는 핑계 정도가 맞지 않나 싶다.&lt;/p&gt;
 &lt;p&gt;우선 24년 하반기에 진행했던 것들은 아래와 같다.&lt;/p&gt;
