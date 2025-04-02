@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Fri, 28 Feb 2025 08:25:05 GMT</lastBuildDate><item><title><![CDATA[우아한테크코스 레벨1 고민거리와 자료들]]></title><description><![CDATA[TODO 검색 없이 git, github를 할 수 있을 정도로 공부하기 고민거리와 자료들 해결 전 getter 없이 extracting으로 필드 검사가 안좋을 수도 있나? 질문 잘하는 법이란? 해결 중 해결 완료 getter…]]></description><link>https://minjun.blog/우아한테크코스 레벨1 고민거리와 자료들/</link><guid isPermaLink="false">https://minjun.blog/우아한테크코스 레벨1 고민거리와 자료들/</guid><pubDate>Fri, 14 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;TODO&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 02 Apr 2025 12:05:41 GMT</lastBuildDate><item><title><![CDATA[우아한테크코스 레벨1 고민거리와 자료들]]></title><description><![CDATA[TODO 검색 없이 git, github를 할 수 있을 정도로 공부하기 고민거리와 자료들 해결 전 getter 없이 extracting…]]></description><link>https://minjun.blog/우아한테크코스 레벨1 고민거리와 자료들/</link><guid isPermaLink="false">https://minjun.blog/우아한테크코스 레벨1 고민거리와 자료들/</guid><pubDate>Fri, 14 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;TODO&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;검색 없이 git, github를 할 수 있을 정도로 공부하기&lt;/li&gt;
 &lt;/ul&gt;
@@ -7,8 +7,13 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://www.baeldung.com/java-extract-values-assertj&quot;&gt;getter 없이 extracting으로 필드 검사&lt;/a&gt;가 안좋을 수도 있나?&lt;/li&gt;
 &lt;li&gt;질문 잘하는 법이란?&lt;/li&gt;
+&lt;li&gt;런타임 컴파일타임 의존성이란?&lt;/li&gt;
+&lt;li&gt;제네릭 공변, 블공변이란?&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3&gt;해결 중&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h3&gt;해결 완료&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://tecoble.techcourse.co.kr/post/2020-04-28-ask-instead-of-getter/&quot;&gt;getter 대신 객체에게 메시지를 보내자&lt;/a&gt;&lt;/li&gt;
@@ -64,7 +69,16 @@
 &lt;li&gt;프로덕션 코드에 테스트만을 위한 코드가 있으면 안된다고 생각함.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[README]]></title><description><![CDATA[😄 Introduction Hi there! I’m Minjun Choi. I’m always thinking about how the services I create can truly solve problems and make a…]]></description><link>https://minjun.blog/readme/</link><guid isPermaLink="false">https://minjun.blog/readme/</guid><pubDate>Mon, 01 Jan 2024 22:38:31 GMT</pubDate><content:encoded>&lt;h2&gt;😄 Introduction&lt;/h2&gt;
+&lt;li&gt;&quot;객체지향의 사실과 오해&quot; 읽기
+&lt;ul&gt;
+&lt;li&gt;책임이 자율적일수록 적절하게 &apos;추상화&apos;되며, &apos;응집도&apos;가 높아지고, &apos;결합도&apos;가 낮아지며, &apos;캡슐화&apos;가 증진되고, &apos;인터페이스와 구현이 명확히 분리&apos;되며, 설계의 &apos;유연성&apos;과 &apos;재사용성&apos;이 향상된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[우아한테크코스 GitHub]]></title><description><![CDATA[git remote add pair https:sdfsdfsdf
+git fetch pair
+git rebase pair/step1]]></description><link>https://minjun.blog/우테코 git/</link><guid isPermaLink="false">https://minjun.blog/우테코 git/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;git remote add pair https:sdfsdfsdf
+git fetch pair
+git rebase pair/step1&lt;/p&gt;</content:encoded></item><item><title><![CDATA[README]]></title><description><![CDATA[😄 Introduction Hi there! I’m Minjun Choi. I’m always thinking about how the services I create can truly solve problems and make a…]]></description><link>https://minjun.blog/readme/</link><guid isPermaLink="false">https://minjun.blog/readme/</guid><pubDate>Mon, 01 Jan 2024 22:38:31 GMT</pubDate><content:encoded>&lt;h2&gt;😄 Introduction&lt;/h2&gt;
 &lt;p&gt;Hi there! I’m &lt;strong&gt;Minjun Choi&lt;/strong&gt;. I’m always thinking about how the services I create can truly solve problems and make a meaningful difference in the community around me. With this mindset, I’m working hard to build better solutions and grow as a developer who genuinely contributes to society. Curious about my journey? Check out my &lt;a href=&quot;https://minjun.blog/&quot;&gt;blog&lt;/a&gt;!&lt;/p&gt;
 &lt;h2&gt;✏️ Education&lt;/h2&gt;
 &lt;ul&gt;
