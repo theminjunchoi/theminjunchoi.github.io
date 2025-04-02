@@ -1,7 +1,7 @@
 ---
 title: README
 date: 2024-01-01 22:38:31
-updated: 2024-12-03 00:09:03
+updated: 2025-02-23 20:50:16
 publish: false
 ---
 ## 😄 Introduction  
@@ -15,7 +15,7 @@ Hi there! I’m **Minjun Choi**. I’m always thinking about how the services I 
 * GDG on Campus CAU 4th Core Member (2024.09. ~ )
 * CECOM Member (2024.09. ~ )
 * Undergraduate researcher at [HCSLAB of Chung-Ang Univ.](https://sites.google.com/view/hcslab-cau/home?authuser=0) (2024.09. ~ 2025.01.)
-* Woowacourse 7th BE (See you soon!) 
+* Woowacourse 7th BE (2025.02. ~) 
 ## 🛠️ Tech Skill
 * Framework | Spring, Nuxt, Flutter
 * Language | Java, python, C, C++, Dart
