@@ -2,5 +2,6 @@
   "attachmentFolderPath": "posts/attachments",
   "alwaysUpdateLinks": true,
   "showUnsupportedFiles": false,
-  "promptDelete": false
+  "promptDelete": false,
+  "spellcheck": false
 }

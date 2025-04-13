@@ -113,6 +113,9 @@ function Info({ author, language = 'ko' }) {
             <Link link={github}>
                 <FaGithub />
             </Link>
+            <Link link={linkedIn}>
+                <FaLinkedin />
+            </Link>
             <Link link={kaggle}>
                 <FaKaggle />
             </Link>
@@ -133,9 +136,6 @@ function Info({ author, language = 'ko' }) {
             </Link>
             <Link link={blogger}>
                 <FaBlogger />
-            </Link>
-            <Link link={linkedIn}>
-                <FaLinkedin />
             </Link>
             <Link link={email}>
                 <FaRegEnvelope />
