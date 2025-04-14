@@ -219,4 +219,6 @@ const Footer = ({ previous, next, title }) => {
   )
 }
 
+
+
 export default Footer
