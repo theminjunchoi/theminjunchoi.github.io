@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/우아한테크코스_7기_BE_레벨1_회고.md",
+                "file": "posts/spring-mvc-dispatcherservlet.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "우아한테크코스_7기_BE_레벨1_회고"
+              "title": "spring-mvc-dispatcherservlet"
             }
           }
         ]
@@ -143,13 +143,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/우아한테크코스_7기_BE_레벨1_회고.md",
+                "file": "posts/spring-mvc-dispatcherservlet.md",
                 "followCursor": false,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 우아한테크코스_7기_BE_레벨1_회고"
+              "title": "Outline of spring-mvc-dispatcherservlet"
             }
           }
         ],
@@ -157,8 +157,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -174,8 +173,12 @@
   },
   "active": "3f5101f1a6263e2a",
   "lastOpenFiles": [
-    "posts/우테코 git.md",
+    "posts/attachments/diagram.png",
+    "posts/attachments/스크린샷 2025-04-16 오후 10.38.16.png",
+    "posts/attachments/스크린샷 2025-04-16 오후 9.56.09.png",
     "posts/우아한테크코스_7기_BE_레벨1_회고.md",
+    "posts/spring-mvc-dispatcherservlet.md",
+    "posts/우테코 git.md",
     "posts/retrospect-2024-2.md",
     "posts/attachments/스크린샷 2025-04-02 오후 9.40.24.png",
     "posts/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
@@ -210,12 +213,9 @@
     "posts/ZeroPage_지금그때_2022.md",
     "template",
     "template",
-    "posts/attachments/Pasted image 20241204212429.png",
-    "posts/attachments/Pasted image 20241204211754.png",
     "posts/ZeroPage_지금그때_2024.md",
     "무제 파일.canvas",
     "posts/spirosmart.md",
-    "posts/mobile spirometry 관련 자료.md",
     "about",
     "template",
     "posts/attachments",
