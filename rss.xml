@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 17 Apr 2025 04:59:58 GMT</lastBuildDate><item><title><![CDATA[Understanding DispatcherServlet in Spring MVC]]></title><description><![CDATA[DispatcherServlet 공식문서에 따르면, Spring MVC는 다른 많은 웹 프레임워크들과 마찬가지로 Front Controller Pattern에 기반을 두고 있다. 우선 여기서 말하는 Front Controller Pattern…]]></description><link>https://minjun.blog/spring-mvc-dispatcherservlet/</link><guid isPermaLink="false">https://minjun.blog/spring-mvc-dispatcherservlet/</guid><pubDate>Tue, 15 Apr 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;DispatcherServlet&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 17 Apr 2025 08:26:53 GMT</lastBuildDate><item><title><![CDATA[Understanding DispatcherServlet in Spring MVC]]></title><description><![CDATA[DispatcherServlet 공식문서에 따르면, Spring MVC는 다른 많은 웹 프레임워크들과 마찬가지로 Front Controller Pattern에 기반을 두고 있다. 우선 여기서 말하는 Front Controller Pattern…]]></description><link>https://minjun.blog/spring-mvc-dispatcherservlet/</link><guid isPermaLink="false">https://minjun.blog/spring-mvc-dispatcherservlet/</guid><pubDate>Tue, 15 Apr 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;DispatcherServlet&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html&quot;&gt;공식문서&lt;/a&gt;에 따르면, Spring MVC는 다른 많은 웹 프레임워크들과 마찬가지로 Front Controller Pattern에 기반을 두고 있다.&lt;/p&gt;
 &lt;p&gt;우선 여기서 말하는 &lt;strong&gt;Front Controller Pattern은 뭘까?&lt;/strong&gt; 이는 어플리케이션에서 들어오는 모든 요청을 하나의 진입점으로 모아서 처리하는 설계 방식이다. 좀 더 자세히 설명하면, 로그인은 LoginServlet에서, 회원가입은 SignupServlet에서 처리하는 게 아니라 공통된 모듈에서 처리해주는 설계방식이다.&lt;/p&gt;
 &lt;p&gt;그럼 다시 &lt;strong&gt;Servlet은 뭘까?&lt;/strong&gt; Servlet은 웹 요청을 받아 동적인 웹 페이지나 데이터를 만들어주는 역할을 하는 객체인데, 자바로 만든 서버측 컴포넌트 정도로 이해하고 넘어가려한다.&lt;/p&gt;
@@ -596,8 +596,8 @@ DispatcherServlet은 위와 같은 계층 구조로 이루어져있다. 그래�
 	&lt;span class=&quot;token comment&quot;&gt;// ...&lt;/span&gt;
 	
 &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Summary&lt;/h2&gt;
-&lt;p&gt;Spring MVC의 &lt;code class=&quot;language-text&quot;&gt;DispatcherServlet&lt;/code&gt; 처리 흐름을 목록으로 정리한 내용은 다음과 같습니다:&lt;/p&gt;
+&lt;h2&gt;Summary (by ChatGPT)&lt;/h2&gt;
+&lt;p&gt;Spring MVC의 &lt;code class=&quot;language-text&quot;&gt;DispatcherServlet&lt;/code&gt; 처리 흐름을 목록으로 정리한 내용은 다음과 같다:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;DispatcherServlet&lt;/strong&gt;:
 &lt;ul&gt;
@@ -633,7 +633,7 @@ DispatcherServlet은 위와 같은 계층 구조로 이루어져있다. 그래�
 &lt;li&gt;반환값에 따라 적합한 메시지 컨버터를 사용하여 직렬화 처리&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;메시지 컨버터&lt;/strong&gt;:
+&lt;li&gt;&lt;strong&gt;MessageConverter&lt;/strong&gt;:
 &lt;ul&gt;
 &lt;li&gt;반환값을 직렬화하여 클라이언트에게 전달&lt;/li&gt;
 &lt;li&gt;예: &lt;code class=&quot;language-text&quot;&gt;StringHttpMessageConverter&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;MappingJackson2HttpMessageConverter&lt;/code&gt; 등&lt;/li&gt;
