@@ -1,7 +1,7 @@
 ---
 title: Understanding DispatcherServlet in Spring MVC
 date: 2025-04-15 09:44:21
-updated: 2025-04-17 11:18:38
+updated: 2025-04-18 23:16:55
 publish: true
 tags:
   - spring
@@ -274,14 +274,21 @@ doDispatch 메서드를 살펴보면 많은 것들을 해주고 있다.
 
 우선 HandlerMapping을 해주고, 이를 처리할 HandlerAdapter를 조회해주고 있다. 이후에 컨트롤러를 찾아 메서드들을 수행한다.
 ### 2. HandlerMapping을 통해 Request 정보에 대한 알맞은 Controller를 찾는다.
+잠깐 되돌아보면, 지금까지 DispatcherServlet은 Request를 받아서 여러 메서드를 거쳐, doDispatch까지 왔다. 이제 DispatchServlet은 개발자가 만들어놓은 컨트롤러 중에서 요청을 처리할  수 컨트롤러를 찾고 해당 객체의 메서드를 호출해야하는데, 이때 컨트롤러를 찾아줄 수 있는 게 HandlerMapping이다.
+
+아래는 위 코드의 일부분을 그대로 가져왔다.
 ```java
 protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {  
+	// ...
+	
 	// Determine handler for the current request.  
 	mappedHandler = getHandler(processedRequest);  
 	if (mappedHandler == null) {  
 		 noHandlerFound(processedRequest, response);  
 		 return;  
 	} 
+
+	// ...
 }
 
 @Nullable  
@@ -297,12 +304,25 @@ protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Ex
     return null;  
 }
 ```
-doDispatch 메서드 코드 중에서  일부만 가져왔는데, 위 코드와 같이 요청에 맞는 HandlerExecutionChain(mappedHandler)을 찾아주고 있다. HandlerExecutionChain은 실제 HTTP 요청을 처리하는 handler(컨트롤러 메서드)와 handler 전후에 인증, 로깅 등을 처리할 수 있는 인터셉터로 이루어진다. 어떻게 HandlerExecutionChain이 찾아지는 지에 대해서는 넘어가고 추후에 다른 글에서 설명할 예정이다.
+이 코드에서는 요청에 맞는 HandlerExecutionChain(mappedHandler)을 찾아주고 있다. 
+
+찾아주는 방법은 다음과 같다. 
+
+RequestMappingHandlerMapping은 @Controller로 어노테이트된 모든 컨트롤러를 찾아서 필드로 관리를 해주고 있다. 이 클래스는 필드로 Map<String, Predicate<>> pathPrefixes를 갖고 있어서, key 값에는 요청 정보, value 값에는 처리할 대상을 관리하고 있다.  
+
+처리할 대상은 컨트롤러와 메서드를 담고 있는 HandlerMethod 객체이며, 요청정보로 Map에서 값을 찾고 반환할 때 HandlerExecutionChain으로 감싸서 넘겨준다.
+
+HandlerExecutionChain은 실제 HTTP 요청을 처리하는 handler(컨트롤러 메서드)와 handler 전후에 인증, 로깅 등을 처리할 수 있는 인터셉터로 이루어진다. 
 ### 3. Request를 Controller로 건내줄 수 있는 HandlerAdapter를 찾아서 건내준다.
 ```java
 protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {  
+
+	// ...
+	
 	// Determine handler adapter for the current request.  
 	HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());  
+
+	// ...
 }
 
 protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {  
@@ -324,8 +344,13 @@ HandlerAdapter는 HandlerExecutionChain을 처리하는 과정에서, 내부적�
 HandlerAdapter가 요청하는 코드를 살펴보자.
 ```java
 protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {  
+
+	// ...
+	
 	// Actually invoke the handler.  
 	mv = ha.handle(processedRequest, response, mappedHandler.getHandler()); 
+
+	// ...
 }
 ```
 이때 요청의 종류에 따라 HandlerAdapter의 종류가 달라지고, 예시로 @Controller로 annotate된 컨트롤러를 처리하는 RequestMappingHandlerAdapter의 코드는 다음과 같다.
@@ -619,8 +644,8 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 }
 ```
 
-## Summary
-Spring MVC의 `DispatcherServlet` 처리 흐름을 목록으로 정리한 내용은 다음과 같습니다:
+## Summary (by ChatGPT)
+Spring MVC의 `DispatcherServlet` 처리 흐름을 목록으로 정리한 내용은 다음과 같다:
 1. **DispatcherServlet**:
 	- 클라이언트 요청을 중앙에서 처리하는 역할
 	- `HandlerMapping`, `HandlerAdapter`, `ReturnValueHandler` 등 delegate components를 사용하여 요청을 처리
@@ -637,7 +662,7 @@ Spring MVC의 `DispatcherServlet` 처리 흐름을 목록으로 정리한 내용
 6. **ReturnValueHandler**:
     - 컨트롤러 메서드의 반환값을 처리
     - 반환값에 따라 적합한 메시지 컨버터를 사용하여 직렬화 처리
-7. **메시지 컨버터**:
+7. **MessageConverter**:
     - 반환값을 직렬화하여 클라이언트에게 전달
     - 예: `StringHttpMessageConverter`, `MappingJackson2HttpMessageConverter` 등
 8. **최종 처리**:
