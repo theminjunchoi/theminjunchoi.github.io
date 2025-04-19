@@ -1,7 +1,7 @@
 ---
 title: Understanding DispatcherServlet in Spring MVC
 date: 2025-04-15 09:44:21
-updated: 2025-04-18 23:16:55
+updated: 2025-04-19 17:21:23
 publish: true
 tags:
   - spring
@@ -353,7 +353,7 @@ protected void doDispatch(HttpServletRequest request, HttpServletResponse respon
 	// ...
 }
 ```
-이때 요청의 종류에 따라 HandlerAdapter의 종류가 달라지고, 예시로 @Controller로 annotate된 컨트롤러를 처리하는 RequestMappingHandlerAdapter의 코드는 다음과 같다.
+이때 요청의 종류에 따라 HandlerAdapter의 종류가 달라지고, 예시로 @Controller로 어노테이트된 컨트롤러를 처리하는 RequestMappingHandlerAdapter의 코드는 다음과 같다.
 ```java
 public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator implements HandlerAdapter, Ordered {
 
@@ -435,7 +435,7 @@ HandlerExecutionChain에는 인터셉터를 통해 전후처리가 진행된다�
 ```java
 public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 	
-		public void invokeAndHandle(ServletWebRequest webRequest, ModelAndViewContainer mavContainer,  
+	public void invokeAndHandle(ServletWebRequest webRequest, ModelAndViewContainer mavContainer,  
 	       Object... providedArgs) throws Exception {  
 	  
 	    Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);  
