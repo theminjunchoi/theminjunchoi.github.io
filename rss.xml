@@ -1,4 +1,76 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 24 Apr 2025 13:47:18 GMT</lastBuildDate><item><title><![CDATA[Nuxt content에 Mathtype 사용하기]]></title><description><![CDATA[기존 블로그에서 이전해온 글입니다.  삽질 배경 내 개인페이지는 올해 초에 처음 개발되기 시작했었다. 그때도 markdown에 수식을 적용하기 위해 이것저것 시도해보다가 포기했었는데 며칠 전부터 스터디 페이지를 개발하면서 markdown…]]></description><link>https://minjun.blog/nuxt-katex/</link><guid isPermaLink="false">https://minjun.blog/nuxt-katex/</guid><pubDate>Tue, 13 Sep 2022 22:12:20 GMT</pubDate><content:encoded>&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://choiminjun.netlify.app/blog/nuxt-katex&quot;&gt;기존 블로그&lt;/a&gt;에서 이전해온 글입니다.&lt;/em&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 30 Apr 2025 05:42:59 GMT</lastBuildDate><item><title><![CDATA[test]]></title><link>https://minjun.blog/Untitled/</link><guid isPermaLink="false">https://minjun.blog/Untitled/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
+      &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/17b931286538f71689347636ec6cd9b7/e6692/image.webp&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
+    &lt;span class=&apos;gatsby-resp-image-background-image&apos; style=&quot;padding-bottom: 121.1764705882353%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/webp;base64,UklGRvoAAABXRUJQVlA4IO4AAACwBQCdASoUABgAPtFcpE6oJKMiKAqpABoJbACdMzIZWd2bcEXaF/j/mmZaN/gXir3I/O8kFzQA/vJp+kaqLkRhFZgYrUoXT6yiornj5DFgt1ZH01Xu4eqKKHaN9FXqFAvz4e7HMdcuBsdxydUZPFhMKzZustQ62tsNk5XgzEKfiS75ojHekc8TyTdQN+ADqKI2w/d+Oh4oYOInvYE58CGZWt+u17+FuHS1cnZ/LyWzsqxfxGyJ8VDwxQGXJFDqHb7b+zbgmS3til2bNw/2h7QwrKOMcpCOfhHXU4Inbu+gWEq3yZWibRQX4KnWwAAA&apos;); background-size: cover; display: block;&quot;&gt;&lt;/span&gt;
+  &lt;img class=&apos;gatsby-resp-image-image&apos; alt=&apos;image.webp&apos; title=&apos;&apos; src=&apos;/static/17b931286538f71689347636ec6cd9b7/4c79d/image.webp&apos; srcset=&apos;/static/17b931286538f71689347636ec6cd9b7/33073/image.webp 170w,
+/static/17b931286538f71689347636ec6cd9b7/719ab/image.webp 340w,
+/static/17b931286538f71689347636ec6cd9b7/4c79d/image.webp 680w,
+/static/17b931286538f71689347636ec6cd9b7/b36b9/image.webp 1020w,
+/static/17b931286538f71689347636ec6cd9b7/8717b/image.webp 1360w,
+/static/17b931286538f71689347636ec6cd9b7/e6692/image.webp 1407w&apos; sizes=&apos;(max-width: 680px) 100vw, 680px&apos; style=&apos;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&apos; loading=&apos;lazy&apos; decoding=&apos;async&apos;&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;
+    &lt;figcaption class=&apos;gatsby-resp-image-figcaption&apos;&gt;image.webp&lt;/figcaption&gt;
+  &lt;/figure&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Daily Easy English Expression]]></title><description><![CDATA[How are you doing Ha yuh doin What's up this weekend I'm gonna kick back going to relax and stop doing things I slept in get up late (on…]]></description><link>https://minjun.blog/daily_easy_english_expression_summary/</link><guid isPermaLink="false">https://minjun.blog/daily_easy_english_expression_summary/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;ol&gt;
+&lt;li&gt;How are you doing
+&lt;ul&gt;
+&lt;li&gt;Ha yuh doin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;What&apos;s up this weekend&lt;/li&gt;
+&lt;li&gt;I&apos;m gonna kick back
+&lt;ul&gt;
+&lt;li&gt;going to relax and stop doing things&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;I slept in
+&lt;ul&gt;
+&lt;li&gt;get up late (on purpose)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;What do you do for a living&lt;/li&gt;
+&lt;li&gt;I&apos;m into sports&lt;/li&gt;
+&lt;li&gt;My knee went out&lt;/li&gt;
+&lt;li&gt;I overslept&lt;/li&gt;
+&lt;li&gt;to stock up on something
+&lt;ul&gt;
+&lt;li&gt;to buy a large quantity of something&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;to count on&lt;/li&gt;
+&lt;li&gt;Did you get out ~ing?&lt;/li&gt;
+&lt;li&gt;pure nonsense&lt;/li&gt;
+&lt;li&gt;to do away with&lt;/li&gt;
+&lt;li&gt;I had a long week&lt;/li&gt;
+&lt;li&gt;TGIF
+&lt;ul&gt;
+&lt;li&gt;Thank God It&apos;s Friday&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;to do something up&lt;/li&gt;
+&lt;li&gt;to do up something&lt;/li&gt;
+&lt;li&gt;because of ~&lt;/li&gt;
+&lt;li&gt;thanks to ~&lt;/li&gt;
+&lt;li&gt;in a jiffy
+&lt;ul&gt;
+&lt;li&gt;very soon&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Do it over
+&lt;ul&gt;
+&lt;li&gt;try again&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;pick up your poison&lt;/li&gt;
+&lt;li&gt;poor children&lt;/li&gt;
+&lt;li&gt;pathetic&lt;/li&gt;
+&lt;li&gt;What purpose does it serve?&lt;/li&gt;
+&lt;li&gt;I couldn&apos;t help it&lt;/li&gt;
+&lt;li&gt;to look away&lt;/li&gt;
+&lt;li&gt;to push it&lt;/li&gt;
+&lt;li&gt;Are you done yet?&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ol&gt;</content:encoded></item><item><title><![CDATA[Nuxt content에 Mathtype 사용하기]]></title><description><![CDATA[기존 블로그에서 이전해온 글입니다.  삽질 배경 내 개인페이지는 올해 초에 처음 개발되기 시작했었다. 그때도 markdown에 수식을 적용하기 위해 이것저것 시도해보다가 포기했었는데 며칠 전부터 스터디 페이지를 개발하면서 markdown…]]></description><link>https://minjun.blog/nuxt-katex/</link><guid isPermaLink="false">https://minjun.blog/nuxt-katex/</guid><pubDate>Tue, 13 Sep 2022 22:12:20 GMT</pubDate><content:encoded>&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://choiminjun.netlify.app/blog/nuxt-katex&quot;&gt;기존 블로그&lt;/a&gt;에서 이전해온 글입니다.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure class=&apos;gatsby-resp-image-figure&apos; style=&apos;margin-bottom: 16px;&apos;&gt;
     &lt;span class=&apos;gatsby-resp-image-wrapper&apos; style=&apos;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 680px; &apos;&gt;
       &lt;a class=&apos;gatsby-resp-image-link&apos; href=&apos;/static/dace3a29c5eb6ae1bc97812cdf1278d4/3643c/Nuxt.png&apos; style=&apos;display: block&apos; target=&apos;_blank&apos; rel=&apos;noopener&apos;&gt;
