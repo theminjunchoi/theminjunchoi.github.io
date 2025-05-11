@@ -1,8 +1,8 @@
 ---
 title: Nuxt content에 Mathtype 사용하기
 date: 2022-09-13 22:12:20
-updated: 2024-10-20 18:52:28
-publish: true
+updated: 2025-04-24 22:45:40
+publish: false
 tags:
   - Nuxt
   - Katex
