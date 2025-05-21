@@ -1,7 +1,7 @@
 ---
 title: Understanding DispatcherServlet in Spring MVC
 date: 2025-04-15 09:44:21
-updated: 2025-04-19 17:21:23
+updated: 2025-05-21 20:56:58
 publish: true
 tags:
   - spring
@@ -9,6 +9,8 @@ series:
 ---
 
 
+## Preview
+![[overview.jpg]]
 ## DispatcherServlet
 
 [공식문서](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html)에 따르면, Spring MVC는 다른 많은 웹 프레임워크들과 마찬가지로 Front Controller Pattern에 기반을 두고 있다.
@@ -525,7 +527,7 @@ public class HandlerMethodReturnValueHandlerComposite implements HandlerMethodRe
 	}
 }
 ```
-어떤 값을 반환하느냐에 따라 HandlerMethosReturnValueHandler 구현체가 정해지고, 예를 들어 ResponseEntity 객체가 반환되는 경우 HttpEntityMethodProcessor가 사용된다.
+어떤 값을 반환하느냐에 따라 HandlerMethodReturnValueHandler 구현체가 정해지고, 예를 들어 ResponseEntity 객체가 반환되는 경우 HttpEntityMethodProcessor가 사용된다.
 ```java
 public class HttpEntityMethodProcessor extends AbstractMessageConverterMethodProcessor {
 	@Override  

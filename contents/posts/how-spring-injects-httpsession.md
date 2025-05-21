@@ -1,7 +1,7 @@
 ---
 title: How Spring Injects HttpSession
 date: 2025-05-10 09:44:21
-updated: 2025-05-11 22:21:00
+updated: 2025-05-11 22:27:18
 publish: true
 tags:
   - spring
@@ -189,6 +189,7 @@ Q. Spring MVC는 컨트롤러의 메서드를 실행할 때 실제로 HandlerMet
 
 A. Spring에서 이미 고려해주고 있다.
 HandlerMethodArgumentResolverComposite의 필드로 캐시된 값들을 관리해주고 있다.
+
 ```java
 public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgumentResolver {
 	private final Map<MethodParameter, HandlerMethodArgumentResolver> argumentResolverCache;
