@@ -62,7 +62,7 @@ const Header = ({ title, date, tags, minToRead, updated }) => {
           
         </div>
         <div>
-          <Property>Last Update </Property><Date>· {updated} </Date>
+          <Property>Updated Date</Property><Date>· {updated} </Date>
         </div>
       </Information>
       {tags && <TagList tagList={tags} />}

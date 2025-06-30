@@ -1,11 +1,11 @@
 ---
 title: README
 date: 2024-01-01 22:38:31
-updated: 2025-02-23 20:50:16
+updated: 2025-07-01 00:19:33
 publish: false
 ---
 ## 😄 Introduction  
-Hi there! I’m **Minjun Choi**. I’m always thinking about how the services I create can truly solve problems and make a meaningful difference in the community around me. With this mindset, I’m working hard to build better solutions and grow as a developer who genuinely contributes to society. Curious about my journey? Check out my [blog](https://minjun.blog/)!
+Hi there! I’m **Minjun Choi** — a problem solver who’s always thinking about how to build services that actually solve problems and make a real impact. I care deeply about creating meaningful value through the code I write, not just clean features but outcomes that drive business and help people. I’m on a journey to keep learning, building, and contributing to something bigger than myself. Curious about what I’m working on? Check out my [blog](https://minjun.blog/)!
 ## ✏️ Education 
 * [Software (Computer Science & Engineering)](https://cse.cau.ac.kr/main.php), Chung-Ang University (2021.03. ~ )
 ## 💻 Activity
