@@ -35,7 +35,7 @@
     "posts/computer_architecture/5-4. Virtual memory Part 2.md": "082763b51564cc252fb3f5b5589cc13ab5dc6d3c98aefa14968b7b744f2afbb1",
     "posts/coffeeshout/coffeeshout_ideation.md": "f76f893bf38c229483b11d82f0da8895f2dd5974d2a9560f6bbf8dab91626ddd",
     "posts/coffeeshout/coffeeshout_persona.md": "0e67573251fd84e9021238cd3b0c7da6bc816763107c3b73081585815ec626a7",
-    "posts/coffeeshout/coffeeshout_server_tech_stack.md": "d9c4e1495283397f5102710e59d121e73c35622508eded06b6195aa214058794",
+    "posts/coffeeshout/coffeeshout_server_tech_stack.md": "602a31777f9f385692fef46f25d1ea17a28b3b1c916fd2c5925aee895da76f4c",
     "posts/lab/20241122_미팅내용정리.md": "c81617d8ea5a6b498f2de523ead634d1d33de0e398922f5f0ad5b8b1ec77d4cf",
     "posts/lab/20241220_분당서울대병원_참관.md": "0ebfef83392081baae74062d63153b09d91770f0969125009ac6fe3abd0004a3",
     "posts/lab/스마트기기 내장 마이크기반 폐질환 진단기기 개발.md": "8b0c8a9e7e36345d5a26594843cae14245aac647c1c043e288770b9b24834189",
@@ -63,7 +63,6 @@
     "posts/zeropage/ZeroPage_지금그때_2024.md": "0d59d819416f22a7b682ef2e76c2210488f968181c1c89d9e999319e515297cc",
     "posts/etc/daily_easy_english_expression_summary.md": "23d83a1e694136e26c78ce18e8ef26657c1c06d32d8151c3b4adc3f44409430e",
     "posts/etc/nuxt-katex.md": "5fd9161d71aee9ae3d46a87fd11e1cc1b2ea7d62a5ea917ed0a7bf7956320821",
-    "posts/etc/why-obsidian.md": "2850ba111a4ff3ff628f265908f9437f363fac47a228e7d456c29508a49aee6a",
-    "posts/coffeeshout/team_observation.md": "9726fc204a2014c84c90db9885f78cff1ed6a0711df1e76b578fa7a4cef06321"
+    "posts/etc/why-obsidian.md": "2850ba111a4ff3ff628f265908f9437f363fac47a228e7d456c29508a49aee6a"
   }
 }
