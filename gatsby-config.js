@@ -4,13 +4,6 @@ const { title, description, author, info, siteUrl } = metaConfig
 
 module.exports = {
   pathPrefix: "/minjun.blog",
-  // siteMetadata: {
-  //   title,
-  //   description,
-  //   author,
-  //   info,
-  //   siteUrl: 'https://minjun.blog',
-  // },
   siteMetadata: metaConfig,
 
   plugins: [
@@ -79,6 +72,13 @@ module.exports = {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `attachments`,
+        path: `${__dirname}/contents/posts/attachments`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `static-attachments`,
         path: `${__dirname}/contents/posts/attachments`,
       },
     },

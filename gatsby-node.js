@@ -1,5 +1,19 @@
 const { createFilePath } = require(`gatsby-source-filesystem`)
 const _ = require("lodash")
+const fs = require('fs')
+const path = require('path')
+
+exports.onPreInit = async () => {
+  const src = path.join(__dirname, 'contents/posts/attachments')
+  const dest = path.join(__dirname, 'static/attachments')
+  
+  try {
+    await fs.promises.cp(src, dest, { recursive: true })
+    console.log('✅ Attachments copied to static/attachments for dev server')
+  } catch (err) {
+    console.error('❌ Failed to copy attachments:', err)
+  }
+}
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
@@ -99,6 +113,18 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       name: `slug`,
       value: newSlug,
     })
+  }
+}
+
+exports.onPostBuild = async () => {
+  const src = path.join(__dirname, 'contents/posts/attachments')
+  const dest = path.join(__dirname, 'public/attachments')
+  
+  try {
+    await fs.promises.cp(src, dest, { recursive: true })
+    console.log('✅ Attachments copied to public/attachments')
+  } catch (err) {
+    console.error('❌ Failed to copy attachments:', err)
   }
 }
 

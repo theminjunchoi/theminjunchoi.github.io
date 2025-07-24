@@ -4,21 +4,19 @@
     "type": "split",
     "children": [
       {
-        "id": "5fe48c4417e6e1e6",
+        "id": "3c1e263f22305f22",
         "type": "tabs",
         "children": [
           {
-            "id": "e998d6b547ec169f",
+            "id": "af0a0d47e5e2b3ee",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "posts/coffeeshout/coffeeshout_persona.md",
-                "mode": "source",
-                "source": false
+                "file": "posts/attachments/computer-architecture-textbook.jpg"
               },
-              "icon": "lucide-file",
-              "title": "coffeeshout_persona"
+              "icon": "lucide-image",
+              "title": "computer-architecture-textbook"
             }
           }
         ]
@@ -142,13 +140,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/coffeeshout/coffeeshout_persona.md",
+                "file": "posts/attachments/computer-architecture-textbook.jpg",
                 "followCursor": false,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of coffeeshout_persona"
+              "title": "Outline of computer-architecture-textbook"
             }
           }
         ],
@@ -170,10 +168,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "21bf746e90829a3e",
+  "active": "af0a0d47e5e2b3ee",
   "lastOpenFiles": [
-    "posts/coffeeshout/coffeeshout_ideation.md",
+    "posts/attachments/Computer-Architecture.jpg",
+    "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_52.png",
+    "posts/computer_architecture/0-1. CA Intro.md",
+    "posts/computer_architecture/0-2. CA Overview.md",
+    "posts/computer_architecture/1-1. Defining Performance.md",
+    "posts/lab/20241220_분당서울대병원_참관.md",
     "posts/coffeeshout/coffeeshout_persona.md",
+    "posts/coffeeshout/coffeeshout_ideation.md",
     "posts/coffeeshout/coffeeshout_server_tech_stack.md",
     "posts/woowatech/우테코 git.md",
     "posts/coffeeshout/team_observation.md",
@@ -196,11 +200,6 @@
     "posts/lab/spirosmart.md",
     "posts/lab/Respiratory Sound Database 유효성 분석.md",
     "posts/lab/mobile spirometry 관련 자료.md",
-    "posts/woowatech/how-spring-injects-httpsession.md",
-    "posts/woowatech/우아한테크코스_7기_BE_프리코스_4주차_회고.md",
-    "posts/woowatech/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
-    "posts/woowatech/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
-    "posts/woowatech/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
     "posts/woowatech",
     "posts/lab",
     "posts/computer_architecture",
@@ -214,7 +213,6 @@
     "posts/attachments/스크린샷 2025-04-16 오후 10.38.16.png",
     "posts/attachments/스크린샷 2025-04-16 오후 9.56.09.png",
     "posts/attachments/스크린샷 2025-04-02 오후 9.40.24.png",
-    "posts/attachments/01 9.jpg",
     "posts/오브젝트.canvas",
     "posts/Untitled.canvas",
     "template",
