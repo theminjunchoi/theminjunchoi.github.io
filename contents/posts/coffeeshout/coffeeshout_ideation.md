@@ -1,7 +1,7 @@
 ---
 title: 커피빵(CoffeeShout) 기획
 date: 2025-07-07 09:44:21
-updated: 2025-07-10 21:54:03
+updated: 2025-08-19 14:16:52
 publish: true
 tags:
   - 우아한테크코스

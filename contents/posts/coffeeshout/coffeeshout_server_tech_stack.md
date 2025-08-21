@@ -1,7 +1,7 @@
 ---
 title: 커피빵(CoffeeShout) 서버 기술스택
 date: 2025-07-09 09:44:21
-updated: 2025-07-23 22:28:11
+updated: 2025-08-19 14:16:13
 publish: true
 tags:
   - 우아한테크코스

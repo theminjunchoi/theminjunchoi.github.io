@@ -1,7 +1,7 @@
 ---
 title: How Spring Injects HttpSession
 date: 2025-05-10 09:44:21
-updated: 2025-07-10 15:54:06
+updated: 2025-08-20 09:30:35
 publish: true
 tags:
   - spring
@@ -63,7 +63,7 @@ void sessionLogin() {
 누가 메서드의 파라미터로 session까지 넣어주는걸까?
 
 ## Spring MVC의 핵심 흐름
-[[spring-mvc-dispatcherservlet]]에서 다루었듯이 파라미터를 처리하는 역할을 담당하는 건 ArgumentResolver의 한 종류이다. Spring MVC는 컨트롤러의 메서드를 실행할 때 실제로 HandlerMethodArgumentResolver 목록을 순회하며 파라미터를 처리한다.
+[[spring_mvc_dispatcherservlet]]에서 다루었듯이 파라미터를 처리하는 역할을 담당하는 건 ArgumentResolver의 한 종류이다. Spring MVC는 컨트롤러의 메서드를 실행할 때 실제로 HandlerMethodArgumentResolver 목록을 순회하며 파라미터를 처리한다.
 
 세부 흐름은 다음과 같다.
 ```scss

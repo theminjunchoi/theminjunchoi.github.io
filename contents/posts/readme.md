@@ -1,9 +1,10 @@
 ---
 title: README
 date: 2024-01-01 22:38:31
-updated: 2025-07-01 00:19:33
+updated: 2025-08-21 22:13:32
 publish: false
 ---
+
 ## 😄 Introduction  
 Hi there! I’m **Minjun Choi** — a problem solver who’s always thinking about how to build services that actually solve problems and make a real impact. I care deeply about creating meaningful value through the code I write, not just clean features but outcomes that drive business and help people. I’m on a journey to keep learning, building, and contributing to something bigger than myself. Curious about what I’m working on? Check out my [blog](https://minjun.blog/)!
 ## ✏️ Education 
@@ -12,16 +13,18 @@ Hi there! I’m **Minjun Choi** — a problem solver who’s always thinking abo
 * CAU ZeroPage 31st Regular Member (2021.03. ~ )
 * CAU ZeroPage 32nd vice-President (2022.03. ~ 2023.02.)
 * GDSC CAU 1st Member (2021.06. ~ 2022.07.)
-* GDG on Campus CAU 4th Core Member (2024.09. ~ )
+* GDG on Campus CAU 4th Core Member (2024.09. ~ 2025.08.)
 * CECOM Member (2024.09. ~ )
 * Undergraduate researcher at [HCSLAB of Chung-Ang Univ.](https://sites.google.com/view/hcslab-cau/home?authuser=0) (2024.09. ~ 2025.01.)
-* Woowacourse 7th BE (2025.02. ~) 
+* Woowacourse 7th BE (2025.02. ~ 2025.11.)
+* GDG on Campus CAU 5th Organizer (2025.09. ~ )
 ## 🛠️ Tech Skill
-* Framework | Spring, Nuxt, Flutter
-* Language | Java, python, C, C++, Dart
-* ETC | git, Firebase, k8s, docker
-## 🚀 Toy Project
-* [ZeroPage Portal Page](https://github.com/ZeroPage/ZP-portal-page) with Nuxt
+| Classification | Skills                     |
+| :------------- | :------------------------- |
+| Framework      | Spring, Nuxt, Flutter      |
+| Language       | Java, python, C, C++, Dart |
+| ETC            | git, Firebase, k8s, docker |
+
 ## 📖 Study
 * Flutter, Design Pattern Study in ZeroPage (2021.09. ~ 2021.11.)
 * Data Structure Study in ZeroPage (2022.03. ~ 2022.06.)
@@ -29,3 +32,4 @@ Hi there! I’m **Minjun Choi** — a problem solver who’s always thinking abo
 * Computer Structure Study in ZeroPage (2022.09. ~ 2022.12.)
 * Spring Study in GDG CAU (2024.10. ~ 2024.12.)
 * Kubernetes Study in GDG CAU (2024.10. ~ 2024.12.)
+* 가상면접사례로배우는대규모시스템설계 Study in Woowacourse (2025.07. ~ ) 

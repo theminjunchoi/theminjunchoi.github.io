@@ -1,7 +1,7 @@
 ---
 title: 커피빵(CoffeeShout) 페르소나
 date: 2025-07-08 09:44:21
-updated: 2025-07-10 22:54:09
+updated: 2025-08-19 14:16:21
 publish: true
 tags:
   - 우아한테크코스
