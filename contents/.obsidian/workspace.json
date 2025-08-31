@@ -4,41 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "80790f7627ca334b",
+        "id": "3e3c8a3be40108b4",
         "type": "tabs",
         "children": [
           {
-            "id": "af0a0d47e5e2b3ee",
+            "id": "fc18e9e165e3daa1",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/woowatech/how_spring_handle_websocket.md",
+                "file": "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "how_spring_handle_websocket"
-            }
-          }
-        ]
-      },
-      {
-        "id": "441e59c0a1983073",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "da53c8e91975f307",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/readme.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "readme"
+              "title": "우아한테크코스_7기_BE_레벨3_회고"
             }
           }
         ]
@@ -98,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 316.50390243530273
+    "width": 316.50390243530273,
+    "collapsed": true
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -162,13 +143,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/coffeeshout/피드백.md",
+                "file": "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
                 "followCursor": false,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 피드백"
+              "title": "Outline of 우아한테크코스_7기_BE_레벨3_회고"
             }
           }
         ],
@@ -192,13 +173,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "da53c8e91975f307",
+  "active": "fc18e9e165e3daa1",
   "lastOpenFiles": [
+    "posts/woowatech/우아한테크코스_7기_BE_레벨2_회고.md",
+    "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
+    "Untitled.md",
+    "posts/readme.md",
+    "posts/woowatech/how_spring_handle_websocket.md",
     "posts/coffeeshout/coffeeshout_websocket_reconnection_app_switching.md",
     "posts/coffeeshout/coffeeshout_ideation.md",
     "posts/coffeeshout/coffeeshout_persona.md",
     "posts/coffeeshout/coffeeshout_server_tech_stack.md",
-    "posts/woowatech/how_spring_handle_websocket.md",
     "posts/woowatech/how_spring_injects_httpsession.md",
     "posts/woowatech/spring_mvc_dispatcherservlet.md",
     "posts/attachments/computer-architecture-textbook.jpg",
@@ -212,7 +197,6 @@
     "posts/lab/20241220_분당서울대병원_참관.md",
     "posts/woowatech/우테코 git.md",
     "posts/coffeeshout/team_observation.md",
-    "posts/readme.md",
     "posts/etc/why-obsidian.md",
     "posts/etc/nuxt-katex.md",
     "posts/etc/daily_easy_english_expression_summary.md",
@@ -223,9 +207,6 @@
     "posts/lab/interesting topic among sigchi 2024.md",
     "posts/retrospect/retrospect-2024-2.md",
     "posts/retrospect/retrospect-2024-1.md",
-    "posts/retrospect/retrospect-2023.md",
-    "posts/retrospect/retrospect-2022-2.md",
-    "posts/retrospect/retrospect-2022-1.md",
     "posts/retrospect",
     "posts/woowatech",
     "posts/lab",
