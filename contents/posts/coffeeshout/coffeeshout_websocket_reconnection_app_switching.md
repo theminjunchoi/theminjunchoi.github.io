@@ -1,7 +1,7 @@
 ---
 title: WebSocket Reconnection on App Switching
 date: 2025-08-13 09:44:21
-updated: 2025-08-21 22:10:05
+updated: 2025-10-15 09:43:11
 publish: true
 tags:
   - 우아한테크코스
@@ -40,7 +40,7 @@ private final ConcurrentHashMap<String, String> sessionPlayerMap; // sessionId -
 ### Disconnect가 감지되면?
 우선 서버에서 가장 먼저 서버에서 해줘야했던 건 Disconnect가 감지되면 room에서 해당 player를 제거해줘야했다. 그 사용자가 Disconnect 되어도 해당 room에 있던 다른 사용자들은 서비스를 계속 이용할 수 있어야했기에, Disconnect된 player 감지 및 제거가 필수였다.
 
-웹소켓 연결이 끊어지면 클라이언트로부터 Disconnect 메시지가 온다. 이를 서버가 받을 수 있는데, 이와 같은 메시지를 받는 과정은 [[how_spring_handle_websocket]]를 참고하면 좋다!
+웹소켓 연결이 끊어지면 클라이언트로부터 Disconnect 메시지가 온다. 이를 서버가 받을 수 있는데, 이와 같은 메시지를 받는 과정은 [[how_spring_handles_websocket]]를 참고하면 좋다!
 
 **'서버에서 Disconnect를 감지하면, 어느 단계에서 player를 room에서 지워줘야할까?'를 많이 고민했다.** 그 과정에서 웹소켓을 구현한 Spring의 내부 구조를 많이 고민하고 실험을 했었는데, 지금까지 연결해제와 관련해서 정리된 내용은 아래와 같다!
 ```

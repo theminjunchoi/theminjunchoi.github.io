@@ -4,21 +4,55 @@
     "type": "split",
     "children": [
       {
-        "id": "3e3c8a3be40108b4",
+        "id": "628e31605bc23498",
         "type": "tabs",
         "children": [
           {
-            "id": "fc18e9e165e3daa1",
+            "id": "e6cfde1d44c145ca",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
+                "file": "posts/coffeeshout/coffeeshout_infra_design.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "우아한테크코스_7기_BE_레벨3_회고"
+              "title": "coffeeshout_infra_design"
+            }
+          },
+          {
+            "id": "3a6a179c0dcaca35",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "posts/coffeeshout/coffeeshout_redis_stream.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "coffeeshout_redis_stream"
+            }
+          }
+        ]
+      },
+      {
+        "id": "36b89837fd094342",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c3261bf62806f21f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "posts/coffeeshout/coffeeshout_redis_stream.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "coffeeshout_redis_stream"
             }
           }
         ]
@@ -78,8 +112,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 316.50390243530273,
-    "collapsed": true
+    "width": 372.5086555480957
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -143,13 +176,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
+                "file": "posts/coffeeshout/coffeeshout_redis_stream.md",
                 "followCursor": false,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 우아한테크코스_7기_BE_레벨3_회고"
+              "title": "Outline of coffeeshout_redis_stream"
             }
           }
         ],
@@ -157,8 +190,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 395.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -173,56 +205,56 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fc18e9e165e3daa1",
+  "active": "21bf746e90829a3e",
   "lastOpenFiles": [
-    "posts/woowatech/우아한테크코스_7기_BE_레벨2_회고.md",
-    "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
-    "Untitled.md",
-    "posts/readme.md",
-    "posts/woowatech/how_spring_handle_websocket.md",
-    "posts/coffeeshout/coffeeshout_websocket_reconnection_app_switching.md",
-    "posts/coffeeshout/coffeeshout_ideation.md",
-    "posts/coffeeshout/coffeeshout_persona.md",
-    "posts/coffeeshout/coffeeshout_server_tech_stack.md",
+    "posts/coffeeshout/how_redis_pubsub_works.md",
+    "posts/coffeeshout/coffeeshout_infra_design.md",
+    "posts/coffeeshout/coffeeshout_redis_stream.md",
+    "posts/coffeeshout/how_spring_handles_websocket.md",
     "posts/woowatech/how_spring_injects_httpsession.md",
     "posts/woowatech/spring_mvc_dispatcherservlet.md",
-    "posts/attachments/computer-architecture-textbook.jpg",
+    "posts/coffeeshout/coffeeshout_server_tech_stack.md",
+    "posts/coffeeshout/coffeeshout_websocket_reconnection_app_switching.md",
+    "posts/coffeeshout/coffeeshout_persona.md",
+    "posts/coffeeshout/coffeeshout_ideation.md",
+    "posts/etc/우테코_레벨3_정리.md",
+    "posts/study/tech_interview/면접스터디_1주차.md",
+    "posts/study/tech_interview/면접스터디_5주차.md",
+    "posts/study/tech_interview",
+    "posts/study",
+    "posts/study/tech_interview/면접스터디_4주차.md",
+    "posts/study/tech_interview/면접스터디_3주차.md",
+    "posts/study/tech_interview/면접스터디_2주차.md",
+    "posts/etc/우테코 git.md",
+    "posts/coffeeshout/redis.md",
+    "posts/attachments/스크린샷 2025-10-12 오후 2.54.30.png",
+    "posts/attachments/스크린샷 2025-10-12 오후 2.54.20.png",
+    "Untitled.base",
+    "posts/attachments/스크린샷 2025-10-01 오후 8.40.51.png",
+    "posts/attachments/스크린샷 2025-10-01 오후 8.40.41.png",
+    "posts/attachments/스크린샷 2025-10-01 오후 8.40.30.png",
+    "posts/gdgoc_cau/lead_onboarding.md",
+    "posts/gdgoc_cau",
+    "posts/attachments/스크린샷 2025-09-28 오후 2.45.33.png",
+    "posts/attachments/스크린샷 2025-09-28 오후 2.45.24.png",
+    "Untitled 1.base",
+    "posts/woowatech/사고치지_않는_신입_개발자를_위한_DB_생존_가이드.md",
+    "미니게임 선택 유스케이스.md",
+    "posts/attachments/스크린샷 2025-09-17 오후 10.45.19.png",
+    "posts/attachments/스크린샷 2025-09-17 오후 10.45.10.png",
+    "posts/coffeeshout/coffeeshout_redis_pub_sub.md",
+    "posts/attachments/스크린샷 2025-09-14 오후 3.38.51.png",
+    "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
+    "posts/woowatech/우아한테크코스_7기_BE_레벨2_회고.md",
+    "posts/readme.md",
     "posts/coffeeshout/피드백.md",
     "feedback",
-    "posts/attachments/Computer-Architecture.jpg",
-    "posts/attachments/apply.techcourse.co.kr_assignment_14_mission_52.png",
-    "posts/computer_architecture/0-1. CA Intro.md",
-    "posts/computer_architecture/0-2. CA Overview.md",
-    "posts/computer_architecture/1-1. Defining Performance.md",
-    "posts/lab/20241220_분당서울대병원_참관.md",
-    "posts/woowatech/우테코 git.md",
-    "posts/coffeeshout/team_observation.md",
-    "posts/etc/why-obsidian.md",
-    "posts/etc/nuxt-katex.md",
-    "posts/etc/daily_easy_english_expression_summary.md",
     "posts/etc",
-    "posts/zeropage/ZeroPage_지금그때_2024.md",
-    "posts/zeropage/ZeroPage_지금그때_2022.md",
     "posts/zeropage",
-    "posts/lab/interesting topic among sigchi 2024.md",
-    "posts/retrospect/retrospect-2024-2.md",
-    "posts/retrospect/retrospect-2024-1.md",
     "posts/retrospect",
     "posts/woowatech",
-    "posts/lab",
-    "posts/computer_architecture",
-    "posts/coffeeshout",
-    "posts/attachments/Pasted image 20250522111843.png",
-    "posts/attachments/overview.jpg",
-    "posts/attachments/image.png",
-    "posts/attachments/image.webp",
-    "posts/attachments/스크린샷 2025-04-27 오후 10.02.00.png",
-    "posts/attachments/diagram.png",
-    "posts/attachments/스크린샷 2025-04-16 오후 10.38.16.png",
     "posts/오브젝트.canvas",
     "posts/Untitled.canvas",
-    "template",
-    "posts/attachments/민준_검사수치.heic",
     "무제 파일.canvas"
   ]
 }

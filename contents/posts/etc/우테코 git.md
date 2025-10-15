@@ -1,13 +1,12 @@
 ---
 title: 우아한테크코스 GitHub
 date: 2025-02-11 09:44:21
-updated: 2025-07-10 15:53:56
+updated: 2025-10-06 18:49:28
 publish: false
 tags:
   - 우아한테크코스
-series: 
+series:
 ---
-
 
 git remote add pair https:sdfsdfsdf
 git fetch pair
@@ -19,3 +18,5 @@ git remote add upstream https://github.com/woowacourse/spring-roomescape-payment
 git fetch upstream theminjunchoi
 git rebase upstream/theminjunchoi
 git checkout -b step2
+
+docker exec -it my-mysql-container mysql -u ec2_user -p

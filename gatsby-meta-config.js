@@ -8,7 +8,7 @@ module.exports = {
     name: `최민준`,
     bio: {
       role: `개발자`,
-      description: ['재밌는 것을 만드는', '공상과 상상을 즐기는', '협업을 좋아하는'],
+      description: ['재밌는 것을 만드는', '공상과 상상을 즐기는'],
       thumbnail: 'sample.png', // Path to the image in the 'asset' folder
     },
   },
