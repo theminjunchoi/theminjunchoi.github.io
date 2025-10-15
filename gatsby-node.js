@@ -135,13 +135,13 @@ exports.createSchemaCustomization = ({ actions }) => {
     frontmatter: Frontmatter!
   }
   type Frontmatter @dontInfer{
-    title: String!
+    title: String
     description: String
-    date: Date! @dateformat
+    date: Date @dateformat
     updated: Date @dateformat
     tags: [String!]
     series: String
-    publish: Boolean!
+    publish: Boolean
   }
   `
   createTypes(typeDefs)

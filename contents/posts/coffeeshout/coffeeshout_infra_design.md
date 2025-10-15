@@ -1,7 +1,7 @@
 ---
 title: 커피빵(CoffeeShout) 분산환경 구축
 date: 2025-10-13 09:44:21
-updated: 2025-10-15 09:48:48
+updated: 2025-10-15 09:59:59
 publish: true
 tags:
   - 우아한테크코스

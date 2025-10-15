@@ -4,55 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "628e31605bc23498",
+        "id": "db9d60ca5a4abcf0",
         "type": "tabs",
         "children": [
           {
-            "id": "e6cfde1d44c145ca",
+            "id": "fe9d2115a0a7adce",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/coffeeshout/coffeeshout_infra_design.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "coffeeshout_infra_design"
-            }
-          },
-          {
-            "id": "3a6a179c0dcaca35",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/coffeeshout/coffeeshout_redis_stream.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "coffeeshout_redis_stream"
-            }
-          }
-        ]
-      },
-      {
-        "id": "36b89837fd094342",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "c3261bf62806f21f",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "posts/coffeeshout/coffeeshout_redis_stream.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "coffeeshout_redis_stream"
+              "title": "New tab"
             }
           }
         ]
@@ -176,13 +138,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "posts/coffeeshout/coffeeshout_redis_stream.md",
                 "followCursor": false,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of coffeeshout_redis_stream"
+              "title": "Outline"
             }
           }
         ],
@@ -205,11 +166,20 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "21bf746e90829a3e",
+  "active": "fe9d2115a0a7adce",
   "lastOpenFiles": [
     "posts/coffeeshout/how_redis_pubsub_works.md",
-    "posts/coffeeshout/coffeeshout_infra_design.md",
+    "posts/study/tech_interview/면접스터디_2주차.md",
+    "posts/readme.md",
+    "posts/zeropage/ZeroPage_지금그때_2022.md",
+    "posts/woowatech/우아한테크코스 레벨1 고민거리와 자료들.md",
+    "posts/study/tech_interview/면접스터디_5주차.md",
+    "posts/study/tech_interview/면접스터디_4주차.md",
+    "posts/study/tech_interview/면접스터디_3주차.md",
+    "posts/study/tech_interview/면접스터디_1주차.md",
     "posts/coffeeshout/coffeeshout_redis_stream.md",
+    "posts/coffeeshout/coffeeshout_infra_design.md",
+    "posts/zeropage/ZeroPage_지금그때_2024.md",
     "posts/coffeeshout/how_spring_handles_websocket.md",
     "posts/woowatech/how_spring_injects_httpsession.md",
     "posts/woowatech/spring_mvc_dispatcherservlet.md",
@@ -218,13 +188,8 @@
     "posts/coffeeshout/coffeeshout_persona.md",
     "posts/coffeeshout/coffeeshout_ideation.md",
     "posts/etc/우테코_레벨3_정리.md",
-    "posts/study/tech_interview/면접스터디_1주차.md",
-    "posts/study/tech_interview/면접스터디_5주차.md",
     "posts/study/tech_interview",
     "posts/study",
-    "posts/study/tech_interview/면접스터디_4주차.md",
-    "posts/study/tech_interview/면접스터디_3주차.md",
-    "posts/study/tech_interview/면접스터디_2주차.md",
     "posts/etc/우테코 git.md",
     "posts/coffeeshout/redis.md",
     "posts/attachments/스크린샷 2025-10-12 오후 2.54.30.png",
@@ -244,10 +209,6 @@
     "posts/attachments/스크린샷 2025-09-17 오후 10.45.10.png",
     "posts/coffeeshout/coffeeshout_redis_pub_sub.md",
     "posts/attachments/스크린샷 2025-09-14 오후 3.38.51.png",
-    "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
-    "posts/woowatech/우아한테크코스_7기_BE_레벨2_회고.md",
-    "posts/readme.md",
-    "posts/coffeeshout/피드백.md",
     "feedback",
     "posts/etc",
     "posts/zeropage",
