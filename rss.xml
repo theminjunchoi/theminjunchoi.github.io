@@ -1,4 +1,131 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 15 Oct 2025 02:59:34 GMT</lastBuildDate><item><title><![CDATA[커피빵(CoffeeShout) Race Condition 해결]]></title><description><![CDATA[+ Race Condition 조회 후 쓰기 작업이 많은 도메인 특성상 Race Condition이 발생할 수 있다. Pub/Sub…]]></description><link>https://minjun.blog/coffeeshout_redis_stream/</link><guid isPermaLink="false">https://minjun.blog/coffeeshout_redis_stream/</guid><pubDate>Wed, 15 Oct 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;+ Race Condition&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 22 Oct 2025 12:22:07 GMT</lastBuildDate><item><title><![CDATA[1억명 유저의 비번 관리]]></title><description><![CDATA[스크린샷 2025-10-18 오후 5.49.35.png 문제 분석 1억 계정 규모 계산 1억 명 * 평균 히스토리 10개 = 10억개의 password_history history 평균 크기: user_id(12) + password_hash(6…]]></description><link>https://minjun.blog/면접스터디_6주차/</link><guid isPermaLink="false">https://minjun.blog/면접스터디_6주차/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;/attachments/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202025-10-18%20%EC%98%A4%ED%9B%84%205.49.35.png&quot; alt=&quot;스크린샷 2025-10-18 오후 5.49.35.png&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;문제 분석&lt;/h2&gt;
+&lt;h3&gt;1억 계정 규모 계산&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;1억 명 * 평균 히스토리 10개 = &lt;strong&gt;10억개의 password_history&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;history 평균 크기: user_id(12) + password_hash(64) + timestamp(8) + 기타 = &lt;strong&gt;100바이트&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;총 데이터 크기: &lt;strong&gt;100GB&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;일일 비밀번호 변경 건수 추정&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;일반적으로 월 1-2% 사용자가 비밀번호 변경 가정&lt;/li&gt;
+&lt;li&gt;1억 * 1.5% / 30일 = 매일 약 5만건의 변경&lt;/li&gt;
+&lt;li&gt;초당 10 ~ 20건&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;각 요구사항별 성능분석&lt;/h2&gt;
+&lt;h3&gt;1. 최근 5개 비밀번호 체크&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; password_hash &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; password_history 
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; user_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ? 
+&lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt; 
+&lt;span class=&quot;token keyword&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;인덱스 &lt;code class=&quot;language-text&quot;&gt;(user_id, created_at DESC)&lt;/code&gt;  타면서 스캔&lt;/li&gt;
+&lt;li&gt;B-tree 인덱스에서 O(log n) + 5레코드 읽기 = 1-5ms&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;문제없음&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. 3개월 이내 사용 체크&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; password_hash &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; password_history 
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; user_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ? 
+&lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; created_at &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; DATE_SUB&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;NOW&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INTERVAL&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;MONTH&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;복합 인덱스 &lt;code class=&quot;language-text&quot;&gt;(user_id, created_at DESC)&lt;/code&gt; 타면서 스캔&lt;/li&gt;
+&lt;li&gt;3개월치만 읽고 애플리케이션에서 비교&lt;/li&gt;
+&lt;li&gt;1유저당 최대 3개월에 2-3번 변경 → 2-3레코드 확인&lt;/li&gt;
+&lt;li&gt;문제없음&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. 100번 이상 사용됐는지 체크 (⭐️)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; users &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; current_password_hash &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ?&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;1억 레코드에서 스캔 필요&lt;/li&gt;
+&lt;li&gt;1억건이면 10~20초 소요&lt;/li&gt;
+&lt;li&gt;문제많음&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;실제 내 프로젝트였다면?&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;과연 굳이 &quot;100번 이상 사용됐는지&quot; 체크해야하나... 의심&lt;/li&gt;
+&lt;li&gt;기획팀에게 요구사항 완화 요청
+&lt;ul&gt;
+&lt;li&gt;이게 가장 시간적, 경제적 비용을 줄일 수 있는 방법이지 않나&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;정 안되면 정확히 100번 카운트를 해야햐나?
+&lt;ul&gt;
+&lt;li&gt;90번이든 110개든 보안 효과가 비슷하면 되는 거 아닌가?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;근사치 기반&lt;/h4&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BloomFilter&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; popularPasswordFilter&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;initBloomFilter&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+	popularPasswordFilter &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BloomFilter&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+		&lt;span class=&quot;token comment&quot;&gt;// 100만개의 데이터, 1% False Positive Rate 설정&lt;/span&gt;
+	&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Boolean&lt;/span&gt; validate &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; password&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+
+	&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; hash &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;password&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;token comment&quot;&gt;// ...&lt;/span&gt;
+	
+	&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;popularPasswordFilter&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;mightContain&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;hash&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+	
+	&lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;조회 성능 O(1)&lt;/li&gt;
+&lt;li&gt;추가 인프라 필요 없음 (비용 필요없음)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;더 정확히 체크해야한다면?&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Redis에 집계 테이블 저장, 매일 새벽에 1번씩 업데이트&lt;/li&gt;
+&lt;li&gt;아닌가? 새벽에 1번씩 Redis를 업데이트 하고 계속 Redis에 접근해서 조회해야한다면, 그냥 DB에 집계 테이블 만들어두고 새벽에 DB 접근해서 로컬 캐시 업데이트 해놓을듯&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;Claude가 말한 보완점&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;샤딩 전략 없음
+&lt;ul&gt;
+&lt;li&gt;1억 유저면 단일 DB로 못 버팀
+&lt;ul&gt;
+&lt;li&gt;근데 배민이었나, 토스였나, 쿠팡이었나? 아직 성능좋은 단일 DB로 버틴다고 들음&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Redis의 집게 테이블은 어떻게 동기화할거냐
+&lt;ul&gt;
+&lt;li&gt;CDC 써서 실시간 동기화하면 더 정확해짐&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Redis에 접근할 때 동시성 이슈 터지면 어떻게 할거냐
+&lt;ul&gt;
+&lt;li&gt;update와 select 동시에 일어나면 어떻게 할거임?
+&lt;ul&gt;
+&lt;li&gt;아니 근데 비번 변경이 동시에 일어날 일이 그렇게 많나?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[우아한테크코스 GitHub]]></title><description><![CDATA[git remote add pair https:sdfsdfsdf
+git fetch pair
+git rebase pair/step1 // 무조건 step1에서 나가야됨
+git checkout main
+git remote add upstream https…]]></description><link>https://minjun.blog/우테코 git/</link><guid isPermaLink="false">https://minjun.blog/우테코 git/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;git remote add pair https:sdfsdfsdf
+git fetch pair
+git rebase pair/step1&lt;/p&gt;
+&lt;p&gt;// 무조건 step1에서 나가야됨
+git checkout main
+git remote add upstream &lt;a href=&quot;https://github.com/woowacourse/spring-roomescape-payment&quot;&gt;https://github.com/woowacourse/spring-roomescape-payment&lt;/a&gt;
+git fetch upstream theminjunchoi
+git rebase upstream/theminjunchoi
+git checkout -b step2&lt;/p&gt;
+&lt;p&gt;docker exec -it my-mysql-container mysql -u ec2_user -p&lt;/p&gt;
+&lt;p&gt;prod용 db
+ssh -i key-coffee_shout.pem &lt;a href=&quot;mailto:ubuntu@43.203.229.152&quot;&gt;ubuntu@43.203.229.152&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[커피빵(CoffeeShout) Race Condition 해결]]></title><description><![CDATA[+ Race Condition 조회 후 쓰기 작업이 많은 도메인 특성상 Race Condition이 발생할 수 있다. Pub/Sub…]]></description><link>https://minjun.blog/coffeeshout_redis_stream/</link><guid isPermaLink="false">https://minjun.blog/coffeeshout_redis_stream/</guid><pubDate>Wed, 15 Oct 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;+ Race Condition&lt;/h2&gt;
 &lt;p&gt;조회 후 쓰기 작업이 많은 도메인 특성상 Race Condition이 발생할 수 있다. Pub/Sub 메시지 전파에는 약간의 지연(수 밀리초~수십 밀리초)이 존재하기 때문에, 극히 짧은 순간 동안 서로 다른 인스턴스가 다른 게임 상태를 볼 수 있다.&lt;/p&gt;
 &lt;p&gt;예를 들어 다음과 같은 &lt;strong&gt;동시성 문제&lt;/strong&gt;가 발생할 수 있다:&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;상황: 서버 1에 유저 A, 서버 2에 유저 B가 각각 연결된 상태
@@ -1343,20 +1470,7 @@ SessionDisconnectEvent 발행 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;그래서 잠시 앱을 전환하더라도 room에는 player가 남아있고, 대신 그렇게 잠시 나가있을 땐 host가 게임을 시작하지 못하도록 해줬다.&lt;/p&gt;
 &lt;h2&gt;TODO&lt;/h2&gt;
 &lt;p&gt;웹소켓은 네트워크 연결 방식이 바뀔 때도 연결이 끊기고, 새로운 세션id가 발급된다. 이런 상황은 앱 전환과 다르게 사용자가 컨트롤하지 못하는 상황도 있을거라 생각이 들어서 이 이슈도 우선적으로 해결해야할 것 같다.&lt;/p&gt;
-&lt;p&gt;이 문제를 해결하면서, 게임 중에 연결이 끊기는 경우 게임시간을 어떻게 다시 전파해야할지, 끊긴 과정에서 못받은 메시지들은 어떻게 다시 전달해줘야할지 고민할 수 있을 것 같다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[우아한테크코스 GitHub]]></title><description><![CDATA[git remote add pair https:sdfsdfsdf
-git fetch pair
-git rebase pair/step1 // 무조건 step1에서 나가야됨
-git checkout main
-git remote add upstream https…]]></description><link>https://minjun.blog/우테코 git/</link><guid isPermaLink="false">https://minjun.blog/우테코 git/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;git remote add pair https:sdfsdfsdf
-git fetch pair
-git rebase pair/step1&lt;/p&gt;
-&lt;p&gt;// 무조건 step1에서 나가야됨
-git checkout main
-git remote add upstream &lt;a href=&quot;https://github.com/woowacourse/spring-roomescape-payment&quot;&gt;https://github.com/woowacourse/spring-roomescape-payment&lt;/a&gt;
-git fetch upstream theminjunchoi
-git rebase upstream/theminjunchoi
-git checkout -b step2&lt;/p&gt;
-&lt;p&gt;docker exec -it my-mysql-container mysql -u ec2_user -p&lt;/p&gt;</content:encoded></item><item><title><![CDATA[No title]]></title><description><![CDATA[Solution Chanllenge 올해도 있다 최소 하나 이상의 구글 기술을 이용해서 지역 문제 해결을 목표 작년은 유엔에서 선정한 문제들 중 5개 선정해서 진행했음 팀원은 최소 4명 작년은 필리핀 마닐라에서 데모데이가 진행됨 2…]]></description><link>https://minjun.blog/lead_onboarding/</link><guid isPermaLink="false">https://minjun.blog/lead_onboarding/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;Solution Chanllenge&lt;/h2&gt;
+&lt;p&gt;이 문제를 해결하면서, 게임 중에 연결이 끊기는 경우 게임시간을 어떻게 다시 전파해야할지, 끊긴 과정에서 못받은 메시지들은 어떻게 다시 전달해줘야할지 고민할 수 있을 것 같다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[No title]]></title><description><![CDATA[Solution Chanllenge 올해도 있다 최소 하나 이상의 구글 기술을 이용해서 지역 문제 해결을 목표 작년은 유엔에서 선정한 문제들 중 5개 선정해서 진행했음 팀원은 최소 4명 작년은 필리핀 마닐라에서 데모데이가 진행됨 2…]]></description><link>https://minjun.blog/lead_onboarding/</link><guid isPermaLink="false">https://minjun.blog/lead_onboarding/</guid><pubDate>Tue, 11 Feb 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;Solution Chanllenge&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;올해도 있다&lt;/li&gt;
 &lt;li&gt;최소 하나 이상의 구글 기술을 이용해서 지역 문제 해결을 목표&lt;/li&gt;
