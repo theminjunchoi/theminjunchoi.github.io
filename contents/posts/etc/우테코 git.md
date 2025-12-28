@@ -1,7 +1,7 @@
 ---
 title: 우아한테크코스 GitHub
 date: 2025-02-11 09:44:21
-updated: 2025-10-06 18:49:28
+updated: 2025-10-16 14:47:02
 publish: false
 tags:
   - 우아한테크코스
@@ -20,3 +20,6 @@ git rebase upstream/theminjunchoi
 git checkout -b step2
 
 docker exec -it my-mysql-container mysql -u ec2_user -p
+
+prod용 db
+ssh -i key-coffee_shout.pem ubuntu@43.203.229.152

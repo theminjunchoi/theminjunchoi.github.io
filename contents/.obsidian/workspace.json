@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "db9d60ca5a4abcf0",
+        "id": "c420a3b46f5d4f98",
         "type": "tabs",
         "children": [
           {
-            "id": "fe9d2115a0a7adce",
+            "id": "f41156ca5394b427",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "posts/coffeeshout/coffeeshout_redis_stream.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "coffeeshout_redis_stream"
             }
           }
         ]
@@ -74,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 372.5086555480957
+    "width": 385.50390243530273
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -85,12 +89,27 @@
         "type": "tabs",
         "children": [
           {
+            "id": "9e90060757ad95e1",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "posts/etc/구글_커리어세션.md",
+                "followCursor": false,
+                "showSearch": true,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 구글_커리어세션"
+            }
+          },
+          {
             "id": "6609487bc3271618",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "posts/우아한테크코스 레벨1 고민거리와 자료들.md",
+                "file": "posts/etc/구글_커리어세션.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,7 +119,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for 우아한테크코스 레벨1 고민거리와 자료들"
+              "title": "Backlinks for 구글_커리어세션"
             }
           },
           {
@@ -109,12 +128,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "posts/우아한테크코스 7기 BE 프리코스 1주차 회고.md",
+                "file": "posts/etc/구글_커리어세션.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "우아한테크코스 7기 BE 프리코스 1주차 회고의 나가는 링크"
+              "title": "Outgoing links from 구글_커리어세션"
             }
           },
           {
@@ -133,25 +152,69 @@
             }
           },
           {
-            "id": "9e90060757ad95e1",
+            "id": "9cc4ea958c2caf7b",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          },
+          {
+            "id": "c838cf9f12248475",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ],
+        "currentTab": 4
+      },
+      {
+        "id": "8d6c5ae985fe06b1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b980cf19848c1748",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
+                "file": "posts/etc/구글_커리어세션.md",
                 "followCursor": false,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of 구글_커리어세션"
             }
           }
-        ],
-        "currentTab": 3
+        ]
+      },
+      {
+        "id": "3ae70d5f6fd7ec81",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b623d09670beb8ea",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 395.5
+    "width": 335.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -163,57 +226,58 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "fe9d2115a0a7adce",
+  "active": "f41156ca5394b427",
   "lastOpenFiles": [
-    "posts/coffeeshout/how_redis_pubsub_works.md",
-    "posts/study/tech_interview/면접스터디_2주차.md",
-    "posts/readme.md",
-    "posts/zeropage/ZeroPage_지금그때_2022.md",
+    "posts/woowatech/우아한테크코스_7기_BE_최종_회고.md",
+    "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
     "posts/woowatech/우아한테크코스 레벨1 고민거리와 자료들.md",
-    "posts/study/tech_interview/면접스터디_5주차.md",
-    "posts/study/tech_interview/면접스터디_4주차.md",
-    "posts/study/tech_interview/면접스터디_3주차.md",
-    "posts/study/tech_interview/면접스터디_1주차.md",
-    "posts/coffeeshout/coffeeshout_redis_stream.md",
-    "posts/coffeeshout/coffeeshout_infra_design.md",
-    "posts/zeropage/ZeroPage_지금그때_2024.md",
+    "posts/woowatech/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
     "posts/coffeeshout/how_spring_handles_websocket.md",
-    "posts/woowatech/how_spring_injects_httpsession.md",
-    "posts/woowatech/spring_mvc_dispatcherservlet.md",
-    "posts/coffeeshout/coffeeshout_server_tech_stack.md",
+    "posts/coffeeshout/how_redis_pubsub_works.md",
     "posts/coffeeshout/coffeeshout_websocket_reconnection_app_switching.md",
+    "posts/coffeeshout/coffeeshout_server_tech_stack.md",
+    "posts/coffeeshout/coffeeshout_redis_stream.md",
     "posts/coffeeshout/coffeeshout_persona.md",
+    "posts/coffeeshout/coffeeshout_infra_design.md",
     "posts/coffeeshout/coffeeshout_ideation.md",
+    "posts/woowatech/우아한테크코스_7기_BE_프리코스_4주차_회고.md",
+    "posts/etc/테코톡.md",
+    "posts/study/tech_interview/면접스터디_1주차.md",
+    "posts/woowatech/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
+    "posts/woowatech/우아한테크코스_7기_BE_프리코스_2주차_회고.md",
+    "posts/woowatech/우아한테크코스_7기_BE_레벨1_회고.md",
+    "posts/resume/25년_하반기_채용.md",
+    "posts/resume/네이버페이_25.11.md",
     "posts/etc/우테코_레벨3_정리.md",
+    "posts/etc/우형_채용설명회.md",
+    "posts/etc/구글_커리어세션.md",
+    "posts/etc/DH_채용설명회.md",
+    "posts/attachments/Pasted image 20251103160332.png",
+    "posts/attachments/Pasted image 20251103155757.png",
+    "posts/attachments/Pasted image 20251103155748.png",
+    "posts/attachments/Pasted image 20251103152807.png",
+    "posts/etc/제이슨_구직특강.md",
+    "posts/woowatech/우아한테크코스_7기_BE_레벨2_회고.md",
+    "posts/resume",
+    "posts/attachments/스크린샷 2025-10-18 오후 5.49.35.png",
+    "posts/attachments/Pasted image 20241020194900.png",
+    "posts/attachments/Pasted image 20241020194900 1.png",
     "posts/study/tech_interview",
     "posts/study",
-    "posts/etc/우테코 git.md",
-    "posts/coffeeshout/redis.md",
     "posts/attachments/스크린샷 2025-10-12 오후 2.54.30.png",
     "posts/attachments/스크린샷 2025-10-12 오후 2.54.20.png",
     "Untitled.base",
     "posts/attachments/스크린샷 2025-10-01 오후 8.40.51.png",
-    "posts/attachments/스크린샷 2025-10-01 오후 8.40.41.png",
-    "posts/attachments/스크린샷 2025-10-01 오후 8.40.30.png",
-    "posts/gdgoc_cau/lead_onboarding.md",
     "posts/gdgoc_cau",
-    "posts/attachments/스크린샷 2025-09-28 오후 2.45.33.png",
-    "posts/attachments/스크린샷 2025-09-28 오후 2.45.24.png",
     "Untitled 1.base",
-    "posts/woowatech/사고치지_않는_신입_개발자를_위한_DB_생존_가이드.md",
-    "미니게임 선택 유스케이스.md",
-    "posts/attachments/스크린샷 2025-09-17 오후 10.45.19.png",
-    "posts/attachments/스크린샷 2025-09-17 오후 10.45.10.png",
-    "posts/coffeeshout/coffeeshout_redis_pub_sub.md",
-    "posts/attachments/스크린샷 2025-09-14 오후 3.38.51.png",
     "feedback",
     "posts/etc",
     "posts/zeropage",
     "posts/retrospect",
-    "posts/woowatech",
     "posts/오브젝트.canvas",
     "posts/Untitled.canvas",
     "무제 파일.canvas"

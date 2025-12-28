@@ -1,7 +1,7 @@
 ---
-title: 커피빵(CoffeeShout) Race Condition 해결
+title: 커피빵(CoffeeShout) 동시에 같은 자원에 접근한다면
 date: 2025-10-15 09:44:21
-updated: 2025-10-15 13:13:27
+updated: 2025-12-28 23:47:01
 publish: false
 tags:
   - 우아한테크코스
