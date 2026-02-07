@@ -10,7 +10,7 @@
   "fileHashMap": {
     "about/index.md": "8cabd6af5c16013d495eb4c20cd874d23415eaaf1cf8c948f5a9eb68393d0e19",
     "posts/readme.md": "6d36c5815be29d2bb60d14749a9bb456a798193c61c53e852773a37f3edbcb8c",
-    "template/template.md": "dd640ae822c95d1be1da176481ebb8cee5c1dc7f7c52ae03d5d799b05ad5b5d2",
+    "template/template.md": "bed3f39e54f447d3f71cf13641c17671adbe383086c32b29380059cc3064e2a0",
     "posts/computer_architecture/0-1. CA Intro.md": "1daa6a9e19cff1746ebd472a5a918bca959f26304ef08ed89d9699c857b279fd",
     "posts/computer_architecture/0-2. CA Overview.md": "8760c10f399af3a3de22fcd808d5bd7bb74c28dc9cb75094f8ed4a1d6d95d73b",
     "posts/computer_architecture/1-1. Defining Performance.md": "18cbf2463e8eb2d30a23f02dd587ea92cdb0ca5468bac8a4cb506fcd5a7a1b69",
@@ -85,6 +85,7 @@
     "posts/etc/우형_채용설명회.md": "236f27359f215ec9567b8beec0383be98939c0fa276938f6f4d8d7767967c07b",
     "posts/etc/DH_채용설명회.md": "e913e75bf2b8482309502790fbd323b1fa545d6d3835f4779ee507cf8b4c4599",
     "posts/etc/구글_커리어세션.md": "a4e243d3de5032de2d48bb5a675e67eaea1bfd3e072b4bb5b7e3bc0e8ece4c66",
-    "posts/woowatech/우아한테크코스_7기_BE_최종_회고.md": "90d9ae8fee40711ae1b8f40d66c779d27b4651ef50fc2669321e43321c18e56e"
+    "posts/woowatech/우아한테크코스_7기_BE_최종_회고.md": "90d9ae8fee40711ae1b8f40d66c779d27b4651ef50fc2669321e43321c18e56e",
+    "posts/retrospect/retrospect-2025.md": "f61afd9f05707ace8a35abe6017d09ec239031648ba504ed029858e6a6e99b94"
   }
 }
