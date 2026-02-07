@@ -12,8 +12,8 @@ const GRAY0 = "#f8f9fa"
 // const lightProfile = "profile"
 // const darkProfile = "profile-bl"
 
-const lightProfile = "profile_2025_mirror_upscale"
-const darkProfile = "profile_2025_mirror_upscale"
+const lightProfile = "profile_2026_square"
+const darkProfile = "profile_2026_square"
 
 export const light = {
   name: "light",
