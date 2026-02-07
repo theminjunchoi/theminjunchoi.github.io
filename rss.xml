@@ -1,4 +1,114 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 07 Feb 2026 12:51:04 GMT</lastBuildDate><item><title><![CDATA[2025년 회고]]></title><description><![CDATA[지난 회고: retrospect-2024-2 돌아보기 2025년은 유독 기억에 많이 남을 한 해로 남을 것 같다. 할 말이 너무 많은데 이 글에 다 담길지 모르겠다. 우아한테크코스를 마치며 IMG_7091.jpeg…]]></description><link>https://minjun.blog/retrospect-2025/</link><guid isPermaLink="false">https://minjun.blog/retrospect-2025/</guid><pubDate>Thu, 01 Jan 2026 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;지난 회고: &lt;a href=&quot;/retrospect-2024-2&quot; data-wiki-link=&quot;true&quot;&gt;retrospect-2024-2&lt;/a&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 07 Feb 2026 13:09:42 GMT</lastBuildDate><item><title><![CDATA[쿼리 최적화, 36초를 1초로 줄이기까지]]></title><description><![CDATA[우테코 프로젝트 에서 대시보드 API 성능 개선 작업을 했다. 레이싱 게임 TOP 플레이어 조회 API가 너무 느려서 원인을 파악하고 개선하는 과정을 기록해본다. 문제 상황 dev 환경에 데이터를 넣고 API…]]></description><link>https://minjun.blog/zzol_query/</link><guid isPermaLink="false">https://minjun.blog/zzol_query/</guid><pubDate>Thu, 05 Feb 2026 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;우테코 프로젝트 &lt;code class=&quot;language-text&quot;&gt;ZZOL(구 커피빵)&lt;/code&gt;에서 대시보드 API 성능 개선 작업을 했다. 레이싱 게임 TOP 플레이어 조회 API가 너무 느려서 원인을 파악하고 개선하는 과정을 기록해본다.&lt;/p&gt;
+&lt;h2&gt;문제 상황&lt;/h2&gt;
+&lt;p&gt;dev 환경에 데이터를 넣고 API를 호출해보니 응답이 너무 느렸다. &lt;code class=&quot;language-text&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt;로 쿼리 실행 계획을 확인해봤다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;-&gt; Table scan on mg (cost=20588 rows=199800) (actual time=0.238..463 rows=200000 loops=1)
+-&gt; Aggregate using temporary table (actual time=34947..34947 rows=599999 loops=1)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;문제는 두 가지였다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;mini_game_play&lt;/code&gt; 테이블 풀스캔 (20만 건)&lt;/li&gt;
+&lt;li&gt;60만 건짜리 임시 테이블 생성 후 정렬&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;120만 건 데이터에서 3개 테이블 JOIN하고 있으니 당연히 느릴 수밖에 없었다.&lt;/p&gt;
+&lt;h2&gt;최적화 전 쿼리 흐름&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;mini_game_result (120만 건)
+    ↓
+JOIN mini_game_play (20만 건 풀스캔)
+    ↓
+JOIN player (60만 건)
+    ↓
+GROUP BY + ORDER BY (임시 테이블 60만 건)
+    ↓
+LIMIT 5&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;실행 시간: 36,050ms (36초)&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;적용한 최적화&lt;/h2&gt;
+&lt;h3&gt;1. 비정규화&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;mini_game_type&lt;/code&gt;을 &lt;code class=&quot;language-text&quot;&gt;mini_game_result&lt;/code&gt; 테이블에 중복 저장했다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- Before: JOIN 필요&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; mini_game_result mr
+&lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; mini_game_play mg &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; mr&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;mini_game_play_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; mg&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;id
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; mg&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;mini_game_type &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;RACING_GAME&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- After: JOIN 제거&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; mini_game_result mr
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; mr&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;mini_game_type &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;RACING_GAME&apos;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;왜 비정규화를 선택했는가?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;무조건 비정규화가 답은 아니라고 생각했다. 도메인 특성과 데이터 분포를 분석하고 나서 결정했다.&lt;/p&gt;
+&lt;p&gt;첫째, &lt;strong&gt;mini_game_type은 변경되지 않는 값이다.&lt;/strong&gt; 한 번 생성된 미니게임의 타입은 절대 바뀌지 않는다. 레이싱 게임이 카드 게임으로 바뀌는 일은 없다. 비정규화의 가장 큰 단점은 데이터 정합성 관리인데, 변경이 없는 값이라면 이 문제가 사라진다.&lt;/p&gt;
+&lt;p&gt;둘째, &lt;strong&gt;mini_game_type의 카디널리티가 낮다.&lt;/strong&gt; 현재 게임 타입은 &lt;code class=&quot;language-text&quot;&gt;RACING_GAME&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;CARD_GAME&lt;/code&gt; 두 가지뿐이다. 새로운 게임 타입이 추가되더라도 수십 개 수준일 것이다. 이런 경우 중복 저장해도 저장 공간 증가가 미미하다. varchar(20) × 120만 건 = 약 20MB 정도.&lt;/p&gt;
+&lt;p&gt;셋째, &lt;strong&gt;조회 빈도가 압도적으로 높다.&lt;/strong&gt; 대시보드 API는 관리자가 수시로 호출하는 조회성 API다. 반면 mini_game_result 데이터는 게임이 끝날 때 한 번 INSERT되고 끝이다. 조회 100번에 쓰기 1번 수준이라면, 조회 성능을 위해 쓰기 시 약간의 오버헤드를 감수하는 게 합리적이다.&lt;/p&gt;
+&lt;p&gt;넷째, &lt;strong&gt;JOIN 제거 효과가 크다.&lt;/strong&gt; 기존 쿼리는 &lt;code class=&quot;language-text&quot;&gt;mini_game_play&lt;/code&gt; 테이블을 풀스캔해서 &lt;code class=&quot;language-text&quot;&gt;mini_game_type&lt;/code&gt;을 가져왔다. 20만 건 풀스캔 후 필터링. 비정규화하면 이 JOIN 자체가 사라지고, &lt;code class=&quot;language-text&quot;&gt;mini_game_result&lt;/code&gt; 테이블 하나에서 바로 필터링할 수 있다.&lt;/p&gt;
+&lt;h3&gt;2. 복합 인덱스 추가&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INDEX&lt;/span&gt; idx_mini_game_result_type_created 
+&lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; mini_game_result &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;mini_game_type&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;왜 복합 인덱스인가?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;단일 컬럼 인덱스가 아니라 복합 인덱스를 선택한 이유가 있다.
+대시보드 API의 쿼리 조건을 보면 항상 두 가지 조건이 함께 쓰인다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; mini_game_type &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;RACING_GAME&apos;&lt;/span&gt;
+  &lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; created_at &lt;span class=&quot;token operator&quot;&gt;BETWEEN&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-01-01&apos;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-01-31&apos;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;mini_game_type&lt;/code&gt; 단일 인덱스만 있으면? RACING_GAME 60만 건을 먼저 찾고, 그 안에서 created_at 조건으로 다시 필터링해야 한다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;created_at&lt;/code&gt; 단일 인덱스만 있으면? 이번 달 데이터 12만 건을 먼저 찾고, 그 안에서 mini_game_type으로 다시 필터링해야 한다.&lt;/p&gt;
+&lt;p&gt;복합 인덱스 &lt;code class=&quot;language-text&quot;&gt;(mini_game_type, created_at)&lt;/code&gt;가 있으면? B-Tree에서 RACING_GAME이면서 이번 달인 데이터를 &lt;strong&gt;한 번에&lt;/strong&gt; 찾는다. 6만 건만 정확히 읽으면 된다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;컬럼 순서도 중요하다.&lt;/strong&gt; &lt;code class=&quot;language-text&quot;&gt;mini_game_type&lt;/code&gt;을 앞에 둔 이유는 등호(=) 조건이기 때문이다. &lt;code class=&quot;language-text&quot;&gt;created_at&lt;/code&gt;은 범위(BETWEEN) 조건이다. 등호 조건 → 범위 조건 순서로 인덱스를 구성해야 효율적으로 탄다. 반대로 하면 범위 조건에서 인덱스 스캔이 끊긴다.&lt;/p&gt;
+&lt;h2&gt;최적화 후 쿼리 흐름&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;mini_game_result (인덱스 레인지 스캔 → 6만 건만 조회)
+    ↓
+JOIN player (PK lookup)
+    ↓
+GROUP BY + ORDER BY (임시 테이블 6만 건)
+    ↓
+LIMIT 5&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;실행 시간: 1,173ms (1.2초)&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;Before vs After&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;Before&lt;/th&gt;
+&lt;th&gt;After&lt;/th&gt;
+&lt;th&gt;개선율&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;실행 시간&lt;/td&gt;
+&lt;td&gt;36,050ms&lt;/td&gt;
+&lt;td&gt;1,173ms&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;96.7%&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;JOIN 수&lt;/td&gt;
+&lt;td&gt;3개&lt;/td&gt;
+&lt;td&gt;2개&lt;/td&gt;
+&lt;td&gt;33% 감소&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;스캔 방식&lt;/td&gt;
+&lt;td&gt;풀스캔 (120만 건)&lt;/td&gt;
+&lt;td&gt;인덱스 레인지 스캔 (6만 건)&lt;/td&gt;
+&lt;td&gt;-&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;임시 테이블&lt;/td&gt;
+&lt;td&gt;60만 건&lt;/td&gt;
+&lt;td&gt;6만 건&lt;/td&gt;
+&lt;td&gt;90% 감소&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;삽질했던 부분&lt;/h2&gt;
+&lt;h3&gt;1. k6 부하 테스트 결과가 이상했다&lt;/h3&gt;
+&lt;p&gt;Before/After 모두 5~6ms로 차이가 없었다. 알고 보니 InnoDB 버퍼풀 캐시 히트 때문이었다. 같은 쿼리 반복하면 메모리에서 읽어서 빠르게 응답함.&lt;/p&gt;
+&lt;p&gt;→ 진짜 성능은 &lt;code class=&quot;language-text&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt;로 측정한 콜드 쿼리 시간으로 비교해야 했다.&lt;/p&gt;
+&lt;h3&gt;2. 인덱스를 만들어도 안 탔다&lt;/h3&gt;
+&lt;p&gt;처음에 데이터를 전부 이번 달(1월)에 몰아넣었더니 인덱스를 만들어도 옵티마이저가 풀스캔을 선택했다. &quot;어차피 다 읽어야 하니까 풀스캔이 낫다&quot;고 판단한 것.&lt;/p&gt;
+&lt;p&gt;→ 데이터 분포를 1년치로 분산시키고 이번 달은 10%만 넣어서 해결했다. &lt;code class=&quot;language-text&quot;&gt;ANALYZE TABLE&lt;/code&gt;로 통계 정보 갱신도 필요했다.&lt;/p&gt;
+&lt;h2&gt;핵심 포인트&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;비정규화&lt;/strong&gt;: 무조건 답이 아니다. 변경 가능성, 카디널리티, 조회/쓰기 비율을 따져보고 결정해야 한다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;복합 인덱스&lt;/strong&gt;: WHERE 조건에 자주 함께 쓰이는 컬럼 조합으로 생성. 등호 조건 → 범위 조건 순서로.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;EXPLAIN ANALYZE&lt;/strong&gt;: 병목 구간이 어디인지 실제 실행 시간으로 확인 가능.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;데이터 분포&lt;/strong&gt;: 테스트 데이터도 실제 운영 환경과 유사하게 구성해야 의미 있는 결과가 나온다.&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[2025년 회고]]></title><description><![CDATA[지난 회고: retrospect-2024-2 돌아보기 2025년은 유독 기억에 많이 남을 한 해로 남을 것 같다. 할 말이 너무 많은데 이 글에 다 담길지 모르겠다. 우아한테크코스를 마치며 IMG_7091.jpeg…]]></description><link>https://minjun.blog/retrospect-2025/</link><guid isPermaLink="false">https://minjun.blog/retrospect-2025/</guid><pubDate>Thu, 01 Jan 2026 09:44:21 GMT</pubDate><content:encoded>&lt;p&gt;지난 회고: &lt;a href=&quot;/retrospect-2024-2&quot; data-wiki-link=&quot;true&quot;&gt;retrospect-2024-2&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;돌아보기&lt;/h2&gt;
 &lt;p&gt;2025년은 유독 기억에 많이 남을 한 해로 남을 것 같다. 할 말이 너무 많은데 이 글에 다 담길지 모르겠다.&lt;/p&gt;
 &lt;h3&gt;우아한테크코스를 마치며&lt;/h3&gt;
