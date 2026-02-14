@@ -6,7 +6,7 @@ publish: false
 ---
 
 ## 😄 Introduction  
-Hey, I'm Minjun Choi — aproblem solver who thrives on cutting through ambiguity to align teams and move fast. I don’t just stay in my lane — I jump in wherever needed to make things work. I’m cautious about overengineering, but I obsess over keeping systems clean enough for the team to iterate without losing their minds. Curious about what I’m working on? Check out my [blog](https://minjun.blog/)!
+Hey, I'm Minjun Choi — a problem solver who thrives on cutting through ambiguity to align teams and move fast. I don’t just stay in my lane — I jump in wherever needed to make things work. I’m cautious about overengineering, but I obsess over keeping systems clean enough for the team to iterate without losing their minds. Curious about what I’m working on? Check out my [blog](https://minjun.blog/)!
 
 
 ## ✏️ Education 
