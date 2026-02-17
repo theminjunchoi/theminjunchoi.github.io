@@ -8,29 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "a5ede328a23f4cc1",
+            "id": "2f40ab062eaa9845",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/coffeeshout/zzol_message_recovery.md",
+                "file": "posts/zzol/coffeeshout_to_zzol.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "zzol_message_recovery"
-            }
-          },
-          {
-            "id": "2f40ab062eaa9845",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.11.7"
-              },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.11.7"
+              "title": "coffeeshout_to_zzol"
             }
           }
         ]
@@ -90,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 385.50390243530273,
-    "collapsed": true
+    "width": 385.50390243530273
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -243,13 +230,25 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "a5ede328a23f4cc1",
+  "active": "2f40ab062eaa9845",
   "lastOpenFiles": [
-    "posts/coffeeshout/zzol_query.md",
-    "posts/coffeeshout/zzol_message_recovery.md",
-    "posts/coffeeshout/how_spring_handles_websocket.md",
-    "posts/coffeeshout/coffeeshout_server_tech_stack.md",
+    "posts/zzol/how_redis_pubsub_works.md",
+    "posts/zzol/coffeeshout_to_zzol.md",
+    "posts/zzol/coffeeshout_websocket_reconnection_app_switching.md",
+    "posts/zzol/coffeeshout_server_tech_stack.md",
+    "posts/zzol/coffeeshout_persona.md",
+    "posts/zzol/coffeeshout_infra_design.md",
+    "posts/zzol/coffeeshout_ideation.md",
+    "posts/zzol/zzol_circuit_breaker.md",
+    "posts/resume/네이버페이_25.11.md",
+    "posts/resume/25년_하반기_채용.md",
+    "posts/zzol/zzol_query.md",
+    "posts/zzol/zzol_message_recovery.md",
+    "posts/zzol/how_spring_handles_websocket.md",
     "posts/coffeeshout/coffeeshout_redis_stream.md",
+    "posts/coffeeshout/blog-writing-prompt.md",
+    "posts/blog-writing-prompt.md",
+    "posts/blog-writing-prompt",
     "posts/retrospect/retrospect-2025.md",
     "posts/retrospect/retrospect-2024-2.md",
     "posts/attachments/IMG_7091.jpeg",
@@ -261,17 +260,6 @@
     "posts/study/tech_interview/면접스터디_6주차.md",
     "posts/study/tech_interview/면접스터디_2주차.md",
     "posts/study/tech_interview/면접스터디_1주차.md",
-    "posts/woowatech/우아한테크코스_7기_BE_레벨3_회고.md",
-    "posts/woowatech/우아한테크코스 레벨1 고민거리와 자료들.md",
-    "posts/woowatech/우아한테크코스_7기_BE_프리코스_1주차_회고.md",
-    "posts/coffeeshout/how_redis_pubsub_works.md",
-    "posts/coffeeshout/coffeeshout_websocket_reconnection_app_switching.md",
-    "posts/coffeeshout/coffeeshout_persona.md",
-    "posts/coffeeshout/coffeeshout_infra_design.md",
-    "posts/coffeeshout/coffeeshout_ideation.md",
-    "posts/woowatech/우아한테크코스_7기_BE_프리코스_4주차_회고.md",
-    "posts/etc/테코톡.md",
-    "posts/woowatech/우아한테크코스_7기_BE_프리코스_3주차_회고.md",
     "posts/attachments/Pasted image 20251103160332.png",
     "posts/attachments/Pasted image 20251103155757.png",
     "posts/attachments/Pasted image 20251103155748.png",
@@ -290,7 +278,6 @@
     "feedback",
     "posts/etc",
     "posts/zeropage",
-    "posts/retrospect",
     "posts/오브젝트.canvas",
     "posts/Untitled.canvas",
     "무제 파일.canvas"

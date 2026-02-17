@@ -1,12 +1,12 @@
 ---
 title: 커피빵(CoffeeShout) 기획
 date: 2025-07-07 09:44:21
-updated: 2025-08-19 14:16:52
+updated: 2026-02-17 18:43:39
 publish: true
 tags:
   - 우아한테크코스
-  - CoffeeShout
-series: 커피빵(CoffeeShout) 개발록
+  - ZZOL
+series: ZZOL 개발록
 ---
 ## 프로젝트명 - 한글
 커피빵

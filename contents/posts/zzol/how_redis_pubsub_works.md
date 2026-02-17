@@ -1,12 +1,12 @@
 ---
 title: How Redis Pub/Sub Works
 date: 2025-10-14 09:44:21
-updated: 2025-10-15 11:58:36
+updated: 2026-02-17 18:44:17
 publish: true
 tags:
   - 우아한테크코스
-  - CoffeeShout
-series: 커피빵(CoffeeShout) 개발록
+  - ZZOL
+series: ZZOL 개발록
 ---
 [[coffeeshout_infra_design]] 지난 글에서 이어집니다!
 ## Redis pub/sub

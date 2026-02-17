@@ -1,11 +1,11 @@
 ---
 title: WebSocket 메시지 복구, 끊김 없는 게임 경험 만들기
 date: 2026-02-14 09:44:21
-updated: 2026-02-14 20:40:35
+updated: 2026-02-17 18:44:25
 publish: true
 tags:
-  - CoffeeShout
-series: 커피빵(CoffeeShout) 개발록
+  - ZZOL
+series: ZZOL 개발록
 ---
 실시간 멀티플레이어 게임을 개발하면서 마주친 문제가 있다. 특정 상황에서 유저가 게임 흐름에서 이탈하는 현상이었다. 이 글에서는 문제를 분석하고 해결한 과정을 공유한다.
 ## 문제 인식

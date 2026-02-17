@@ -1,12 +1,12 @@
 ---
 title: How Spring Handles WebSocket
 date: 2025-08-12 09:44:21
-updated: 2025-10-15 09:46:55
+updated: 2026-02-17 18:44:19
 publish: true
 tags:
   - spring
-  - CoffeeShout
-series: 커피빵(CoffeeShout) 개발록
+  - ZZOL
+series: ZZOL 개발록
 ---
 [[how_spring_injects_httpsession]] 이 포스트를 읽고 오면 이해가 더 잘 됩니다!
 

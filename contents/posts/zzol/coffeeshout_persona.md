@@ -1,12 +1,12 @@
 ---
 title: 커피빵(CoffeeShout) 페르소나
 date: 2025-07-08 09:44:21
-updated: 2025-08-19 14:16:21
+updated: 2026-02-17 18:43:49
 publish: true
 tags:
   - 우아한테크코스
-  - CoffeeShout
-series: 커피빵(CoffeeShout) 개발록
+  - ZZOL
+series: ZZOL 개발록
 ---
 # 커피빵(CoffeeShout): 똥손도 즐기는 커피빵 전쟁
 ## 목표

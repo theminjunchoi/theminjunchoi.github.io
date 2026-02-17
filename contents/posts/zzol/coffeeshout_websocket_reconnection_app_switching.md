@@ -1,12 +1,12 @@
 ---
 title: WebSocket Reconnection on App Switching
 date: 2025-08-13 09:44:21
-updated: 2025-10-15 09:43:11
+updated: 2026-02-17 18:44:14
 publish: true
 tags:
   - 우아한테크코스
-  - CoffeeShout
-series: 커피빵(CoffeeShout) 개발록
+  - ZZOL
+series: ZZOL 개발록
 ---
 ## 문제 상황
 mvp를 빠르게 만들고 테스트를 하던 중, **다른 앱을 사용하다가 다시 돌아오면 웹소켓 통신이 안된다**는 것을 발견했다.

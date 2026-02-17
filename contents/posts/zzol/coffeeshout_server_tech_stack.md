@@ -1,12 +1,12 @@
 ---
 title: 커피빵(CoffeeShout) 서버 기술스택
 date: 2025-07-09 09:44:21
-updated: 2025-08-19 14:16:13
+updated: 2026-02-17 18:44:11
 publish: true
 tags:
   - 우아한테크코스
-  - CoffeeShout
-series: 커피빵(CoffeeShout) 개발록
+  - ZZOL
+series: ZZOL 개발록
 ---
 해당 문서에서는 커피빵(CoffeeShout)를 구성하는 서버파트 테크 스택 선정 이유에 관한 내용을 담고 있습니다.
 ## ✏️ 언어 

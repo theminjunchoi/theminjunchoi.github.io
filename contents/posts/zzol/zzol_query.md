@@ -1,11 +1,11 @@
 ---
 title: 쿼리 최적화, 36초를 1초로 줄이기까지
 date: 2026-02-5 09:44:21
-updated: 2026-02-07 22:06:39
+updated: 2026-02-17 18:44:28
 publish: true
 tags:
-  - CoffeeShout
-series:
+  - ZZOL
+series: ZZOL 개발록
 ---
 우테코 프로젝트 `ZZOL(구 커피빵)`에서 대시보드 API 성능 개선 작업을 했다. 레이싱 게임 TOP 플레이어 조회 API가 너무 느려서 원인을 파악하고 개선하는 과정을 기록해본다.
 
