@@ -1,7 +1,7 @@
 ---
-title: 외부 서비스 장애에서 살아남기
+title: 외부 서비스 장애로부터 살아남기
 date: 2026-02-17 09:42:27
-updated: 2026-02-17 18:45:58
+updated: 2026-02-18 03:57:20
 publish: true
 tags:
   - ZZOL

@@ -1,7 +1,7 @@
 ---
-title: 커피빵(CoffeeShout) 기획
+title: "사이드 프로젝트에서 실제 서비스까지: ZZOL(커피빵) 기획과 그 시작"
 date: 2025-07-07 09:44:21
-updated: 2026-02-17 18:43:39
+updated: 2026-02-18 03:52:39
 publish: true
 tags:
   - 우아한테크코스

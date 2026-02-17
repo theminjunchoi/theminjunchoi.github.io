@@ -1,7 +1,7 @@
 ---
-title: How Redis Pub/Sub Works
+title: Redis Pub/Sub을 활용한 다중 서버 간 실시간 메시지 동기화 전략
 date: 2025-10-14 09:44:21
-updated: 2026-02-17 23:50:20
+updated: 2026-02-18 03:56:18
 publish: true
 tags:
   - 우아한테크코스

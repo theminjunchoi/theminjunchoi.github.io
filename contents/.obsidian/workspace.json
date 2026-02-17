@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/zzol/thread_pool_tuning.md",
+                "file": "posts/zzol/zzol_circuit_breaker.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "thread_pool_tuning"
+              "title": "zzol_circuit_breaker"
             }
           }
         ]
@@ -232,20 +232,22 @@
   },
   "active": "2f40ab062eaa9845",
   "lastOpenFiles": [
-    "posts/zzol/persona.md",
+    "posts/zzol/server_tech_stack.md",
+    "posts/zzol/zzol_circuit_breaker.md",
+    "posts/zzol/zzol_message_recovery.md",
+    "posts/zzol/how_redis_pubsub_works.md",
     "posts/zzol/infra_design.md",
+    "posts/zzol/thread_pool_tuning.md",
+    "posts/zzol/websocket_reconnection_app_switching.md",
+    "posts/zzol/how_spring_handles_websocket.md",
+    "posts/zzol/persona.md",
     "posts/zzol/ideation.md",
     "posts/zzol/coffeeshout_to_zzol.md",
-    "posts/zzol/server_tech_stack.md",
-    "posts/zzol/websocket_reconnection_app_switching.md",
-    "posts/zzol/thread_pool_tuning.md",
-    "posts/zzol/how_redis_pubsub_works.md",
-    "posts/zzol/zzol_circuit_breaker.md",
+    "posts/zzol/graceful_shutdown.md",
+    "posts/zzol/.md",
     "posts/resume/네이버페이_25.11.md",
     "posts/resume/25년_하반기_채용.md",
     "posts/zzol/zzol_query.md",
-    "posts/zzol/zzol_message_recovery.md",
-    "posts/zzol/how_spring_handles_websocket.md",
     "posts/coffeeshout/coffeeshout_redis_stream.md",
     "posts/coffeeshout/blog-writing-prompt.md",
     "posts/blog-writing-prompt.md",
@@ -258,8 +260,6 @@
     "posts/study/tech_interview/면접스터디_3주차.md",
     "posts/study/tech_interview/면접스터디_4주차.md",
     "posts/study/tech_interview/면접스터디_5주차.md",
-    "posts/study/tech_interview/면접스터디_6주차.md",
-    "posts/study/tech_interview/면접스터디_2주차.md",
     "posts/attachments/Pasted image 20251103160332.png",
     "posts/attachments/Pasted image 20251103155757.png",
     "posts/attachments/Pasted image 20251103155748.png",

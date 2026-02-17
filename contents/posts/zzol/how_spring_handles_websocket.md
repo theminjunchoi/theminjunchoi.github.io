@@ -1,7 +1,7 @@
 ---
-title: How Spring Handles WebSocket
+title: Spring WebSocket 내부 동작 원리 파헤치기
 date: 2025-08-12 09:44:21
-updated: 2026-02-17 18:44:19
+updated: 2026-02-18 03:54:02
 publish: true
 tags:
   - spring

@@ -1,7 +1,7 @@
 ---
-title: WebSocket 메시지 복구, 끊김 없는 게임 경험 만들기
+title: 네트워크 불안정 상황에서도 메시지 유실 없는 견고한 게임 서버 설계
 date: 2026-02-14 09:44:21
-updated: 2026-02-17 18:44:25
+updated: 2026-02-18 03:56:52
 publish: true
 tags:
   - ZZOL

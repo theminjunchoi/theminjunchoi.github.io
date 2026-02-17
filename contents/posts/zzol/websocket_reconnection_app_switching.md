@@ -1,7 +1,7 @@
 ---
-title: WebSocket Reconnection on App Switching
+title: 모바일 백그라운드 전환 시에도 끊김 없는 WebSocket 연결 경험 만들기
 date: 2025-08-13 09:44:21
-updated: 2026-02-17 18:44:14
+updated: 2026-02-18 03:54:16
 publish: true
 tags:
   - 우아한테크코스
