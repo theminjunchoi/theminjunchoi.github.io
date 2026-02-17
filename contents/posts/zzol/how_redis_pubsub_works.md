@@ -1,14 +1,14 @@
 ---
 title: How Redis Pub/Sub Works
 date: 2025-10-14 09:44:21
-updated: 2026-02-17 18:44:17
+updated: 2026-02-17 23:50:20
 publish: true
 tags:
   - 우아한테크코스
   - ZZOL
 series: ZZOL 개발록
 ---
-[[coffeeshout_infra_design]] 지난 글에서 이어집니다!
+[[infra_design]] 지난 글에서 이어집니다!
 ## Redis pub/sub
 
 Redis Pub/Sub의 동작 원리를 이해하면 왜 이 방식이 실시간 게임 동기화에 적합한지 명확해진다.

@@ -77,16 +77,17 @@
     "posts/etc/구글_커리어세션.md": "a4e243d3de5032de2d48bb5a675e67eaea1bfd3e072b4bb5b7e3bc0e8ece4c66",
     "posts/woowatech/우아한테크코스_7기_BE_최종_회고.md": "90d9ae8fee40711ae1b8f40d66c779d27b4651ef50fc2669321e43321c18e56e",
     "posts/retrospect/retrospect-2025.md": "f61afd9f05707ace8a35abe6017d09ec239031648ba504ed029858e6a6e99b94",
-    "posts/zzol/coffeeshout_ideation.md": "b2ebf92ff565993c6fef2d5896f71835f26ad67b193b2cb4c024c0ff48bb4a80",
-    "posts/zzol/coffeeshout_infra_design.md": "4ef3e27943d05ed065b13bdd44713d960427a0ccf81f10452298b8c650af41c2",
-    "posts/zzol/coffeeshout_websocket_reconnection_app_switching.md": "3d35540e488a3e96e8440ecb4216dd729a3901c4ca347c149e5175c890fefd1c",
-    "posts/zzol/how_redis_pubsub_works.md": "9fbbaed362bb17ef14a0b08d3c37a229a81b18905ff25b451f65608c19e8f87e",
+    "posts/zzol/how_redis_pubsub_works.md": "7e8c8352d3c44e60e2fb65d3bd18601c5bb3c73f8af65d5e3b5cc609ba087f51",
     "posts/zzol/how_spring_handles_websocket.md": "e3ca56d3309ecc8dd4a8defecc73c5abcf1130fd4b450f21bb319ab55e88236d",
     "posts/zzol/zzol_message_recovery.md": "de8527ca54453e854fe1e20c3b65023f06dc6a82c3ba4ce40ed11151c5dd664e",
     "posts/zzol/zzol_query.md": "0764aae38c2c11ef32824590b0e6578412d2373431f531663fe8535e7ec3f392",
-    "posts/zzol/coffeeshout_persona.md": "6a63a3aee2f3217f6aef9f6e8e15adff2f87bea456f94b674755d4579d9d461b",
-    "posts/zzol/coffeeshout_server_tech_stack.md": "36c199775f7cc318542e920213d09cec2f067cf900620f12bd35e45eb048649b",
     "posts/zzol/zzol_circuit_breaker.md": "23ec237d98c17f107f2f182da9fbb84feb2727b5359bf6a0dedf623b587d964f",
-    "posts/zzol/coffeeshout_to_zzol.md": "3af9447a275f7b0823d26ce3830266c3840fc035fe1ad8b2f06201f4d2af2719"
+    "posts/zzol/coffeeshout_to_zzol.md": "3af9447a275f7b0823d26ce3830266c3840fc035fe1ad8b2f06201f4d2af2719",
+    "posts/zzol/thread_pool_tuning.md": "759391503ce89ab5497e186a6a36fe707412058c5ca4a6fe60d951871e98f1a6",
+    "posts/zzol/websocket_reconnection_app_switching.md": "3d35540e488a3e96e8440ecb4216dd729a3901c4ca347c149e5175c890fefd1c",
+    "posts/zzol/server_tech_stack.md": "36c199775f7cc318542e920213d09cec2f067cf900620f12bd35e45eb048649b",
+    "posts/zzol/persona.md": "6a63a3aee2f3217f6aef9f6e8e15adff2f87bea456f94b674755d4579d9d461b",
+    "posts/zzol/infra_design.md": "4ef3e27943d05ed065b13bdd44713d960427a0ccf81f10452298b8c650af41c2",
+    "posts/zzol/ideation.md": "b2ebf92ff565993c6fef2d5896f71835f26ad67b193b2cb4c024c0ff48bb4a80"
   }
 }

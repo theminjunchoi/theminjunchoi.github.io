@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/zzol/coffeeshout_to_zzol.md",
+                "file": "posts/zzol/thread_pool_tuning.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "coffeeshout_to_zzol"
+              "title": "thread_pool_tuning"
             }
           }
         ]
@@ -232,13 +232,14 @@
   },
   "active": "2f40ab062eaa9845",
   "lastOpenFiles": [
-    "posts/zzol/how_redis_pubsub_works.md",
+    "posts/zzol/persona.md",
+    "posts/zzol/infra_design.md",
+    "posts/zzol/ideation.md",
     "posts/zzol/coffeeshout_to_zzol.md",
-    "posts/zzol/coffeeshout_websocket_reconnection_app_switching.md",
-    "posts/zzol/coffeeshout_server_tech_stack.md",
-    "posts/zzol/coffeeshout_persona.md",
-    "posts/zzol/coffeeshout_infra_design.md",
-    "posts/zzol/coffeeshout_ideation.md",
+    "posts/zzol/server_tech_stack.md",
+    "posts/zzol/websocket_reconnection_app_switching.md",
+    "posts/zzol/thread_pool_tuning.md",
+    "posts/zzol/how_redis_pubsub_works.md",
     "posts/zzol/zzol_circuit_breaker.md",
     "posts/resume/네이버페이_25.11.md",
     "posts/resume/25년_하반기_채용.md",
@@ -259,7 +260,6 @@
     "posts/study/tech_interview/면접스터디_5주차.md",
     "posts/study/tech_interview/면접스터디_6주차.md",
     "posts/study/tech_interview/면접스터디_2주차.md",
-    "posts/study/tech_interview/면접스터디_1주차.md",
     "posts/attachments/Pasted image 20251103160332.png",
     "posts/attachments/Pasted image 20251103155757.png",
     "posts/attachments/Pasted image 20251103155748.png",
