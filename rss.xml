@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 18 Feb 2026 10:32:43 GMT</lastBuildDate><item><title><![CDATA[ZZOL의 효율적인 서버 자기보호 전략]]></title><description><![CDATA[ZZOL 서비스에 Rate Limiting을 적용했다. 단순히 "요청을 제한하자"가 아니라, 같은 서버 보호인데 HTTP와 WebSocket…]]></description><link>https://minjun.blog/rate_limiting/</link><guid isPermaLink="false">https://minjun.blog/rate_limiting/</guid><pubDate>Wed, 18 Feb 2026 12:13:51 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL 서비스에 Rate Limiting을 적용했다. 단순히 &quot;요청을 제한하자&quot;가 아니라, 같은 서버 보호인데 HTTP와 WebSocket에서 왜 다른 전략을 써야 하는지, 각 설정값을 왜 그렇게 잡았는지에 대한 판단 과정을 기록한다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 18 Feb 2026 10:36:17 GMT</lastBuildDate><item><title><![CDATA[ZZOL의 효율적인 서버 자기보호 전략]]></title><description><![CDATA[ZZOL 서비스에 Rate Limiting을 적용했다. 단순히 "요청을 제한하자"가 아니라, 같은 서버 보호인데 HTTP와 WebSocket…]]></description><link>https://minjun.blog/rate_limiting/</link><guid isPermaLink="false">https://minjun.blog/rate_limiting/</guid><pubDate>Wed, 18 Feb 2026 12:13:51 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL 서비스에 Rate Limiting을 적용했다. 단순히 &quot;요청을 제한하자&quot;가 아니라, 같은 서버 보호인데 HTTP와 WebSocket에서 왜 다른 전략을 써야 하는지, 각 설정값을 왜 그렇게 잡았는지에 대한 판단 과정을 기록한다.&lt;/p&gt;
 &lt;h2&gt;왜 서버 자기보호가 필요했는가&lt;/h2&gt;
 &lt;p&gt;ZZOL은 실시간 멀티플레이어 게임 서비스다. 점심시간에 한 팀이 모여서 미니게임을 하고, 룰렛으로 당첨자를 뽑는다. 사용 패턴이 극단적으로 몰리는 서비스인데, 12시 50분~1시 10분 사이에 전사 동시 접속이 발생하고, 이 20분 동안 방 생성 + 입장 + 게임 시작이 한꺼번에 일어난다.&lt;/p&gt;
 &lt;p&gt;지금까지 구현한 것들은 &quot;서버가 정상일 때 잘 돌아가게 하는 것&quot;이었다. 스레드풀 튜닝으로 처리량을 최적화하고, 서킷 브레이커로 외부 의존성 장애를 격리하고, Graceful Shutdown으로 배포 시 세션을 보호했다. 하지만 한 가지 시나리오에 대한 답이 없었다.&lt;/p&gt;
@@ -13,9 +13,9 @@
 &lt;p&gt;결론은 이렇게 정리됐다.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Client → Nginx (HTTP Rate Limit) → Spring Boot (WebSocket Msg Rate Limit)
            |                              |
-           +-- IP 기반                    +-- 세션 기반
-           +-- 요청 단위 제한             +-- 메시지 단위 제한
-           +-- 차단 비용: 거의 0          +-- 비즈니스 컨텍스트 필요&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+           +-- IP 기반                     +-- 세션 기반
+           +-- 요청 단위 제한                +-- 메시지 단위 제한
+           +-- 차단 비용: 거의 0             +-- 비즈니스 컨텍스트 필요&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
