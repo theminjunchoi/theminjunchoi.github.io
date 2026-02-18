@@ -79,15 +79,16 @@
     "posts/retrospect/retrospect-2025.md": "f61afd9f05707ace8a35abe6017d09ec239031648ba504ed029858e6a6e99b94",
     "posts/zzol/how_redis_pubsub_works.md": "78f041796c7f5a51a5fffeed3dcf276d50bf916bdd8c2779a75d3e7ffccbf26a",
     "posts/zzol/how_spring_handles_websocket.md": "5abd5a4cc1dee7bc69b52fed4ae292b0c65b31fb31fd781cfe6ef49a8cbcbe7a",
-    "posts/zzol/zzol_message_recovery.md": "dabb926e85e8efcef29fc11b2e8bca533dd02e6fea99307dac89585588601e37",
-    "posts/zzol/zzol_query.md": "0764aae38c2c11ef32824590b0e6578412d2373431f531663fe8535e7ec3f392",
-    "posts/zzol/zzol_circuit_breaker.md": "803f136f3d4fbb21e594e6d1edc2e7bf895cc8303edf573b8f4020185e05b7ac",
     "posts/zzol/coffeeshout_to_zzol.md": "3af9447a275f7b0823d26ce3830266c3840fc035fe1ad8b2f06201f4d2af2719",
     "posts/zzol/thread_pool_tuning.md": "4e5037eb459d679e8364d2eea084664b124f318f9c4fae6c9e7edd39fdefca2a",
     "posts/zzol/websocket_reconnection_app_switching.md": "93b053149cf50c05647d95a27e9585361ae9d4ca9f58f795b18f9bd53a7d85c4",
     "posts/zzol/persona.md": "4383f4a5fc99e37836f9f012e3d63c4eeea699f46671559bdae0d1f9975ae62d",
     "posts/zzol/infra_design.md": "4fe80c4e8dd7acefb26b17279211a629eb7b4d3c1a05967c2b416321b71d12a6",
-    "posts/zzol/ideation.md": "b8cde6ac9dc2f0771147672d08e78480688d874605ff5820d2048e8e442c36b0",
-    "posts/zzol/graceful_shutdown.md": "a30ba422df642d1704b015cbb13da859b4664e4a01882cca071abb45fac73788"
+    "posts/zzol/ideation.md": "773cb988ac64963f53119532c1d2b6d90b3c12c135de2208e5f907d4f70c1c0a",
+    "posts/zzol/graceful_shutdown.md": "a30ba422df642d1704b015cbb13da859b4664e4a01882cca071abb45fac73788",
+    "posts/zzol/circuit_breaker.md": "803f136f3d4fbb21e594e6d1edc2e7bf895cc8303edf573b8f4020185e05b7ac",
+    "posts/zzol/message_recovery.md": "dabb926e85e8efcef29fc11b2e8bca533dd02e6fea99307dac89585588601e37",
+    "posts/zzol/query_improvement.md": "0764aae38c2c11ef32824590b0e6578412d2373431f531663fe8535e7ec3f392",
+    "posts/zzol/rate_limiting.md": "f560c0e13a586cad4141b8f98f8a1b49e464c0f8d4246ed74a5701fec17b29d0"
   }
 }
