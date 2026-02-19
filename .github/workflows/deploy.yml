@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -22,10 +30,31 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            node-modules-
+
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Cache Gatsby
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache
+            public
+          key: gatsby-${{ hashFiles('package-lock.json') }}-${{ hashFiles('gatsby-config.js') }}
+          restore-keys: |
+            gatsby-${{ hashFiles('package-lock.json') }}-
+            gatsby-
+
       - name: Build
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
         run: npm run build
 
       - name: Deploy
