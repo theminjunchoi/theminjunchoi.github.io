@@ -1,13 +1,13 @@
 ---
 title: "HealthIndicator에는 무엇을 담아야 하는가: 상태 판별부터 자가 치유까지"
 date: 2026-02-19 09:14:21
-updated: 2026-02-20 01:35:36
+updated: 2026-02-20 02:33:46
 publish: true
 tags:
   - ZZOL
 series: ZZOL 개발록
 ---
-ZZOL 서비스에 커스텀 HealthIndicator를 추가하고 Health Group을 분리했다. Spring Boot의 기본 헬스체크가 어디까지 커버하고, 어디서부터 커스텀이 필요한지, 그리고 DOWN과 OUT_OF_SERVICE를 왜 구분해야 하는지에 대한 판단 과정을 기록한다.
+ZZOL 서비스에 커스텀 HealthIndicator와 자가복구(Self-Recovery) 로직을 추가하고, Health Group을 분리했다. Spring Boot의 기본 헬스체크가 어디까지 커버하고, 어디서부터 커스텀이 필요한지, 장애 감지 후 Docker 재시작 전에 애플리케이션 내부에서 먼저 복구를 시도해야 하는 이유, 그리고 DOWN과 OUT_OF_SERVICE를 왜 구분해야 하는지에 대한 판단 과정을 기록한다.
 
 ## 기본 헬스체크가 못 잡는 것
 
@@ -195,6 +195,6 @@ ZZOL에서는 Docker HEALTHCHECK가 readiness 엔드포인트를 사용하도록
 
 ## 정리
 
-HealthIndicator에 뭘 넣을지의 기준은 **"재시작으로 복구 가능한가"**였다. 재시작으로 해결되는 문제는 HealthIndicator가 DOWN을 반환해서 자동 복구를 트리거하고, 재시작으로 해결 안 되는 문제는 알림으로 사람에게 알려야 한다. 그리고 의도적인 서비스 중단(Graceful Shutdown)은 DOWN도 아니고 UP도 아닌 OUT_OF_SERVICE로 표현해야, 재시작과 종료가 충돌하지 않는다.
+HealthIndicator에 뭘 넣을지의 기준은 "재시작으로 복구 가능한가"였다. 재시작으로 해결되는 문제는 HealthIndicator가 DOWN을 반환해서 자동 복구를 트리거하고, 재시작으로 해결 안 되는 문제는 알림으로 사람에게 알려야 한다. 그리고 의도적인 서비스 중단(Graceful Shutdown)은 DOWN도 아니고 UP도 아닌 OUT_OF_SERVICE로 표현해야, 재시작과 종료가 충돌하지 않는다.
 
 단, Docker 재시작은 최후의 보루여야 한다. 단일 인스턴스에서 컨테이너 재시작은 100% 다운타임이다. 애플리케이션 내부에서 먼저 복구를 시도하고, 그래도 안 될 때만 외부 인프라에 의한 재시작을 허용하는 구조가 올바른 단계적 복구 전략이다.
