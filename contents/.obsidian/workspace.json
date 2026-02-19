@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/zzol/rate_limiting.md",
+                "file": "posts/zzol/custom_health_check.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "rate_limiting"
+              "title": "custom_health_check"
             }
           }
         ]
@@ -232,8 +232,9 @@
   },
   "active": "2f40ab062eaa9845",
   "lastOpenFiles": [
-    "posts/zzol/query_improvement.md",
     "posts/zzol/rate_limiting.md",
+    "posts/zzol/custom_health_check.md",
+    "posts/zzol/query_improvement.md",
     "posts/zzol/message_recovery.md",
     "posts/zzol/circuit_breaker.md",
     "posts/zzol/ideation.md",
@@ -259,7 +260,6 @@
     "template/template.md",
     "posts/woowatech/우아한테크코스_7기_BE_최종_회고.md",
     "posts/study/tech_interview/면접스터디_3주차.md",
-    "posts/study/tech_interview/면접스터디_4주차.md",
     "posts/attachments/Pasted image 20251103160332.png",
     "posts/attachments/Pasted image 20251103155757.png",
     "posts/attachments/Pasted image 20251103155748.png",
