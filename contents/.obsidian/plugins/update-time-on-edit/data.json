@@ -89,7 +89,8 @@
     "posts/zzol/circuit_breaker.md": "803f136f3d4fbb21e594e6d1edc2e7bf895cc8303edf573b8f4020185e05b7ac",
     "posts/zzol/message_recovery.md": "dabb926e85e8efcef29fc11b2e8bca533dd02e6fea99307dac89585588601e37",
     "posts/zzol/query_improvement.md": "0764aae38c2c11ef32824590b0e6578412d2373431f531663fe8535e7ec3f392",
-    "posts/zzol/rate_limiting.md": "f560c0e13a586cad4141b8f98f8a1b49e464c0f8d4246ed74a5701fec17b29d0",
-    "posts/zzol/custom_health_check.md": "9095e37bd25682ac4f85a13f1278987ae4ea305bc51192d1b823d5c3e43be24a"
+    "posts/zzol/rate_limiting.md": "26dddf609138c7918f3c783e14fe259d4e3ba1c18fe59e23608cfcc90b79034b",
+    "posts/zzol/custom_health_check.md": "9095e37bd25682ac4f85a13f1278987ae4ea305bc51192d1b823d5c3e43be24a",
+    "posts/zzol/disability_simulation.md": "1ecf066420d01031bd9ee211e76d66cf95059b46a888103be4a45fd1c47d5daf"
   }
 }

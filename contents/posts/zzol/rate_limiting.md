@@ -1,7 +1,7 @@
 ---
 title: ZZOL의 효율적인 서버 자기보호 전략
 date: 2026-02-18 12:13:51
-updated: 2026-02-18 19:31:51
+updated: 2026-02-22 00:30:59
 publish: true
 tags:
   - ZZOL
