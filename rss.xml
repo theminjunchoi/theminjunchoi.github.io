@@ -1,4 +1,195 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 25 Feb 2026 15:08:29 GMT</lastBuildDate><item><title><![CDATA["재시작하면 고쳐져요"라는 말을 없애기까지: 3단계 서버 자가 치유기]]></title><description><![CDATA["장애가 발생했습니다. 서버 재시작할까요?"
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 26 Feb 2026 11:49:12 GMT</lastBuildDate><item><title><![CDATA[HealthIndicator에는 무엇을 담아야 하는가: 상태 판별부터 자가 치유까지]]></title><description><![CDATA[ZZOL 서비스에 커스텀 HealthIndicator와 자가복구(Self-Recovery) 로직을 추가하고, Health Group을 분리했다. Spring Boot…]]></description><link>https://minjun.blog/custom_health_check/</link><guid isPermaLink="false">https://minjun.blog/custom_health_check/</guid><pubDate>Thu, 19 Feb 2026 09:14:21 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL 서비스에 커스텀 HealthIndicator와 자가복구(Self-Recovery) 로직을 추가하고, Health Group을 분리했다. Spring Boot의 기본 헬스체크가 어디까지 커버하고, 어디서부터 커스텀이 필요한지, 장애 감지 후 Docker 재시작 전에 애플리케이션 내부에서 먼저 복구를 시도해야 하는 이유, 그리고 DOWN과 OUT_OF_SERVICE를 왜 구분해야 하는지에 대한 판단 과정을 기록한다.&lt;/p&gt;
+&lt;h2&gt;기본 헬스체크가 못 잡는 것&lt;/h2&gt;
+&lt;p&gt;Spring Boot Actuator는 &lt;code class=&quot;language-text&quot;&gt;/actuator/health&lt;/code&gt;를 통해 서버 상태를 제공한다. Spring Boot가 자동으로 등록하는 HealthIndicator는 DataSource(DB 연결), Redis(PING 명령), DiskSpace(디스크 여유 공간) 등이 있다. ZZOL에서는 &lt;code class=&quot;language-text&quot;&gt;show-details: always&lt;/code&gt;로 상세 정보를 노출하고 있었고, Docker HEALTHCHECK가 이 엔드포인트를 30초마다 호출해서 컨테이너 상태를 판단하고 있었다.&lt;/p&gt;
+&lt;p&gt;문제는 이것만으로는 &lt;strong&gt;ZZOL 도메인에서 의미 있는 장애를 감지할 수 없다&lt;/strong&gt;는 것이었다.&lt;/p&gt;
+&lt;p&gt;두 가지 시나리오가 기본 헬스체크를 통과하면서도 서비스에 문제를 일으킨다.&lt;/p&gt;
+&lt;p&gt;첫째, &lt;strong&gt;서버가 Graceful Shutdown 중일 때.&lt;/strong&gt; ZZOL은 배포 시 활성 WebSocket 세션이 모두 종료될 때까지 최대 5분간 대기한다. 이 5분 동안 서버는 살아있고, DB도 연결돼 있고, Redis도 응답한다. 기본 헬스체크는 UP을 반환한다. 하지만 이 서버에 새로운 트래픽을 보내면 안 된다. 기존 연결을 드레이닝하는 중이기 때문이다. 로드밸런서가 이 상태를 감지하지 못하면 종료 중인 서버에 새 플레이어가 접속하게 된다.&lt;/p&gt;
+&lt;p&gt;둘째, &lt;strong&gt;Redis Stream의 ListenerContainer가 멈췄을 때.&lt;/strong&gt; ZZOL은 방 생성, 방 참여, 미니게임, 레이싱 게임 등 5개 Redis Stream을 통해 이벤트를 비동기로 처리한다. &lt;code class=&quot;language-text&quot;&gt;StreamMessageListenerContainer&lt;/code&gt;가 예외로 인해 멈추면 이벤트 소비가 중단된다. 하지만 Redis 자체는 살아있으므로 기본 Redis HealthIndicator(PING)는 UP을 반환한다. DB도 정상이다. 그러나 이벤트 소비가 멈춘 서버는 실질적으로 절반의 기능이 죽은 상태다.&lt;/p&gt;
+&lt;h2&gt;첫 번째 판단: 뭘 HealthIndicator에 넣을 것인가&lt;/h2&gt;
+&lt;p&gt;처음에는 &quot;서비스에 문제가 될 수 있는 모든 것&quot;을 HealthIndicator에 넣으려고 했다. WebSocket 세션 수가 갑자기 0으로 떨어지면 DOWN, DB 커넥션 풀 사용률이 90%를 넘으면 DOWN, 이런 식이었다.&lt;/p&gt;
+&lt;p&gt;하지만 한 가지 중요한 제약을 간과하고 있었다. &lt;strong&gt;Docker HEALTHCHECK에서 DOWN이 반환되면 컨테이너가 재시작된다.&lt;/strong&gt; HealthIndicator는 &quot;이 상태가 비정상인가&quot;를 판단하는 게 아니라, **&quot;이 서버를 재시작하면 문제가 해결되는가&quot;**를 판단해야 한다.&lt;/p&gt;
+&lt;p&gt;WebSocket 세션 수가 0인 건 서버를 재시작한다고 해결되는 문제가 아니다. 클라이언트가 접속하지 않은 것뿐이다. DB 커넥션 풀 사용률이 높은 것도 재시작으로 순간적으로 해소되지만, 근본 원인(슬로우 쿼리 등)이 해결되지 않으면 재시작 후 다시 올라간다. 이런 것들은 HealthIndicator가 아니라 **알림(Alerting)**으로 가야 한다.&lt;/p&gt;
+&lt;p&gt;이 기준을 적용하면 HealthIndicator에 넣어야 하는 항목이 명확해진다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;상태&lt;/th&gt;
+&lt;th&gt;재시작으로 복구 가능?&lt;/th&gt;
+&lt;th&gt;HealthIndicator에 넣는가?&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Redis Stream Container 중단&lt;/td&gt;
+&lt;td&gt;ㅇㅇ. 재시작 시 container 재생성&lt;/td&gt;
+&lt;td&gt;넣음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Graceful Shutdown 진행 중&lt;/td&gt;
+&lt;td&gt;재시작이 아니라 트래픽 차단이 필요&lt;/td&gt;
+&lt;td&gt;넣음 (단, DOWN이 아닌 OUT_OF_SERVICE)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;WebSocket 세션 수 급감&lt;/td&gt;
+&lt;td&gt;재시작으로 해결 안 됨&lt;/td&gt;
+&lt;td&gt;안 넣음. 알림으로 처리&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DB 커넥션 풀 고갈&lt;/td&gt;
+&lt;td&gt;일시적 해소만 가능&lt;/td&gt;
+&lt;td&gt;안 넣음. 알림으로 처리&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;두 번째 판단: DOWN과 OUT_OF_SERVICE는 왜 다른가&lt;/h2&gt;
+&lt;p&gt;Redis Stream Container가 멈추면 DOWN을 반환한다. Graceful Shutdown 중에는 OUT_OF_SERVICE를 반환한다. 둘 다 &quot;이 서버에 트래픽을 보내면 안 된다&quot;는 건 같은데, 왜 구분해야 하는가.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DOWN은 &quot;장애&quot;를 의미한다.&lt;/strong&gt; Docker HEALTHCHECK에서 DOWN을 연속으로 받으면(&lt;code class=&quot;language-text&quot;&gt;retries&lt;/code&gt; 횟수만큼) 컨테이너를 재시작한다. Redis Stream Container가 멈춘 건 장애이고, 재시작으로 복구 가능하므로 DOWN이 맞다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OUT_OF_SERVICE는 &quot;의도적인 서비스 중단&quot;을 의미한다.&lt;/strong&gt; Graceful Shutdown은 배포를 위한 의도적인 종료 과정이다. 이 상태에서 컨테이너를 재시작하면 세션 드레이닝이 중단되고, 게임 중인 플레이어의 WebSocket 연결이 강제로 끊긴다. Graceful Shutdown을 구현한 의미가 사라진다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Redis Stream Container stopped → DOWN → Docker restarts → Container recovered ✓
+Graceful Shutdown in progress → OUT_OF_SERVICE → Docker does NOT restart → Session draining continues ✓&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;처음에는 Graceful Shutdown에도 DOWN을 썼다가 이 문제를 발견했다. Graceful Shutdown이 시작되면 Docker가 &quot;장애&quot;로 판단하고 컨테이너를 재시작하려는데, 서버는 종료 중이므로 재시작과 종료가 충돌한다. OUT_OF_SERVICE로 바꾸면 Docker HEALTHCHECK는 이 상태를 unhealthy로 판단하지 않으면서, 로드밸런서는 이 인스턴스를 트래픽 분배 대상에서 제외할 수 있다.&lt;/p&gt;
+&lt;p&gt;단, 이 동작은 Docker HEALTHCHECK 설정에 따라 다르다. Docker의 기본 HEALTHCHECK는 &quot;healthy 또는 unhealthy&quot;만 구분하고, HTTP 상태 코드를 직접 해석하지 않는다. &lt;code class=&quot;language-text&quot;&gt;wget --spider&lt;/code&gt;가 200이 아닌 503(OUT_OF_SERVICE의 기본 HTTP 상태)을 받으면 exit 1을 반환하므로, Docker 입장에서는 unhealthy로 처리될 수 있다. 이 부분은 로드밸런서(ALB 등)의 Health Check 설정에서 200만 healthy로 인식하도록 구성해야 한다.&lt;/p&gt;
+&lt;h2&gt;세 번째 판단: 재시작이 정말 첫 번째 선택지인가&lt;/h2&gt;
+&lt;p&gt;초기 설계에서는 Redis Stream Container가 멈추면 즉시 DOWN을 반환해서 Docker가 컨테이너를 재시작하도록 했다. 코드 리뷰에서 중요한 지적이 들어왔다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&quot;단일 인스턴스 구조에서 컨테이너 재시작은 곧 100% 다운타임이다. ListenerContainer가 예외로 멈췄다면, 서버 전체를 죽이는 대신 해당 Container 빈만 다시 시작하는 Fallback 로직을 먼저 구현해야 하지 않나?&quot;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;맞는 지적이었다. Container 하나 멈춘 건데 서버 전체를 재시작하는 건 과한 대응이다. 외부 인프라(Docker)에 의한 강제 재시작은 항상 최후의 보루(Last Resort)여야 한다.&lt;/p&gt;
+&lt;p&gt;이 원칙을 적용해서 복구 흐름을 3단계로 재설계했다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Container stopped
+       |
+       v
+[1] Recovery: container.start() 시도 (30초 주기)
+       |
+    성공? ──→ 정상 복귀. HealthIndicator는 UP.
+       |
+       no
+       |
+       v
+[2] Recovery: 재시도 (최대 2회)
+       |
+    성공? ──→ 정상 복귀
+       |
+       no
+       |
+       v
+[3] HealthIndicator: DOWN 반환 → Docker 재시작 (Last Resort)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;여기서 중요한 설계 결정이 하나 있었다. &lt;strong&gt;HealthIndicator 안에서 복구 로직을 실행하면 안 된다.&lt;/strong&gt; HealthIndicator는 &quot;상태를 보고하는 역할&quot;이지 &quot;상태를 고치는 역할&quot;이 아니다. Docker가 30초마다 헬스체크를 호출하는데, 매번 부수효과(side effect)가 발생하면 책임이 섞인다.&lt;/p&gt;
+&lt;p&gt;그래서 두 컴포넌트를 분리했다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;RedisStreamContainerRecovery&lt;/code&gt;는 30초 주기의 스케줄 태스크로, 모든 container 상태를 감시하고 멈춘 container에 &lt;code class=&quot;language-text&quot;&gt;start()&lt;/code&gt;를 호출한다. 2회 연속 실패하면 &quot;복구 불가&quot;로 판정한다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;RedisStreamHealthIndicator&lt;/code&gt;는 Recovery의 결과만 읽어서 보고한다. &quot;복구 불가&quot; 판정이 난 스트림이 있으면 DOWN을 반환한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// Recovery: 상태 감시 + 복구 시도 (쓰기)&lt;/span&gt;
+&lt;span class=&quot;token annotation punctuation&quot;&gt;@Scheduled&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fixedDelay &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;30_000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; initialDelay &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;60_000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;checkAndRecover&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; streamKey &lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;STREAM_KEYS&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token class-name&quot;&gt;StreamMessageListenerContainer&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; container &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getContainer&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isRunning&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            recoveryFailureCounts&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+            failedRecoveryStreams&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;token comment&quot;&gt;// 멈춘 container → start() 시도&lt;/span&gt;
+        container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isRunning&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; failCount &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; recoveryFailureCounts&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;failCount &lt;span class=&quot;token operator&quot;&gt;&gt;=&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;MAX_RECOVERY_ATTEMPTS&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+                failedRecoveryStreams&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;// 복구 포기&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// HealthIndicator: Recovery 결과만 읽기 (읽기 전용)&lt;/span&gt;
+&lt;span class=&quot;token annotation punctuation&quot;&gt;@Override&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Health&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;containerRecovery&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;hasUnrecoverableStreams&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;down&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;withDetail&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;unrecoverable&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; containerRecovery&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getFailedRecoveryStreams&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;withDetail&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;action&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Internal recovery failed. Docker restart required.&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;up&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;withDetails&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;details&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Recovery가 복구를 시도하는 동안에는 container가 STOPPED여도 HealthIndicator는 UP을 반환한다. 아직 내부에서 복구 중이니까 Docker가 개입할 단계가 아니다. 2회 연속 실패해서 &quot;복구 불가&quot;가 확정돼야 비로소 DOWN을 반환하고, Docker 재시작이 last resort로 트리거된다.&lt;/p&gt;
+&lt;h3&gt;자주 오해하는 부분: Redis가 문제면 Redis를 재시작해야 하는 거 아닌가?&lt;/h3&gt;
+&lt;p&gt;장애 시뮬레이션을 하면서 자주 받은 질문이다. &quot;Redis가 문제의 원인인데 왜 앱 컨테이너를 재시작하는 거냐. Redis 컨테이너를 재시작해야 하는 거 아니냐.&quot;&lt;/p&gt;
+&lt;p&gt;처음에는 나도 같은 생각이었다. Redis가 죽으면 Redis를 살려야 한다고. 하지만 시뮬레이션을 해보니 문제의 구조가 달랐다.&lt;/p&gt;
+&lt;p&gt;Redis가 잠깐 죽었다가 살아나면, Lettuce(Redis 클라이언트)가 커넥션을 자동으로 복구한다. 여기까지는 문제가 없다. 문제는 &lt;strong&gt;Redis Stream의 &lt;code class=&quot;language-text&quot;&gt;StreamMessageListenerContainer&lt;/code&gt;가 한 번 STOPPED 상태에 빠지면 Lettuce 커넥션이 복구돼도 자동으로 살아나지 않는다&lt;/strong&gt;는 것이다. Lettuce는 Redis 커넥션을 관리하는 클라이언트이고, &lt;code class=&quot;language-text&quot;&gt;StreamMessageListenerContainer&lt;/code&gt;는 그 커넥션 위에서 이벤트를 구독하는 Spring 빈이다. 커넥션 복구와 빈의 생명주기는 별개의 문제다.&lt;/p&gt;
+&lt;p&gt;그래서 Recovery가 하는 일은 Redis를 살리는 게 아니라, &lt;strong&gt;이미 Redis는 살아있는데 STOPPED 상태로 남아있는 Spring 빈(&lt;code class=&quot;language-text&quot;&gt;StreamMessageListenerContainer&lt;/code&gt;)의 &lt;code class=&quot;language-text&quot;&gt;start()&lt;/code&gt;를 호출하는 것&lt;/strong&gt;이다. Docker 재시작도 마찬가지다. Redis 컨테이너를 재시작하는 게 아니라, 앱 컨테이너를 재시작해서 모든 Spring 빈을 초기 상태로 재생성하는 것이다.&lt;/p&gt;
+&lt;p&gt;그렇다면 Redis 자체가 문제인 경우는? Redis가 완전히 죽어있거나, 메모리 부족으로 swap이 발생하거나, AOF rewrite가 과도하게 오래 걸리는 경우는 앱을 재시작해도 해결되지 않는다. 이런 상황은 사람이 원인을 파악해서 직접 조치해야 한다. 이 영역은 HealthIndicator가 아니라 Alert Rules가 담당한다. HealthIndicator는 &quot;앱 내부에서 자동으로 복구 가능한 문제&quot;를, Alert Rules는 &quot;사람이 개입해야 하는 문제&quot;를 각각 담당하는 구조다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Redis 장애 발생
+    |
+    +-- 앱 내부 문제 (Container STOPPED)
+    |     -&gt; Recovery가 container.start()
+    |     -&gt; 실패 시 Docker가 앱 재시작
+    |
+    +-- Redis 자체 문제 (프로세스 죽음, OOM 등)
+          -&gt; Alert Rules가 사람에게 알림
+          -&gt; 사람이 원인 파악 후 조치&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;네 번째 판단: Health Group을 왜 분리하는가&lt;/h2&gt;
+&lt;p&gt;Spring Boot Actuator는 Health Group 기능을 제공한다. 하나의 &lt;code class=&quot;language-text&quot;&gt;/actuator/health&lt;/code&gt; 아래에 여러 그룹을 만들 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;management&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;endpoint&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;group&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;liveness&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;token key atrule&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ping&quot;&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;readiness&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;token key atrule&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;db,redis,gracefulShutdown,redisStream&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Liveness&lt;/strong&gt;(&lt;code class=&quot;language-text&quot;&gt;/actuator/health/liveness&lt;/code&gt;)는 &quot;이 프로세스가 살아있는가&quot;만 판단한다. PING 하나면 충분하다. JVM이 죽었거나 응답 불가 상태인지만 체크한다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Readiness&lt;/strong&gt;(&lt;code class=&quot;language-text&quot;&gt;/actuator/health/readiness&lt;/code&gt;)는 &quot;이 서버가 트래픽을 받을 준비가 됐는가&quot;를 판단한다. DB 연결, Redis 연결, Graceful Shutdown 상태, Redis Stream Container 상태를 모두 확인한다.&lt;/p&gt;
+&lt;p&gt;이 분리가 중요한 이유는 &lt;strong&gt;Docker HEALTHCHECK와 로드밸런서가 서로 다른 관심사를 갖기 때문&lt;/strong&gt;이다. Docker는 &quot;컨테이너를 재시작할지&quot;를 결정해야 하고, 로드밸런서는 &quot;이 인스턴스에 트래픽을 보낼지&quot;를 결정해야 한다. 하나의 엔드포인트로 두 가지를 모두 판단하면 의도하지 않은 동작이 발생할 수 있다.&lt;/p&gt;
+&lt;p&gt;ZZOL에서는 Docker HEALTHCHECK가 readiness 엔드포인트를 사용하도록 설정했다. 이유는 단순하다. 현재 단일 인스턴스 구조이기 때문에, liveness 체크만으로는 부족하고, readiness 수준의 체크가 컨테이너 재시작 판단에 더 적합하다고 판단했다. 멀티 인스턴스 + 로드밸런서 구조로 전환하면, Docker는 liveness를, 로드밸런서는 readiness를 사용하도록 분리할 수 있다.&lt;/p&gt;
+&lt;h2&gt;결과: /actuator/health/readiness 응답&lt;/h2&gt;
+&lt;p&gt;적용 후 readiness 엔드포인트의 응답은 다음과 같은 구조가 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;token property&quot;&gt;&quot;components&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token property&quot;&gt;&quot;db&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token property&quot;&gt;&quot;redis&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token property&quot;&gt;&quot;gracefulShutdown&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token property&quot;&gt;&quot;redisStream&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;token property&quot;&gt;&quot;details&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token property&quot;&gt;&quot;room&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token property&quot;&gt;&quot;room:join&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token property&quot;&gt;&quot;cardgame:select&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token property&quot;&gt;&quot;minigame&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token property&quot;&gt;&quot;racinggame&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;기본 헬스체크만 사용할 때와 비교하면, Graceful Shutdown 진행 여부와 Redis Stream 이벤트 처리 상태를 추가로 감지할 수 있게 됐다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Before&lt;/th&gt;
+&lt;th&gt;After&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;DB 연결, Redis PING, 디스크만 체크&lt;/td&gt;
+&lt;td&gt;+ Graceful Shutdown 상태, Redis Stream Container 상태&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;종료 중에도 UP → 새 트래픽 유입&lt;/td&gt;
+&lt;td&gt;종료 중 OUT_OF_SERVICE → 트래픽 차단&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Stream Container 멈추면 즉시 서버 재시작&lt;/td&gt;
+&lt;td&gt;내부 복구 2회 시도 → 실패 시에만 재시작&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;단일 엔드포인트&lt;/td&gt;
+&lt;td&gt;liveness/readiness 그룹 분리&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;정리&lt;/h2&gt;
+&lt;p&gt;HealthIndicator에 뭘 넣을지의 기준은 &quot;재시작으로 복구 가능한가&quot;였다. 재시작으로 해결되는 문제는 HealthIndicator가 DOWN을 반환해서 자동 복구를 트리거하고, 재시작으로 해결 안 되는 문제는 알림으로 사람에게 알려야 한다. 그리고 의도적인 서비스 중단(Graceful Shutdown)은 DOWN도 아니고 UP도 아닌 OUT_OF_SERVICE로 표현해야, 재시작과 종료가 충돌하지 않는다.&lt;/p&gt;
+&lt;p&gt;단, Docker 재시작은 최후의 보루여야 한다. 단일 인스턴스에서 컨테이너 재시작은 100% 다운타임이다. 애플리케이션 내부에서 먼저 복구를 시도하고, 그래도 안 될 때만 외부 인프라에 의한 재시작을 허용하는 구조가 올바른 단계적 복구 전략이다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA["재시작하면 고쳐져요"라는 말을 없애기까지: 3단계 서버 자가 치유기]]></title><description><![CDATA["장애가 발생했습니다. 서버 재시작할까요?"
 서비스 초기, 개발자라면 누구나 한 번쯤 장애 알림을 보고 무의식적으로 재시작을 한 경험이 있을거다. 하지만 단일 인스턴스에서 강제 재시작은 곧 10…]]></description><link>https://minjun.blog/disability_simulation/</link><guid isPermaLink="false">https://minjun.blog/disability_simulation/</guid><pubDate>Sat, 21 Feb 2026 03:19:24 GMT</pubDate><content:encoded>&lt;p&gt;&quot;장애가 발생했습니다. 서버 재시작할까요?&quot;
 서비스 초기, 개발자라면 누구나 한 번쯤 장애 알림을 보고 무의식적으로 재시작을 한 경험이 있을거다. 하지만 단일 인스턴스에서 강제 재시작은 곧 100% 다운타임을 의미하고, 이걸 어떻게 해결할까 고민했던 과정을 기록해본다.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;/custom_health_check&quot; data-wiki-link=&quot;true&quot;&gt;custom_health_check&lt;/a&gt; 글에서 커스텀 HealthIndicator와 3단계 자가복구 계층을 설계했다. 이 글에서는 dev 환경에서 5가지 장애 시나리오를 재현하여 복구 계층이 의도대로 동작하는지 검증한 과정을 남긴다.&lt;/p&gt;
@@ -457,183 +648,7 @@ Thread A: ++count → 1  ← 이전 윈도우에서 거절되어야 할 요청�
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;같은 &quot;서버 보호&quot;라는 목적이지만, HTTP와 WebSocket의 프로토콜 특성 때문에 전략이 달라야 했다. HTTP는 요청-응답 기반이니까 앞단에서 자르는 게 효율적이고, WebSocket은 지속 연결 위의 메시지 스트림이니까 메시지 내용을 파싱할 수 있는 애플리케이션에서 처리해야 한다.&lt;/p&gt;
-&lt;p&gt;설정값은 전부 도메인 사용 패턴과 부하 테스트 데이터에서 도출했다. &quot;점심시간에 한 팀이 방 하나 만들어서 게임 한 판 하는 것&quot;이 정상 사용이고, 그 범위를 벗어나면 비정상이다. Rate Limiting의 핵심은 이 경계를 데이터 기반으로 정의하는 것이었다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[HealthIndicator에는 무엇을 담아야 하는가: 상태 판별부터 자가 치유까지]]></title><description><![CDATA[ZZOL 서비스에 커스텀 HealthIndicator와 자가복구(Self-Recovery) 로직을 추가하고, Health Group을 분리했다. Spring Boot…]]></description><link>https://minjun.blog/custom_health_check/</link><guid isPermaLink="false">https://minjun.blog/custom_health_check/</guid><pubDate>Thu, 19 Feb 2026 09:14:21 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL 서비스에 커스텀 HealthIndicator와 자가복구(Self-Recovery) 로직을 추가하고, Health Group을 분리했다. Spring Boot의 기본 헬스체크가 어디까지 커버하고, 어디서부터 커스텀이 필요한지, 장애 감지 후 Docker 재시작 전에 애플리케이션 내부에서 먼저 복구를 시도해야 하는 이유, 그리고 DOWN과 OUT_OF_SERVICE를 왜 구분해야 하는지에 대한 판단 과정을 기록한다.&lt;/p&gt;
-&lt;h2&gt;기본 헬스체크가 못 잡는 것&lt;/h2&gt;
-&lt;p&gt;Spring Boot Actuator는 &lt;code class=&quot;language-text&quot;&gt;/actuator/health&lt;/code&gt;를 통해 서버 상태를 제공한다. Spring Boot가 자동으로 등록하는 HealthIndicator는 DataSource(DB 연결), Redis(PING 명령), DiskSpace(디스크 여유 공간) 등이 있다. ZZOL에서는 &lt;code class=&quot;language-text&quot;&gt;show-details: always&lt;/code&gt;로 상세 정보를 노출하고 있었고, Docker HEALTHCHECK가 이 엔드포인트를 30초마다 호출해서 컨테이너 상태를 판단하고 있었다.&lt;/p&gt;
-&lt;p&gt;문제는 이것만으로는 &lt;strong&gt;ZZOL 도메인에서 의미 있는 장애를 감지할 수 없다&lt;/strong&gt;는 것이었다.&lt;/p&gt;
-&lt;p&gt;두 가지 시나리오가 기본 헬스체크를 통과하면서도 서비스에 문제를 일으킨다.&lt;/p&gt;
-&lt;p&gt;첫째, &lt;strong&gt;서버가 Graceful Shutdown 중일 때.&lt;/strong&gt; ZZOL은 배포 시 활성 WebSocket 세션이 모두 종료될 때까지 최대 5분간 대기한다. 이 5분 동안 서버는 살아있고, DB도 연결돼 있고, Redis도 응답한다. 기본 헬스체크는 UP을 반환한다. 하지만 이 서버에 새로운 트래픽을 보내면 안 된다. 기존 연결을 드레이닝하는 중이기 때문이다. 로드밸런서가 이 상태를 감지하지 못하면 종료 중인 서버에 새 플레이어가 접속하게 된다.&lt;/p&gt;
-&lt;p&gt;둘째, &lt;strong&gt;Redis Stream의 ListenerContainer가 멈췄을 때.&lt;/strong&gt; ZZOL은 방 생성, 방 참여, 미니게임, 레이싱 게임 등 5개 Redis Stream을 통해 이벤트를 비동기로 처리한다. &lt;code class=&quot;language-text&quot;&gt;StreamMessageListenerContainer&lt;/code&gt;가 예외로 인해 멈추면 이벤트 소비가 중단된다. 하지만 Redis 자체는 살아있으므로 기본 Redis HealthIndicator(PING)는 UP을 반환한다. DB도 정상이다. 그러나 이벤트 소비가 멈춘 서버는 실질적으로 절반의 기능이 죽은 상태다.&lt;/p&gt;
-&lt;h2&gt;첫 번째 판단: 뭘 HealthIndicator에 넣을 것인가&lt;/h2&gt;
-&lt;p&gt;처음에는 &quot;서비스에 문제가 될 수 있는 모든 것&quot;을 HealthIndicator에 넣으려고 했다. WebSocket 세션 수가 갑자기 0으로 떨어지면 DOWN, DB 커넥션 풀 사용률이 90%를 넘으면 DOWN, 이런 식이었다.&lt;/p&gt;
-&lt;p&gt;하지만 한 가지 중요한 제약을 간과하고 있었다. &lt;strong&gt;Docker HEALTHCHECK에서 DOWN이 반환되면 컨테이너가 재시작된다.&lt;/strong&gt; HealthIndicator는 &quot;이 상태가 비정상인가&quot;를 판단하는 게 아니라, **&quot;이 서버를 재시작하면 문제가 해결되는가&quot;**를 판단해야 한다.&lt;/p&gt;
-&lt;p&gt;WebSocket 세션 수가 0인 건 서버를 재시작한다고 해결되는 문제가 아니다. 클라이언트가 접속하지 않은 것뿐이다. DB 커넥션 풀 사용률이 높은 것도 재시작으로 순간적으로 해소되지만, 근본 원인(슬로우 쿼리 등)이 해결되지 않으면 재시작 후 다시 올라간다. 이런 것들은 HealthIndicator가 아니라 **알림(Alerting)**으로 가야 한다.&lt;/p&gt;
-&lt;p&gt;이 기준을 적용하면 HealthIndicator에 넣어야 하는 항목이 명확해진다.&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;상태&lt;/th&gt;
-&lt;th&gt;재시작으로 복구 가능?&lt;/th&gt;
-&lt;th&gt;HealthIndicator에 넣는가?&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;Redis Stream Container 중단&lt;/td&gt;
-&lt;td&gt;ㅇㅇ. 재시작 시 container 재생성&lt;/td&gt;
-&lt;td&gt;넣음&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Graceful Shutdown 진행 중&lt;/td&gt;
-&lt;td&gt;재시작이 아니라 트래픽 차단이 필요&lt;/td&gt;
-&lt;td&gt;넣음 (단, DOWN이 아닌 OUT_OF_SERVICE)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;WebSocket 세션 수 급감&lt;/td&gt;
-&lt;td&gt;재시작으로 해결 안 됨&lt;/td&gt;
-&lt;td&gt;안 넣음. 알림으로 처리&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;DB 커넥션 풀 고갈&lt;/td&gt;
-&lt;td&gt;일시적 해소만 가능&lt;/td&gt;
-&lt;td&gt;안 넣음. 알림으로 처리&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h2&gt;두 번째 판단: DOWN과 OUT_OF_SERVICE는 왜 다른가&lt;/h2&gt;
-&lt;p&gt;Redis Stream Container가 멈추면 DOWN을 반환한다. Graceful Shutdown 중에는 OUT_OF_SERVICE를 반환한다. 둘 다 &quot;이 서버에 트래픽을 보내면 안 된다&quot;는 건 같은데, 왜 구분해야 하는가.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;DOWN은 &quot;장애&quot;를 의미한다.&lt;/strong&gt; Docker HEALTHCHECK에서 DOWN을 연속으로 받으면(&lt;code class=&quot;language-text&quot;&gt;retries&lt;/code&gt; 횟수만큼) 컨테이너를 재시작한다. Redis Stream Container가 멈춘 건 장애이고, 재시작으로 복구 가능하므로 DOWN이 맞다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;OUT_OF_SERVICE는 &quot;의도적인 서비스 중단&quot;을 의미한다.&lt;/strong&gt; Graceful Shutdown은 배포를 위한 의도적인 종료 과정이다. 이 상태에서 컨테이너를 재시작하면 세션 드레이닝이 중단되고, 게임 중인 플레이어의 WebSocket 연결이 강제로 끊긴다. Graceful Shutdown을 구현한 의미가 사라진다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Redis Stream Container stopped → DOWN → Docker restarts → Container recovered ✓
-Graceful Shutdown in progress → OUT_OF_SERVICE → Docker does NOT restart → Session draining continues ✓&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;처음에는 Graceful Shutdown에도 DOWN을 썼다가 이 문제를 발견했다. Graceful Shutdown이 시작되면 Docker가 &quot;장애&quot;로 판단하고 컨테이너를 재시작하려는데, 서버는 종료 중이므로 재시작과 종료가 충돌한다. OUT_OF_SERVICE로 바꾸면 Docker HEALTHCHECK는 이 상태를 unhealthy로 판단하지 않으면서, 로드밸런서는 이 인스턴스를 트래픽 분배 대상에서 제외할 수 있다.&lt;/p&gt;
-&lt;p&gt;단, 이 동작은 Docker HEALTHCHECK 설정에 따라 다르다. Docker의 기본 HEALTHCHECK는 &quot;healthy 또는 unhealthy&quot;만 구분하고, HTTP 상태 코드를 직접 해석하지 않는다. &lt;code class=&quot;language-text&quot;&gt;wget --spider&lt;/code&gt;가 200이 아닌 503(OUT_OF_SERVICE의 기본 HTTP 상태)을 받으면 exit 1을 반환하므로, Docker 입장에서는 unhealthy로 처리될 수 있다. 이 부분은 로드밸런서(ALB 등)의 Health Check 설정에서 200만 healthy로 인식하도록 구성해야 한다.&lt;/p&gt;
-&lt;h2&gt;세 번째 판단: 재시작이 정말 첫 번째 선택지인가&lt;/h2&gt;
-&lt;p&gt;초기 설계에서는 Redis Stream Container가 멈추면 즉시 DOWN을 반환해서 Docker가 컨테이너를 재시작하도록 했다. 코드 리뷰에서 중요한 지적이 들어왔다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&quot;단일 인스턴스 구조에서 컨테이너 재시작은 곧 100% 다운타임이다. ListenerContainer가 예외로 멈췄다면, 서버 전체를 죽이는 대신 해당 Container 빈만 다시 시작하는 Fallback 로직을 먼저 구현해야 하지 않나?&quot;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;맞는 지적이었다. Container 하나 멈춘 건데 서버 전체를 재시작하는 건 과한 대응이다. 외부 인프라(Docker)에 의한 강제 재시작은 항상 최후의 보루(Last Resort)여야 한다.&lt;/p&gt;
-&lt;p&gt;이 원칙을 적용해서 복구 흐름을 3단계로 재설계했다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Container stopped
-       |
-       v
-[1] Recovery: container.start() 시도 (30초 주기)
-       |
-    성공? ──→ 정상 복귀. HealthIndicator는 UP.
-       |
-       no
-       |
-       v
-[2] Recovery: 재시도 (최대 2회)
-       |
-    성공? ──→ 정상 복귀
-       |
-       no
-       |
-       v
-[3] HealthIndicator: DOWN 반환 → Docker 재시작 (Last Resort)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;여기서 중요한 설계 결정이 하나 있었다. &lt;strong&gt;HealthIndicator 안에서 복구 로직을 실행하면 안 된다.&lt;/strong&gt; HealthIndicator는 &quot;상태를 보고하는 역할&quot;이지 &quot;상태를 고치는 역할&quot;이 아니다. Docker가 30초마다 헬스체크를 호출하는데, 매번 부수효과(side effect)가 발생하면 책임이 섞인다.&lt;/p&gt;
-&lt;p&gt;그래서 두 컴포넌트를 분리했다.&lt;/p&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;RedisStreamContainerRecovery&lt;/code&gt;는 30초 주기의 스케줄 태스크로, 모든 container 상태를 감시하고 멈춘 container에 &lt;code class=&quot;language-text&quot;&gt;start()&lt;/code&gt;를 호출한다. 2회 연속 실패하면 &quot;복구 불가&quot;로 판정한다.&lt;/p&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;RedisStreamHealthIndicator&lt;/code&gt;는 Recovery의 결과만 읽어서 보고한다. &quot;복구 불가&quot; 판정이 난 스트림이 있으면 DOWN을 반환한다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// Recovery: 상태 감시 + 복구 시도 (쓰기)&lt;/span&gt;
-&lt;span class=&quot;token annotation punctuation&quot;&gt;@Scheduled&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fixedDelay &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;30_000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; initialDelay &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;60_000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;checkAndRecover&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; streamKey &lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;STREAM_KEYS&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;token class-name&quot;&gt;StreamMessageListenerContainer&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; container &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;getContainer&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isRunning&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-            recoveryFailureCounts&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-            failedRecoveryStreams&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;token comment&quot;&gt;// 멈춘 container → start() 시도&lt;/span&gt;
-        container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;container&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isRunning&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; failCount &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; recoveryFailureCounts&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;failCount &lt;span class=&quot;token operator&quot;&gt;&gt;=&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;MAX_RECOVERY_ATTEMPTS&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-                failedRecoveryStreams&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;// 복구 포기&lt;/span&gt;
-            &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// HealthIndicator: Recovery 결과만 읽기 (읽기 전용)&lt;/span&gt;
-&lt;span class=&quot;token annotation punctuation&quot;&gt;@Override&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Health&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;containerRecovery&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;hasUnrecoverableStreams&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;down&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;withDetail&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;unrecoverable&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; containerRecovery&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getFailedRecoveryStreams&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;withDetail&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;action&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Internal recovery failed. Docker restart required.&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;up&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;withDetails&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;details&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Recovery가 복구를 시도하는 동안에는 container가 STOPPED여도 HealthIndicator는 UP을 반환한다. 아직 내부에서 복구 중이니까 Docker가 개입할 단계가 아니다. 2회 연속 실패해서 &quot;복구 불가&quot;가 확정돼야 비로소 DOWN을 반환하고, Docker 재시작이 last resort로 트리거된다.&lt;/p&gt;
-&lt;h2&gt;네 번째 판단: Health Group을 왜 분리하는가&lt;/h2&gt;
-&lt;p&gt;Spring Boot Actuator는 Health Group 기능을 제공한다. 하나의 &lt;code class=&quot;language-text&quot;&gt;/actuator/health&lt;/code&gt; 아래에 여러 그룹을 만들 수 있다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;management&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;token key atrule&quot;&gt;endpoint&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token key atrule&quot;&gt;health&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;token key atrule&quot;&gt;group&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;token key atrule&quot;&gt;liveness&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-          &lt;span class=&quot;token key atrule&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;ping&quot;&lt;/span&gt;
-        &lt;span class=&quot;token key atrule&quot;&gt;readiness&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-          &lt;span class=&quot;token key atrule&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;db,redis,gracefulShutdown,redisStream&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;Liveness&lt;/strong&gt;(&lt;code class=&quot;language-text&quot;&gt;/actuator/health/liveness&lt;/code&gt;)는 &quot;이 프로세스가 살아있는가&quot;만 판단한다. PING 하나면 충분하다. JVM이 죽었거나 응답 불가 상태인지만 체크한다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Readiness&lt;/strong&gt;(&lt;code class=&quot;language-text&quot;&gt;/actuator/health/readiness&lt;/code&gt;)는 &quot;이 서버가 트래픽을 받을 준비가 됐는가&quot;를 판단한다. DB 연결, Redis 연결, Graceful Shutdown 상태, Redis Stream Container 상태를 모두 확인한다.&lt;/p&gt;
-&lt;p&gt;이 분리가 중요한 이유는 &lt;strong&gt;Docker HEALTHCHECK와 로드밸런서가 서로 다른 관심사를 갖기 때문&lt;/strong&gt;이다. Docker는 &quot;컨테이너를 재시작할지&quot;를 결정해야 하고, 로드밸런서는 &quot;이 인스턴스에 트래픽을 보낼지&quot;를 결정해야 한다. 하나의 엔드포인트로 두 가지를 모두 판단하면 의도하지 않은 동작이 발생할 수 있다.&lt;/p&gt;
-&lt;p&gt;ZZOL에서는 Docker HEALTHCHECK가 readiness 엔드포인트를 사용하도록 설정했다. 이유는 단순하다. 현재 단일 인스턴스 구조이기 때문에, liveness 체크만으로는 부족하고, readiness 수준의 체크가 컨테이너 재시작 판단에 더 적합하다고 판단했다. 멀티 인스턴스 + 로드밸런서 구조로 전환하면, Docker는 liveness를, 로드밸런서는 readiness를 사용하도록 분리할 수 있다.&lt;/p&gt;
-&lt;h2&gt;결과: /actuator/health/readiness 응답&lt;/h2&gt;
-&lt;p&gt;적용 후 readiness 엔드포인트의 응답은 다음과 같은 구조가 된다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;json&quot;&gt;&lt;pre class=&quot;language-json&quot;&gt;&lt;code class=&quot;language-json&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;token property&quot;&gt;&quot;components&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;token property&quot;&gt;&quot;db&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;token property&quot;&gt;&quot;redis&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;token property&quot;&gt;&quot;gracefulShutdown&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;token property&quot;&gt;&quot;redisStream&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;token property&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;UP&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-      &lt;span class=&quot;token property&quot;&gt;&quot;details&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;token property&quot;&gt;&quot;room&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;token property&quot;&gt;&quot;room:join&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;token property&quot;&gt;&quot;cardgame:select&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;token property&quot;&gt;&quot;minigame&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;token property&quot;&gt;&quot;racinggame&quot;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;RUNNING&quot;&lt;/span&gt;
-      &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;기본 헬스체크만 사용할 때와 비교하면, Graceful Shutdown 진행 여부와 Redis Stream 이벤트 처리 상태를 추가로 감지할 수 있게 됐다.&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Before&lt;/th&gt;
-&lt;th&gt;After&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;DB 연결, Redis PING, 디스크만 체크&lt;/td&gt;
-&lt;td&gt;+ Graceful Shutdown 상태, Redis Stream Container 상태&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;종료 중에도 UP → 새 트래픽 유입&lt;/td&gt;
-&lt;td&gt;종료 중 OUT_OF_SERVICE → 트래픽 차단&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Stream Container 멈추면 즉시 서버 재시작&lt;/td&gt;
-&lt;td&gt;내부 복구 2회 시도 → 실패 시에만 재시작&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;단일 엔드포인트&lt;/td&gt;
-&lt;td&gt;liveness/readiness 그룹 분리&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h2&gt;정리&lt;/h2&gt;
-&lt;p&gt;HealthIndicator에 뭘 넣을지의 기준은 &quot;재시작으로 복구 가능한가&quot;였다. 재시작으로 해결되는 문제는 HealthIndicator가 DOWN을 반환해서 자동 복구를 트리거하고, 재시작으로 해결 안 되는 문제는 알림으로 사람에게 알려야 한다. 그리고 의도적인 서비스 중단(Graceful Shutdown)은 DOWN도 아니고 UP도 아닌 OUT_OF_SERVICE로 표현해야, 재시작과 종료가 충돌하지 않는다.&lt;/p&gt;
-&lt;p&gt;단, Docker 재시작은 최후의 보루여야 한다. 단일 인스턴스에서 컨테이너 재시작은 100% 다운타임이다. 애플리케이션 내부에서 먼저 복구를 시도하고, 그래도 안 될 때만 외부 인프라에 의한 재시작을 허용하는 구조가 올바른 단계적 복구 전략이다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[사이드 프로젝트에서 실제 서비스까지: 커피빵 기획과 그 시작]]></title><description><![CDATA[프로젝트명 - 한글 커피빵 프로젝트명 - 영어 CoffeeShout…]]></description><link>https://minjun.blog/ideation/</link><guid isPermaLink="false">https://minjun.blog/ideation/</guid><pubDate>Mon, 07 Jul 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;프로젝트명 - 한글&lt;/h2&gt;
+&lt;p&gt;설정값은 전부 도메인 사용 패턴과 부하 테스트 데이터에서 도출했다. &quot;점심시간에 한 팀이 방 하나 만들어서 게임 한 판 하는 것&quot;이 정상 사용이고, 그 범위를 벗어나면 비정상이다. Rate Limiting의 핵심은 이 경계를 데이터 기반으로 정의하는 것이었다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[사이드 프로젝트에서 실제 서비스까지: 커피빵 기획과 그 시작]]></title><description><![CDATA[프로젝트명 - 한글 커피빵 프로젝트명 - 영어 CoffeeShout…]]></description><link>https://minjun.blog/ideation/</link><guid isPermaLink="false">https://minjun.blog/ideation/</guid><pubDate>Mon, 07 Jul 2025 09:44:21 GMT</pubDate><content:encoded>&lt;h2&gt;프로젝트명 - 한글&lt;/h2&gt;
 &lt;p&gt;커피빵&lt;/p&gt;
 &lt;h2&gt;프로젝트명 - 영어&lt;/h2&gt;
 &lt;p&gt;CoffeeShout&lt;/p&gt;
