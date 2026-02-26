@@ -35,7 +35,8 @@
               "title": "custom_health_check"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -244,10 +245,11 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "2f40ab062eaa9845",
+  "active": "17661ef715671b96",
   "lastOpenFiles": [
-    "posts/zzol/custom_health_check.md",
     "posts/zzol/disability_simulation.md",
+    "posts/zzol/custom_health_check.md",
+    "posts/zzol/graceful_shutdown.md",
     "posts/zzol/thread_pool_tuning.md",
     "posts/zzol/rate_limiting.md",
     "posts/zzol/query_improvement.md",
@@ -261,7 +263,6 @@
     "posts/zzol/websocket_reconnection_app_switching.md",
     "posts/zzol/how_spring_handles_websocket.md",
     "posts/zzol/coffeeshout_to_zzol.md",
-    "posts/zzol/graceful_shutdown.md",
     "posts/zzol/.md",
     "posts/resume/네이버페이_25.11.md",
     "posts/resume/25년_하반기_채용.md",

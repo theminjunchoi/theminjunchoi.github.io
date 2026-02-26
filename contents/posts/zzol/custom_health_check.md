@@ -1,7 +1,7 @@
 ---
 title: "HealthIndicator에는 무엇을 담아야 하는가: 상태 판별부터 자가 치유까지"
 date: 2026-02-19 09:14:21
-updated: 2026-02-20 02:33:46
+updated: 2026-02-26 20:45:49
 publish: true
 tags:
   - ZZOL
@@ -135,7 +135,29 @@ public Health health() {
 ```
 
 Recovery가 복구를 시도하는 동안에는 container가 STOPPED여도 HealthIndicator는 UP을 반환한다. 아직 내부에서 복구 중이니까 Docker가 개입할 단계가 아니다. 2회 연속 실패해서 "복구 불가"가 확정돼야 비로소 DOWN을 반환하고, Docker 재시작이 last resort로 트리거된다.
+### 자주 오해하는 부분: Redis가 문제면 Redis를 재시작해야 하는 거 아닌가?
 
+장애 시뮬레이션을 하면서 자주 받은 질문이다. "Redis가 문제의 원인인데 왜 앱 컨테이너를 재시작하는 거냐. Redis 컨테이너를 재시작해야 하는 거 아니냐."
+
+처음에는 나도 같은 생각이었다. Redis가 죽으면 Redis를 살려야 한다고. 하지만 시뮬레이션을 해보니 문제의 구조가 달랐다.
+
+Redis가 잠깐 죽었다가 살아나면, Lettuce(Redis 클라이언트)가 커넥션을 자동으로 복구한다. 여기까지는 문제가 없다. 문제는 **Redis Stream의 `StreamMessageListenerContainer`가 한 번 STOPPED 상태에 빠지면 Lettuce 커넥션이 복구돼도 자동으로 살아나지 않는다**는 것이다. Lettuce는 Redis 커넥션을 관리하는 클라이언트이고, `StreamMessageListenerContainer`는 그 커넥션 위에서 이벤트를 구독하는 Spring 빈이다. 커넥션 복구와 빈의 생명주기는 별개의 문제다.
+
+그래서 Recovery가 하는 일은 Redis를 살리는 게 아니라, **이미 Redis는 살아있는데 STOPPED 상태로 남아있는 Spring 빈(`StreamMessageListenerContainer`)의 `start()`를 호출하는 것**이다. Docker 재시작도 마찬가지다. Redis 컨테이너를 재시작하는 게 아니라, 앱 컨테이너를 재시작해서 모든 Spring 빈을 초기 상태로 재생성하는 것이다.
+
+그렇다면 Redis 자체가 문제인 경우는? Redis가 완전히 죽어있거나, 메모리 부족으로 swap이 발생하거나, AOF rewrite가 과도하게 오래 걸리는 경우는 앱을 재시작해도 해결되지 않는다. 이런 상황은 사람이 원인을 파악해서 직접 조치해야 한다. 이 영역은 HealthIndicator가 아니라 Alert Rules가 담당한다. HealthIndicator는 "앱 내부에서 자동으로 복구 가능한 문제"를, Alert Rules는 "사람이 개입해야 하는 문제"를 각각 담당하는 구조다.
+
+```
+Redis 장애 발생
+    |
+    +-- 앱 내부 문제 (Container STOPPED)
+    |     -> Recovery가 container.start()
+    |     -> 실패 시 Docker가 앱 재시작
+    |
+    +-- Redis 자체 문제 (프로세스 죽음, OOM 등)
+          -> Alert Rules가 사람에게 알림
+          -> 사람이 원인 파악 후 조치
+```
 ## 네 번째 판단: Health Group을 왜 분리하는가
 
 Spring Boot Actuator는 Health Group 기능을 제공한다. 하나의 `/actuator/health` 아래에 여러 그룹을 만들 수 있다.
