@@ -1,7 +1,7 @@
 ---
 title: "분산 락의 함정: 락을 걸었는데도 이벤트가 두 번 처리된 이유"
 date: 2026-03-01 11:44:21
-updated: 2026-03-02 00:32:13
+updated: 2026-03-02 01:26:57
 publish: true
 tags:
   - ZZOL
@@ -229,12 +229,12 @@ Thread B: tryLock → 성공 (A가 이미 풀었으니까!) → 비즈니스 로
      |--- LOCK lock:abc ----->|                         |
      |<-- OK (acquired) ------|                         |
      |                        |<----- GET done:abc -----|
-     |  execute handler       |-----> nil ------------->|  ← not yet marked
+     |  execute handler       |------ nil ------------->|  ← not yet marked
      |                        |                         |
      |--- SET done:abc ------>|                         |
      |--- UNLOCK lock:abc --->|                         |
      |                        |<----- LOCK lock:abc ----|
-     |                        |-----> OK (acquired!) -->|  ← lock was released
+     |                        |------ OK (acquired!) -->|  ← lock was released
      |                        |                         |
      |                        |     execute handler     |  ← DUPLICATE!
      |                        |                         |
@@ -250,15 +250,15 @@ Thread B: tryLock → 성공 (A가 이미 풀었으니까!) → 비즈니스 로
      |--- LOCK lock:abc ----->|                         |
      |<-- OK (acquired) ------|                         |
      |                        |<----- GET done:abc -----|
-     |  execute handler       |-----> nil ------------->|  ← same so far
+     |  execute handler       |------ nil ------------->|  ← same so far
      |                        |                         |
      |--- SET done:abc ------>|                         |
      |--- UNLOCK lock:abc --->|                         |
      |                        |<----- LOCK lock:abc ----|
-     |                        |-----> OK (acquired!) -->|
+     |                        |------ OK (acquired!) -->|
      |                        |                         |
      |                        |<----- GET done:abc -----|  ← 2nd check!
-     |                        |-----> "done" ---------->|
+     |                        |------ "done" ---------->|
      |                        |                         |
      |                        |       return null       |  ← blocked
      |                        |<----- UNLOCK lock:abc --|
