@@ -1,7 +1,7 @@
 ---
 title: "분산 락의 함정: 락을 걸었는데도 이벤트가 두 번 처리된 이유"
 date: 2026-03-01 11:44:21
-updated: 2026-03-02 01:26:57
+updated: 2026-03-02 02:40:54
 publish: true
 tags:
   - ZZOL
@@ -214,56 +214,65 @@ Thread B: tryLock → 성공 (A가 이미 풀었으니까!) → 비즈니스 로
 
 ### 더블 체크로 Race Condition을 막는 흐름
 
-아래 다이어그램에서 첫 번째가 싱글 체크(버그), 두 번째가 더블 체크(수정)다.
+싱글 체크(버그)
+```mermaid
+sequenceDiagram
+    participant A as Thread A
+    participant R as Redis
+    participant B as Thread B
 
+    Note over A,B: Single Check — Race Condition
 
+    A->>R: GET done:abc
+    R-->>A: nil
+
+    A->>R: LOCK lock:abc
+    R-->>A: OK (acquired)
+
+    B->>R: GET done:abc
+    Note over A: execute handler
+    R-->>B: nil (not yet marked)
+
+    A->>R: SET done:abc
+    A->>R: UNLOCK lock:abc
+
+    B->>R: LOCK lock:abc
+    R-->>B: OK (acquired!)
+
+    Note over B: execute handler — DUPLICATE!
 ```
+두 번째가 더블 체크(수정)
 
-[Single Check — Race Condition]
+```mermaid
+sequenceDiagram
+    participant A as Thread A
+    participant R as Redis
+    participant B as Thread B
 
-  Thread A                  Redis                    Thread B
-     |                        |                         |
-     |--- GET done:abc ------>|                         |
-     |<-- nil ----------------|                         |
-     |                        |                         |
-     |--- LOCK lock:abc ----->|                         |
-     |<-- OK (acquired) ------|                         |
-     |                        |<----- GET done:abc -----|
-     |  execute handler       |------ nil ------------->|  ← not yet marked
-     |                        |                         |
-     |--- SET done:abc ------>|                         |
-     |--- UNLOCK lock:abc --->|                         |
-     |                        |<----- LOCK lock:abc ----|
-     |                        |------ OK (acquired!) -->|  ← lock was released
-     |                        |                         |
-     |                        |     execute handler     |  ← DUPLICATE!
-     |                        |                         |
+    Note over A,B: Double Check — Race Condition Blocked
 
+    A->>R: GET done:abc
+    R-->>A: nil
 
-[Double Check — Race Condition Blocked]
+    A->>R: LOCK lock:abc
+    R-->>A: OK (acquired)
 
-  Thread A                  Redis                    Thread B
-     |                        |                         |
-     |--- GET done:abc ------>|                         |
-     |<-- nil ----------------|                         |
-     |                        |                         |
-     |--- LOCK lock:abc ----->|                         |
-     |<-- OK (acquired) ------|                         |
-     |                        |<----- GET done:abc -----|
-     |  execute handler       |------ nil ------------->|  ← same so far
-     |                        |                         |
-     |--- SET done:abc ------>|                         |
-     |--- UNLOCK lock:abc --->|                         |
-     |                        |<----- LOCK lock:abc ----|
-     |                        |------ OK (acquired!) -->|
-     |                        |                         |
-     |                        |<----- GET done:abc -----|  ← 2nd check!
-     |                        |------ "done" ---------->|
-     |                        |                         |
-     |                        |       return null       |  ← blocked
-     |                        |<----- UNLOCK lock:abc --|
+    B->>R: GET done:abc
+    Note over A: execute handler
+    R-->>B: nil (same so far)
+
+    A->>R: SET done:abc
+    A->>R: UNLOCK lock:abc
+
+    B->>R: LOCK lock:abc
+    R-->>B: OK (acquired!)
+
+    B->>R: GET done:abc (2nd check)
+    R-->>B: "done"
+
+    Note over B: return null — blocked
+    B->>R: UNLOCK lock:abc
 ```
-
 핵심은 Thread B가 락을 잡은 직후에 done key를 **한 번 더 확인**하는 것이다. Thread A가 이미 done을 마킹해뒀기 때문에, B는 비즈니스 로직에 진입하지 않고 빠진다.
 
 ### 수정된 구현 (더블 체크)
@@ -345,7 +354,7 @@ public void handle(MiniGameFinishedEvent event) { ... }
 처음에는 `@Order`를 신경 쓰지 않았다. 동작은 했으니까. 하지만 중복 이벤트가 들어올 때 DB 커넥션 풀 모니터링에서 이상한 게 보였다. 중복 이벤트가 들어올 때마다 active connection이 순간적으로 올라갔다.
 
 원인은 AOP 실행 순서였다. `@Transactional`이 `@RedisLock`보다 먼저 실행되면 이런 일이 벌어진다.
-
+``
 ```
 @Transactional이 바깥인 경우:
 

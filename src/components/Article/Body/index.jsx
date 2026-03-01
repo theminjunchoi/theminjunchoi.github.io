@@ -29,6 +29,36 @@ const Body = ({ html }) => {
     )
   }, [])
 
+  useEffect(() => {
+    const initMermaid = async () => {
+      const codeBlocks = document.querySelectorAll(
+        '#article-body pre > code[class="language-mermaid"]'
+      )
+      if (codeBlocks.length === 0) return
+
+      const mermaid = (await import("mermaid")).default
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "default",
+      })
+
+      for (const codeBlock of codeBlocks) {
+        const pre = codeBlock.parentElement
+        const mermaidCode = codeBlock.textContent
+
+        const div = document.createElement("div")
+        div.className = "mermaid"
+        div.textContent = mermaidCode
+
+        pre.parentElement.replaceChild(div, pre)
+      }
+
+      await mermaid.run({ querySelector: ".mermaid" })
+    }
+
+    initMermaid()
+  }, [html])
+
   return (
     <Wrapper>
       <Toc items={toc} articleOffset={offsetTop} />
