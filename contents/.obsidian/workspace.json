@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/zzol/custom_health_check.md",
+                "file": "posts/zzol/distributed_lock_and_race_condition.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "custom_health_check"
+              "title": "distributed_lock_and_race_condition"
             }
           }
         ],
@@ -93,7 +93,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 385.50390243530273
+    "width": 385.50390243530273,
+    "collapsed": true
   },
   "right": {
     "id": "6d077420ed9aa60e",
@@ -247,8 +248,9 @@
   },
   "active": "17661ef715671b96",
   "lastOpenFiles": [
-    "posts/zzol/disability_simulation.md",
     "posts/zzol/custom_health_check.md",
+    "posts/zzol/distributed_lock_and_race_condition.md",
+    "posts/zzol/disability_simulation.md",
     "posts/zzol/graceful_shutdown.md",
     "posts/zzol/thread_pool_tuning.md",
     "posts/zzol/rate_limiting.md",
@@ -274,7 +276,6 @@
     "posts/retrospect/retrospect-2024-2.md",
     "posts/attachments/IMG_7091.jpeg",
     "template/template.md",
-    "posts/woowatech/우아한테크코스_7기_BE_최종_회고.md",
     "posts/attachments/Pasted image 20251103160332.png",
     "posts/attachments/Pasted image 20251103155757.png",
     "posts/attachments/Pasted image 20251103155748.png",
