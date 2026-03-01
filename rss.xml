@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 01 Mar 2026 15:33:32 GMT</lastBuildDate><item><title><![CDATA[분산 락의 함정: 락을 걸었는데도 이벤트가 두 번 처리된 이유]]></title><description><![CDATA[ZZOL에서 Redis Stream을 이벤트 버스로 사용하고 있다. 방 생성, 게임 시작, 룰렛 결과 등 거의 모든 도메인 이벤트가 Redis Stream…]]></description><link>https://minjun.blog/distributed_lock_and_race_condition/</link><guid isPermaLink="false">https://minjun.blog/distributed_lock_and_race_condition/</guid><pubDate>Sun, 01 Mar 2026 11:44:21 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL에서 Redis Stream을 이벤트 버스로 사용하고 있다. 방 생성, 게임 시작, 룰렛 결과 등 거의 모든 도메인 이벤트가 Redis Stream을 통해 흐른다. 그런데 이벤트가 &lt;strong&gt;두 번 이상 도착할 수 있다&lt;/strong&gt;는 사실을 인지했고, 이를 해결하기 위한 멱등성 처리를 설계한 과정을 기록한다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 01 Mar 2026 16:27:52 GMT</lastBuildDate><item><title><![CDATA[분산 락의 함정: 락을 걸었는데도 이벤트가 두 번 처리된 이유]]></title><description><![CDATA[ZZOL에서 Redis Stream을 이벤트 버스로 사용하고 있다. 방 생성, 게임 시작, 룰렛 결과 등 거의 모든 도메인 이벤트가 Redis Stream…]]></description><link>https://minjun.blog/distributed_lock_and_race_condition/</link><guid isPermaLink="false">https://minjun.blog/distributed_lock_and_race_condition/</guid><pubDate>Sun, 01 Mar 2026 11:44:21 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL에서 Redis Stream을 이벤트 버스로 사용하고 있다. 방 생성, 게임 시작, 룰렛 결과 등 거의 모든 도메인 이벤트가 Redis Stream을 통해 흐른다. 그런데 이벤트가 &lt;strong&gt;두 번 이상 도착할 수 있다&lt;/strong&gt;는 사실을 인지했고, 이를 해결하기 위한 멱등성 처리를 설계한 과정을 기록한다.&lt;/p&gt;
 &lt;h2&gt;문제 인식: 이벤트가 왜 두 번 오는가&lt;/h2&gt;
 &lt;p&gt;처음에는 이벤트 중복을 고민하지 않았다. Redis Stream에 이벤트를 발행하면, 리스너가 읽어서 처리하면 끝이라고 생각했다. 하지만 운영 로그를 보다가 이상한 걸 발견했다.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[INFO] 룰렛 결과 DB 저장 완료: eventId=abc-123, joinCode=A1B2
@@ -133,12 +133,12 @@ Thread B: tryLock → 성공 (A가 이미 풀었으니까!) → 비즈니스 로
      |--- LOCK lock:abc -----&gt;|                         |
      |&amp;lt;-- OK (acquired) ------|                         |
      |                        |&amp;lt;----- GET done:abc -----|
-     |  execute handler       |-----&gt; nil -------------&gt;|  ← not yet marked
+     |  execute handler       |------ nil -------------&gt;|  ← not yet marked
      |                        |                         |
      |--- SET done:abc ------&gt;|                         |
      |--- UNLOCK lock:abc ---&gt;|                         |
      |                        |&amp;lt;----- LOCK lock:abc ----|
-     |                        |-----&gt; OK (acquired!) --&gt;|  ← lock was released
+     |                        |------ OK (acquired!) --&gt;|  ← lock was released
      |                        |                         |
      |                        |     execute handler     |  ← DUPLICATE!
      |                        |                         |
@@ -154,15 +154,15 @@ Thread B: tryLock → 성공 (A가 이미 풀었으니까!) → 비즈니스 로
      |--- LOCK lock:abc -----&gt;|                         |
      |&amp;lt;-- OK (acquired) ------|                         |
      |                        |&amp;lt;----- GET done:abc -----|
-     |  execute handler       |-----&gt; nil -------------&gt;|  ← same so far
+     |  execute handler       |------ nil -------------&gt;|  ← same so far
      |                        |                         |
      |--- SET done:abc ------&gt;|                         |
      |--- UNLOCK lock:abc ---&gt;|                         |
      |                        |&amp;lt;----- LOCK lock:abc ----|
-     |                        |-----&gt; OK (acquired!) --&gt;|
+     |                        |------ OK (acquired!) --&gt;|
      |                        |                         |
      |                        |&amp;lt;----- GET done:abc -----|  ← 2nd check!
-     |                        |-----&gt; &quot;done&quot; ----------&gt;|
+     |                        |------ &quot;done&quot; ----------&gt;|
      |                        |                         |
      |                        |       return null       |  ← blocked
      |                        |&amp;lt;----- UNLOCK lock:abc --|&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
