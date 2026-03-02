@@ -1,10 +1,12 @@
 ---
 title: WebSocket 서비스에서 Graceful Shutdown이 필요한 이유와 구현
 date: 2025-12-29 11:54:21
-updated: 2026-02-18 03:39:27
+updated: 2026-03-02 16:28:57
 publish: true
 tags:
   - ZZOL
+  - websocket
+  - graceful-shutdown
 series: ZZOL 개발록
 ---
 ZZOL 서비스에 Graceful Shutdown을 구현했다. 단순히 "서버를 안전하게 끄자"가 아니라, WebSocket 기반 실시간 게임 서비스에서 "게임 중인 유저의 세션을 어떻게 보호할 것인가"에 대한 이야기다. OS의 SIGTERM 시그널부터 Spring의 SmartLifecycle, 그리고 WebSocket 세션 드레이닝까지의 전체 과정을 기록한다.

@@ -1,10 +1,13 @@
 ---
 title: ZZOL의 효율적인 서버 자기보호 전략
 date: 2026-02-18 12:13:51
-updated: 2026-02-22 00:30:59
+updated: 2026-03-02 16:33:30
 publish: true
 tags:
   - ZZOL
+  - traffic
+  - nginx
+  - websocket
 series: ZZOL 개발록
 ---
 ZZOL 서비스에 Rate Limiting을 적용했다. 단순히 "요청을 제한하자"가 아니라, 같은 서버 보호인데 HTTP와 WebSocket에서 왜 다른 전략을 써야 하는지, 각 설정값을 왜 그렇게 잡았는지에 대한 판단 과정을 기록한다.

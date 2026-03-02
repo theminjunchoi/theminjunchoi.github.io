@@ -1,10 +1,12 @@
 ---
 title: 외부 서비스 장애로부터 살아남기
 date: 2026-02-17 09:42:27
-updated: 2026-02-18 03:57:20
+updated: 2026-03-02 16:32:17
 publish: true
 tags:
   - ZZOL
+  - circuit-breaker
+  - retry
 series: ZZOL 개발록
 ---
 `ZZOL`에서 외부 서비스 장애 대응 작업을 했다. Oracle Object Storage에 QR 코드를 업로드하는 과정에서, 외부 서비스가 불안정할 때 시스템 전체가 영향을 받는 문제가 있었다. 이 글에서는 Circuit Breaker와 Retry를 도입하면서 고민한 과정을 기록해본다.

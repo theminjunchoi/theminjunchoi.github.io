@@ -1,11 +1,12 @@
 ---
 title: 모바일 백그라운드 전환 시에도 끊김 없는 WebSocket 연결 경험 만들기
 date: 2025-08-13 09:44:21
-updated: 2026-02-18 03:54:16
+updated: 2026-03-02 16:24:57
 publish: true
 tags:
   - 우아한테크코스
   - ZZOL
+  - websocket
 series: ZZOL 개발록
 ---
 ## 문제 상황

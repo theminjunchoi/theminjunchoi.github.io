@@ -1,10 +1,12 @@
 ---
 title: '"재시작하면 고쳐져요"라는 말을 없애기까지: 3단계 서버 자가 치유기'
 date: 2026-02-21 03:19:24
-updated: 2026-02-26 00:07:27
+updated: 2026-03-02 16:35:15
 publish: true
 tags:
   - ZZOL
+  - simulation
+  - monitoring
 series: ZZOL 개발록
 ---
 "장애가 발생했습니다. 서버 재시작할까요?"

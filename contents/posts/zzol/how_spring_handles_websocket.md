@@ -1,11 +1,12 @@
 ---
 title: Spring WebSocket 내부 동작 원리 파헤치기
 date: 2025-08-12 09:44:21
-updated: 2026-02-18 03:54:02
+updated: 2026-03-02 16:24:16
 publish: true
 tags:
   - spring
   - ZZOL
+  - websocket
 series: ZZOL 개발록
 ---
 [[how_spring_injects_httpsession]] 이 포스트를 읽고 오면 이해가 더 잘 됩니다!

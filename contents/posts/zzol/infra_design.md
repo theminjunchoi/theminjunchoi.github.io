@@ -1,11 +1,14 @@
 ---
 title: "단일 서버에서 분산 환경으로: 확장성 있는 아키텍처로의 전환"
 date: 2025-10-13 09:44:21
-updated: 2026-02-18 03:55:40
+updated: 2026-03-02 16:27:33
 publish: true
 tags:
   - 우아한테크코스
   - ZZOL
+  - redis
+  - multi-instance
+  - pub/sub
 series: ZZOL 개발록
 ---
 ## 단일 인스턴스 목표 TPS

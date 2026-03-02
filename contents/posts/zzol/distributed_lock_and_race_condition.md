@@ -1,10 +1,12 @@
 ---
 title: "분산 락의 함정: 락을 걸었는데도 이벤트가 두 번 처리된 이유"
 date: 2026-03-01 11:44:21
-updated: 2026-03-02 02:40:54
+updated: 2026-03-02 16:36:07
 publish: true
 tags:
   - ZZOL
+  - distributed-lock
+  - redis
 series: ZZOL 개발록
 ---
 ZZOL에서 Redis Stream을 이벤트 버스로 사용하고 있다. 방 생성, 게임 시작, 룰렛 결과 등 거의 모든 도메인 이벤트가 Redis Stream을 통해 흐른다. 그런데 이벤트가 **두 번 이상 도착할 수 있다**는 사실을 인지했고, 이를 해결하기 위한 멱등성 처리를 설계한 과정을 기록한다.

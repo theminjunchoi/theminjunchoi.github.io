@@ -1,11 +1,14 @@
 ---
 title: "스레드풀, 감으로 잡지 마세요: 부하 테스트로 증명하는 최적의 설정값"
 date: 2025-09-27 11:44:21
-updated: 2026-02-18 03:54:42
+updated: 2026-03-02 16:29:23
 publish: true
 tags:
   - 우아한테크코스
   - ZZOL
+  - websocket
+  - thread-pool
+  - tuning
 series: ZZOL 개발록
 ---
 커피빵(CoffeeShout) 서비스의 WebSocket 스레드풀을 부하 테스트 기반으로 튜닝했다. "스레드 몇 개가 적절한가?"라는 질문에 감이 아닌 데이터로 답을 내리는 과정을 기록한다.

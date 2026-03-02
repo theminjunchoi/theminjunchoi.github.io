@@ -1,10 +1,13 @@
 ---
 title: "HealthIndicator에는 무엇을 담아야 하는가: 상태 판별부터 자가 치유까지"
 date: 2026-02-19 09:14:21
-updated: 2026-02-26 20:45:49
+updated: 2026-03-02 16:34:41
 publish: true
 tags:
   - ZZOL
+  - health-indicator
+  - spring
+  - docker
 series: ZZOL 개발록
 ---
 ZZOL 서비스에 커스텀 HealthIndicator와 자가복구(Self-Recovery) 로직을 추가하고, Health Group을 분리했다. Spring Boot의 기본 헬스체크가 어디까지 커버하고, 어디서부터 커스텀이 필요한지, 장애 감지 후 Docker 재시작 전에 애플리케이션 내부에서 먼저 복구를 시도해야 하는 이유, 그리고 DOWN과 OUT_OF_SERVICE를 왜 구분해야 하는지에 대한 판단 과정을 기록한다.
