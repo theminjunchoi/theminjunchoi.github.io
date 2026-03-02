@@ -1,8 +1,8 @@
 ---
 title: "모든 이벤트가 같은 스레드풀을 쓸 필요는 없다: 순서 보장과 처리량 사이의 딜레마"
 date: 2026-03-02 03:14:51
-updated: 2026-03-02 02:41:08
-publish: false
+updated: 2026-03-02 15:29:31
+publish: true
 tags:
   - ZZOL
 series: ZZOL 개발록
@@ -51,7 +51,7 @@ redis:
 
 5개 스트림의 리스너가 전부 이 풀에서 스레드를 꺼내 이벤트를 처리했다. 처음에는 문제가 없었다. 동시 접속자가 적고, 이벤트 빈도가 낮을 때는 8개 스레드면 충분했다.
 
-문제는 레이싱 게임을 추가하면서 시작됐다. 레이싱 게임에서 플레이어 4명이 동시에 탭을 하면 초당 수십 건의 `TapCommandEvent`가 쏟아진다. shared 풀의 스레드 8개 중 상당수가 탭 이벤트 처리에 점유되면서, 같은 풀을 쓰는 `room:join`의 입장 이벤트 처리가 밀렸다. 입장 이벤트가 큐에서 대기하는 시간이 눈에 띄게 늘었고, 사용자 입장에서는 "방에 입장했는데 반응이 늦다"는 상황이 됐다.
+문제는 레이싱 게임을 추가하면서 시작됐다. 레이싱 게임에서 플레이어 4명이 동시에 탭을 하면 초당 수십 건의 `TapCommandEvent`가 쏟아진다. shared 풀의 스레드 8개 중 상당수가 탭 이벤트 처리에 점유되면서, 같은 풀을 쓰는 `room` 스트림의 다른 이벤트 처리가 밀렸다. 한 방에서 레이싱이 진행되는 동안 다른 방에서 룰렛을 돌리거나 방을 생성하면, 해당 이벤트가 큐에서 대기하는 시간이 눈에 띄게 늘었다.
 
 이때 스레드풀 분리를 결정했다. 어떤 기준으로 분리할지가 문제였다.
 
@@ -68,6 +68,7 @@ redis:
 둘째, **이벤트 빈도가 높아서 다른 스트림의 처리를 밀어낼 수 있는가?** 빈도가 높은 스트림이 빈도가 낮은 스트림과 풀을 공유하면, 낮은 쪽이 starvation을 겪는다. 이런 스트림은 격리하거나 별도 풀을 줘야 한다.
 
 이 두 기준으로 분류하면 이렇다.
+
 ||Ordering Required|Ordering Not Required|
 |---|---|---|
 |**High Frequency**|`room:join`, `cardgame:select`|`racinggame`|
@@ -81,9 +82,9 @@ redis:
 
 만약 `room:join` 핸들러가 DB 지연 등으로 500ms 걸린다면? 큐에 10건이 쌓여있으면 10번째 유저는 입장에만 5초를 기다려야 한다. 단일 스레드로 순서를 보장하려면, **핸들러의 실행 시간을 극도로 짧게 유지해야 한다**는 전제가 따른다.
 
-`room:join`의 `joinRoom()`은 Redis 캐시에서 방 상태를 읽고 플레이어를 추가하는 로직이다. DB를 직접 타지 않는다. 실측 실행 시간이 5~15ms 수준이라 단일 스레드에서도 10건 처리에 150ms면 충분하다. 만약 이 핸들러가 외부 API 호출이나 무거운 DB 쿼리를 포함하고 있었다면, 단일 스레드 전략은 선택할 수 없었을 것이다. 그때는 분산 락이나 Lua script로 원자성을 확보하면서 멀티 스레드로 처리하는 방향을 고려했을 것이다.
+`room:join`의 `joinRoom()`은 `ConcurrentHashMap` 기반 인메모리 저장소에서 방 상태를 읽고 플레이어를 추가하는 로직이다. 네트워크 I/O가 없다. 실측 실행 시간이 수 ms 수준이라 단일 스레드에서도 10건 처리에 충분하다. 만약 이 핸들러가 외부 API 호출이나 무거운 DB 쿼리를 포함하고 있었다면, 단일 스레드 전략은 선택할 수 없었을 것이다. 그때는 분산 락이나 Lua script로 원자성을 확보하면서 멀티 스레드로 처리하는 방향을 고려했을 것이다.
 
-`cardgame:select`도 마찬가지다. `cardGameService.selectCard()`는 Redis에서 게임 상태를 읽고 카드를 갱신하는 연산이라 1~5ms 수준이다.
+`cardgame:select`도 마찬가지다. `cardGameCommandService.selectCard()`는 같은 인메모리 저장소에서 Room을 꺼내고 CardGame 객체의 카드를 갱신하는 연산이라 수 ms 수준이다.
 
 정리하면 단일 스레드 전략을 선택하기 위한 조건은 두 가지다. "순서 보장이 필요한가"와 "핸들러 실행 시간이 충분히 짧은가". 둘 다 만족해야 단일 스레드가 성립한다.
 
@@ -130,6 +131,7 @@ graph LR
     cardgame --> dedicated2
     dedicated2 --> H3
 ```
+
 공유 풀을 쓰는 3개 스트림은 8~16개 스레드가 이벤트를 병렬로 처리한다. 전용 풀을 쓰는 2개 스트림은 각각 스레드 1개가 순서대로 처리한다. 풀이 물리적으로 분리되어 있으므로, `racinggame`의 탭 이벤트가 아무리 많이 들어와도 `room:join`의 처리에 영향을 주지 않는다.
 
 ### 최종 설정
@@ -185,7 +187,7 @@ redis:
 
 `minigame` 스트림도 마찬가지다. 미니게임 시작/종료는 방마다 독립적이고 빈도가 낮다.
 
-`racinggame`은 빈도가 높지만 공유 풀에 남겨뒀다. 처음에는 전용 풀을 주려고 했으나, 실제로 측정해보니 탭 이벤트의 처리 시간이 매우 짧았다(1~3ms). Redis 캐시에서 현재 상태를 읽고 탭 횟수를 증가시키는 게 전부라 DB를 타지 않는다. 처리 시간이 짧으면 스레드를 금방 반환하기 때문에, 공유 풀의 다른 스트림을 밀어내는 현상이 줄어든다. 격리의 실익이 크지 않아서 공유 풀에 유지하기로 했다.
+`racinggame`은 빈도가 높지만 공유 풀에 남겨뒀다. 처음에는 전용 풀을 주려고 했으나, 실제로 측정해보니 탭 이벤트의 처리 시간이 매우 짧았다(1~3ms). 인메모리 저장소에서 Room을 꺼내고 RacingGame 객체의 탭 횟수를 갱신하는 게 전부라 네트워크 I/O가 없다. 처리 시간이 짧으면 스레드를 금방 반환하기 때문에, 공유 풀의 다른 스트림을 밀어내는 현상이 줄어든다. 격리의 실익이 크지 않아서 공유 풀에 유지하기로 했다.
 
 ### 왜 racinggame은 단일 스레드가 아닌가?
 
@@ -298,27 +300,6 @@ record의 compact constructor에서 검증한다. 앱 시작 시점에 잘못된
 둘째, `CallerRunsPolicy`도 고려했지만 부작용이 있다. `CallerRunsPolicy`는 큐가 가득 차면 이벤트를 제출한 스레드(caller)가 직접 실행한다. `StreamMessageListenerContainer`의 polling 스레드가 caller인데, 이 스레드가 이벤트 처리에 묶이면 다른 스트림의 메시지 polling 자체가 멈춘다. 한 스트림의 과부하가 다른 스트림의 메시지 수신까지 막는 연쇄 효과가 생긴다.
 
 다만 거절된 이벤트가 아예 유실되는 건 아니다. Redis Stream 자체에 메시지가 남아있고, MAXLEN 100건 내에서 Container가 재시작되면 다시 읽힌다. 멱등성 처리가 되어 있으므로 재처리해도 안전하다. 즉 거절 정책은 "버려도 되니까 AbortPolicy"가 아니라, "Redis Stream이 메시지를 보존하고 있으므로 앱 레벨에서 DLQ를 별도로 구현할 필요가 없다"는 판단이다.
-
-## Graceful Shutdown 처리
-
-스레드풀에 `setWaitForTasksToCompleteOnShutdown(true)`와 `setAwaitTerminationSeconds(10)`을 설정했다.
-
-```java
-public ThreadPoolTaskExecutor createThreadPoolExecutor(ThreadPoolConfig config, String threadNamePrefix) {
-    final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(config.coreSize());
-    executor.setMaxPoolSize(config.maxSize());
-    executor.setQueueCapacity(config.queueCapacity());
-    executor.setThreadNamePrefix(threadNamePrefix);
-    executor.setWaitForTasksToCompleteOnShutdown(true);
-    executor.setAwaitTerminationSeconds(10);
-    return executor;
-}
-```
-
-`setWaitForTasksToCompleteOnShutdown(true)`는 셧다운 시그널을 받으면 새 이벤트는 거부하되, 이미 큐에 들어온 이벤트와 현재 처리 중인 이벤트는 완료될 때까지 기다린다는 의미다. `setAwaitTerminationSeconds(10)`은 최대 10초까지 기다리고, 그래도 안 끝나면 강제 종료한다.
-
-10초로 잡은 이유는 `spring.lifecycle.timeout-per-shutdown-phase: 5m`과의 관계 때문이다. Spring의 graceful shutdown 전체 타임아웃이 5분인데, 스레드풀 종료에 10초를 쓰면 나머지 컴포넌트(WebSocket 세션 정리, DB 커넥션 반환 등)에 충분한 시간이 남는다.
 
 ## 정리
 
