@@ -73,7 +73,7 @@ const ParagraphTitle = styled.div`
 const Toc = ({ items, articleOffset }) => {
   const { y } = useScroll()
 
-  const [revealAt, setRevealAt] = useState(4000)
+  const [revealAt, setRevealAt] = useState(Infinity)
   const [headers, setHeaders] = useState([])
   const [active, setActive] = useState(0)
 
