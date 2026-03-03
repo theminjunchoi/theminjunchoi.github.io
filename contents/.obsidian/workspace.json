@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/zzol/redis_stream_thread_pool.md",
+                "file": "posts/zzol/to_bulk_insert.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "redis_stream_thread_pool"
+              "title": "to_bulk_insert"
             }
           },
           {
@@ -262,11 +262,14 @@
   },
   "active": "3c1818008cc2ee62",
   "lastOpenFiles": [
-    "posts/zzol/websocket_thread_pool.md",
+    "posts/zzol/redis_stream_thread_pool.md",
+    "posts/zzol/rate_limiting.md",
     "posts/zzol/distributed_lock_and_race_condition.md",
     "posts/zzol/disability_simulation.md",
     "posts/zzol/custom_health_check.md",
-    "posts/zzol/rate_limiting.md",
+    "posts/zzol/to_bulk_insert.md",
+    "posts/zzol/websocket_thread_pool.md",
+    "posts/zzol/websocket_reconnection_app_switching.md",
     "posts/zzol/circuit_breaker.md",
     "posts/zzol/message_recovery.md",
     "posts/zzol/query_improvement.md",
@@ -274,11 +277,9 @@
     "posts/zzol/coffeeshout_to_zzol.md",
     "posts/zzol/infra_design.md",
     "posts/zzol/how_redis_pubsub_works.md",
-    "posts/zzol/websocket_reconnection_app_switching.md",
     "posts/zzol/how_spring_handles_websocket.md",
     "posts/zzol/persona.md",
     "posts/zzol/ideation.md",
-    "posts/zzol/redis_stream_thread_pool.md",
     "posts/zzol/server_tech_stack.md",
     "posts/zzol/.md",
     "posts/resume/네이버페이_25.11.md",
@@ -288,7 +289,6 @@
     "posts/blog-writing-prompt.md",
     "posts/blog-writing-prompt",
     "posts/retrospect/retrospect-2025.md",
-    "posts/retrospect/retrospect-2024-2.md",
     "posts/attachments/IMG_7091.jpeg",
     "posts/attachments/Pasted image 20251103160332.png",
     "posts/attachments/Pasted image 20251103155757.png",
