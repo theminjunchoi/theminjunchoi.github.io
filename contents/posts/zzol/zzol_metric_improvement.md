@@ -1,7 +1,7 @@
 ---
 title: 게임 이벤트가 100ms 늦게 도착하는데 아무도 몰랐다 — Redis Stream 관측 가능성 확보기
 date: 2026-03-03 07:14:41
-updated: 2026-03-04 02:30:29
+updated: 2026-03-05 20:16:19
 publish: true
 tags:
   - ZZOL
@@ -154,8 +154,7 @@ graph LR
 
 참고로, Micrometer가 제공하는 `ExecutorServiceMetrics.monitor()`를 사용하면 큐 사이즈, 활성 스레드, 완료 태스크 수 등 스레드풀의 표준 지표들을 한 줄로 수집할 수 있다. 이번에는 스트림별 태그를 붙여서 "어떤 스트림의 풀이 포화인가"를 구분하기 위해 직접 Gauge를 등록했지만, 표준 지표만으로 충분한 경우라면 `ExecutorServiceMetrics`가 더 간결한 선택이다.
 
-그런데 `XLEN`이 Lag가 아니라면 왜 수집은 남겨뒀는가? 스트림의 MAXLEN trimming이 정상 동작하는지 확인하는 용도다. `XLEN`이 MAXLEN(100)을 크게 초과하면 trimming에 문제가 있다는 신호다. Lag 지표가 아니라 운영 상태 확인용 Gauge로 역할을 재정의했다. 10초 주기 로그에서도 XLEN이 MAXLEN의 80%를 넘으면 경고를 남기되, XLEN 조회가 실패한 경우(-1.0 반환)에는 비교를 스킵하도록 처리했다.
-
+그런데 `XLEN`이 Lag가 아니라면 왜 수집은 남겨뒀는가? 스트림의 `MAXLEN` trimming이 정상 동작하는지 확인하는 용도다. **Lag 지표가 아니라, '스트림이 제한된 길이 내에서 적절히 유지되고 있는지'를 확인하는 시스템 헬스체크용 Gauge로 역할을 재정의했다.**
 ### 왜 스레드풀 큐가 진짜 위험 지표인가
 
 ZZOL의 스트림 설정을 보면, 5개 스트림 중 3개(`room`, `minigame`, `racinggame`)가 `concurrent`라는 이름의 공유 스레드풀을 사용한다. 이 풀의 queue capacity는 1024다.
