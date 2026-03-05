@@ -1,7 +1,7 @@
 ---
 title: 게임 이벤트가 100ms 늦게 도착하는데 아무도 몰랐다 — Redis Stream 관측 가능성 확보기
 date: 2026-03-03 07:14:41
-updated: 2026-03-05 21:52:14
+updated: 2026-03-05 21:54:44
 publish: true
 tags:
   - ZZOL
@@ -239,7 +239,7 @@ Prometheus TSDB 관점에서는 히스토그램 버킷 약 70개 + Gauge/Counter
 Added 7 Prometheus metrics in total: `redis_stream_e2e_latency_seconds`, `redis_stream_length`, `redis_stream_threadpool_queue_size`, `redis_stream_threadpool_active_count`, `websocket_ratelimit_dropped_total`, `room_active_count`, `room_total_count`.
 
 ## 정리
-![[Pasted image 20260305215212.png]]
+![[Pasted image 20260305215442.png]]
 모니터링의 가치는 장애가 터진 후 원인을 찾는 것보다, 터지기 전에 징후를 감지하는 데 있다. Redis Stream E2E latency는 유저 체감 저하의 직접 지표이고, 스레드풀 큐 깊이는 이벤트 유실의 선행 지표다. 둘 다 없으면 "느려졌는데 왜?" "메시지가 안 왔는데 어디서 씹혔는지 모르겠다"에 답할 수 없다.
 
 측정 포인트를 고를 때는 기존 코드에 이미 있는 걸 먼저 봐야 한다. `BaseEvent.timestamp()`가 모든 이벤트에 발행 시점을 기록하고 있었지만, 소비 시점에서 이 값을 활용하는 코드가 없었다. 한 줄 추가로 E2E latency 측정이 가능해진 건, 인프라를 새로 붙인 게 아니라 이미 있는 데이터를 활용한 것이다.
