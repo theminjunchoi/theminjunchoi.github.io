@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "posts/zzol/trace_context_propagation.md",
+                "file": "posts/zzol/outbox_pattern.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "trace_context_propagation"
+              "title": "outbox_pattern"
             }
           },
           {
@@ -262,9 +262,10 @@
   },
   "active": "3c1818008cc2ee62",
   "lastOpenFiles": [
+    "posts/zzol/trace_context_propagation.md",
+    "posts/zzol/outbox_pattern.md",
     "posts/attachments/Pasted image 20260306213049.png",
     "posts/zzol/rate_limiting.md",
-    "posts/zzol/trace_context_propagation.md",
     "posts/zzol/zzol_metric_improvement.md",
     "posts/attachments/Pasted image 20260305215442.png",
     "posts/attachments/Pasted image 20260305215212.png",
@@ -299,7 +300,6 @@
     "posts/resume",
     "posts/attachments/스크린샷 2025-10-18 오후 5.49.35.png",
     "posts/attachments/Pasted image 20241020194900.png",
-    "posts/attachments/Pasted image 20241020194900 1.png",
     "posts/study/tech_interview",
     "posts/study",
     "Untitled.base",

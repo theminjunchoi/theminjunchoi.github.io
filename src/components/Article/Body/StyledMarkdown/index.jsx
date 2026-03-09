@@ -18,7 +18,6 @@ const StyledMarkdown = styled.div`
   & > p,
   & > ul,
   & > ol,
-  & table,
   & blockquote,
   & pre,
   & img,
@@ -26,6 +25,11 @@ const StyledMarkdown = styled.div`
     margin-top: 0;
     margin-bottom: 24px;
     word-break: break-all;
+  }
+
+  & table {
+    margin-top: 0;
+    margin-bottom: 24px;
   }
 
   & p {
@@ -100,6 +104,19 @@ const StyledMarkdown = styled.div`
 
   & table {
     border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  & table td,
+  & table th {
+    white-space: nowrap;
+  }
+
+  & table td:last-child {
+    white-space: normal;
   }
 
   & th {
