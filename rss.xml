@@ -1,4 +1,403 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 07 Mar 2026 08:26:32 GMT</lastBuildDate><item><title><![CDATA[비동기 컨텍스트 전파의 두 단계: 외부 브로커 경유와 내부 스레드풀 전파 분리하기]]></title><description><![CDATA[ZZOL의 모든 유저 액션은 Redis Stream을 경유한다. WebSocket으로 들어온 요청이 Redis Stream…]]></description><link>https://minjun.blog/trace_context_propagation/</link><guid isPermaLink="false">https://minjun.blog/trace_context_propagation/</guid><pubDate>Fri, 06 Mar 2026 05:14:41 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL의 모든 유저 액션은 Redis Stream을 경유한다. WebSocket으로 들어온 요청이 Redis Stream에 발행되고, 별도 스레드풀에서 소비되어 게임 로직이 실행된다. 이 구조에서 한 가지 문제가 있었다. 유저 요청의 시작부터 끝까지를 하나의 trace로 추적할 수 없었다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 09 Mar 2026 23:49:31 GMT</lastBuildDate><item><title><![CDATA[지연 시간 0ms를 보장하는 Transactional Outbox 도입기
+⏤ @Transactional 하나가 DB 커넥션 풀을 말려버린 사연과 이중 쓰기(Dual Write) 극복]]></title><description><![CDATA[DB 커밋은 됐는데 이벤트가 사라진다 ZZOL은 실시간 멀티플레이어 게임 서비스다. 방 생성, 룰렛 스핀, 미니게임 결과 같은 핵심 비즈니스 이벤트를 Redis Stream으로 브로드캐스트해서 WebSocket…]]></description><link>https://minjun.blog/outbox_pattern/</link><guid isPermaLink="false">https://minjun.blog/outbox_pattern/</guid><pubDate>Sun, 08 Mar 2026 01:19:31 GMT</pubDate><content:encoded>&lt;h2&gt;DB 커밋은 됐는데 이벤트가 사라진다&lt;/h2&gt;
+&lt;p&gt;ZZOL은 실시간 멀티플레이어 게임 서비스다. 방 생성, 룰렛 스핀, 미니게임 결과 같은 핵심 비즈니스 이벤트를 Redis Stream으로 브로드캐스트해서 WebSocket 클라이언트에게 전달하는 구조로 되어 있다.&lt;/p&gt;
+&lt;p&gt;문제는 &lt;code class=&quot;language-text&quot;&gt;RoomService.createRoom()&lt;/code&gt;에 있었다. 코드를 보면 흐름이 이렇다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Transactional&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Room&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;createRoom&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; hostName&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Room&lt;/span&gt; room &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; roomCommandService&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;saveIfAbsentRoom&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;joinCode&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;PlayerName&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;hostName&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;// 여기서 Redis Stream에 직접 쏜다&lt;/span&gt;
+    streamPublisher&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;publish&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;StreamKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;ROOM_BROADCAST&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; event&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token function&quot;&gt;saveRoomEntity&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;joinCode&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;// DB 저장&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; room&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 코드의 문제는 두 가지다. 첫째, &lt;code class=&quot;language-text&quot;&gt;streamPublisher.publish()&lt;/code&gt;가 트랜잭션 커밋 전에 호출된다. 트랜잭션이 롤백되면 Redis에는 이벤트가 남아있고 DB에는 데이터가 없는 유령 이벤트가 발생한다. 둘째, 트랜잭션이 성공적으로 커밋되더라도 그 직후 Redis 장애나 네트워크 타임아웃이 발생하면 DB에는 데이터가 있는데 다른 서버 인스턴스는 이벤트를 못 받는 상황이 된다.&lt;/p&gt;
+&lt;p&gt;이 두 가지를 합쳐서 Dual Write Problem이라고 부른다. DB와 Redis라는 두 개의 저장소에 동시에 쓰는데, 둘 다 성공하거나 둘 다 실패하는 것을 보장할 수 없는 구조적 문제다.&lt;/p&gt;
+&lt;h2&gt;Transactional Outbox 패턴이 맞는 해법인가&lt;/h2&gt;
+&lt;p&gt;해법을 고르기 전에 선택지를 먼저 정리했다.&lt;/p&gt;
+&lt;h3&gt;선택지 1: Redis 발행을 트랜잭션 안에서 보장하기&lt;/h3&gt;
+&lt;p&gt;Redis는 MySQL과 XA 트랜잭션을 지원하지 않는다. 2PC(Two-Phase Commit)는 물리적으로 불가능하다. 설령 가능하더라도 분산 트랜잭션은 지연 시간과 복잡도 면에서 실시간 게임 서비스에 쓸 수 없다. 탈락.&lt;/p&gt;
+&lt;h3&gt;선택지 2: 이벤트 발행 실패 시 비즈니스 트랜잭션 롤백&lt;/h3&gt;
+&lt;p&gt;&quot;Redis 발행 실패하면 DB도 롤백하면 되지 않느냐&quot;는 접근이다. 일관성은 유지되지만 가용성이 망가진다. Redis가 30초만 장애가 나도 방 생성, 룰렛, 미니게임 전체가 먹통이 된다. Redis 장애가 비즈니스 로직의 가용성을 직접 갉아먹는 구조는 받아들일 수 없었다. 탈락.&lt;/p&gt;
+&lt;h3&gt;선택지 3: Kafka + Debezium (CDC 기반)&lt;/h3&gt;
+&lt;p&gt;Outbox 테이블에 레코드를 쓰면 Debezium이 MySQL binlog를 감시해서 자동으로 Kafka에 이벤트를 발행하는 구조다. 이론적으로 가장 깔끔하다. 하지만 현실을 보면, 현재 인프라는 단일 MySQL + 단일 Redis다. Kafka 클러스터와 Debezium 커넥터를 올리는 건 운영 복잡도를 몇 배로 키운다. 이건 오버엔지니어링이라 판단해서 탈락.&lt;/p&gt;
+&lt;h3&gt;선택지 4: Transactional Outbox + Polling Publisher&lt;/h3&gt;
+&lt;p&gt;비즈니스 트랜잭션 안에서 DB에 이벤트 레코드를 함께 저장하고, 별도 스케줄러가 주기적으로 Outbox 테이블을 폴링해서 Redis Stream에 발행하는 구조다.&lt;/p&gt;
+&lt;p&gt;이 방식의 장점은 명확하다. 비즈니스 데이터와 이벤트가 같은 MySQL 트랜잭션 안에서 커밋되므로 원자성이 보장된다. Redis 장애가 발생해도 비즈니스 로직은 정상 동작하고, 이벤트는 Outbox에 안전하게 보관된다. Redis가 복구되면 밀린 이벤트가 순서대로 발행된다.&lt;/p&gt;
+&lt;p&gt;Outbox + Polling Publisher를 선택했다. 현재 스택(Spring Boot 3.x, MySQL, Redis) 안에서 해결 가능하고, 도입 비용 대비 얻는 안정성이 크다고 생각했다.&lt;/p&gt;
+&lt;h2&gt;Outbox 엔티티 설계&lt;/h2&gt;
+&lt;h3&gt;어떤 정보를 저장해야 하는가&lt;/h3&gt;
+&lt;p&gt;Outbox 테이블에 넣어야 하는 최소한의 정보를 정리했다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;컬럼&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;th&gt;근거&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;id&lt;/td&gt;
+&lt;td&gt;PK&lt;/td&gt;
+&lt;td&gt;순서 보장을 위해 AUTO_INCREMENT 사용. Outbox 폴링 시 &lt;code class=&quot;language-text&quot;&gt;id&lt;/code&gt; 기준으로 정렬하면 이벤트 발행 순서가 비즈니스 트랜잭션 커밋 순서와 일치한다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;stream_key&lt;/td&gt;
+&lt;td&gt;Redis Stream 키&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;StreamKey&lt;/code&gt; enum의 &lt;code class=&quot;language-text&quot;&gt;redisKey&lt;/code&gt; 값. 어느 스트림에 발행할지 결정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;payload&lt;/td&gt;
+&lt;td&gt;직렬화된 이벤트 본문&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;BaseEvent&lt;/code&gt;를 JSON 직렬화한 문자열. 기존 &lt;code class=&quot;language-text&quot;&gt;StreamPublisher&lt;/code&gt;가 이미 Jackson으로 직렬화하고 있어서 동일한 포맷 사용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;status&lt;/td&gt;
+&lt;td&gt;발행 상태&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;PENDING&lt;/code&gt; → &lt;code class=&quot;language-text&quot;&gt;IN_PROGRESS&lt;/code&gt; → &lt;code class=&quot;language-text&quot;&gt;PUBLISHED&lt;/code&gt;. 폴링 쿼리의 WHERE 조건이자 동시성 제어의 핵심&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;created_at&lt;/td&gt;
+&lt;td&gt;생성 시각&lt;/td&gt;
+&lt;td&gt;모니터링과 디버깅용. PUBLISHED 레코드 정리(cleanup)의 기준이 된다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;updated_at&lt;/td&gt;
+&lt;td&gt;마지막 상태 전이 시각&lt;/td&gt;
+&lt;td&gt;상태가 바뀔 때마다 갱신. IN_PROGRESS 복구 스케줄러가 이 값으로 stale 이벤트를 판별한다&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;방어적으로 &lt;code class=&quot;language-text&quot;&gt;retry_count&lt;/code&gt;도 남겼다. 무한 재시도를 막기 위한 최대 재시도 횟수 체크용이다. 10회 이상 실패한 이벤트는 &lt;code class=&quot;language-text&quot;&gt;DEAD_LETTER&lt;/code&gt; 상태로 전환해서 별도로 모니터링한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Entity&lt;/span&gt;
+&lt;span class=&quot;token annotation punctuation&quot;&gt;@Table&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;name &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;outbox_event&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Id&lt;/span&gt;
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@GeneratedValue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;strategy &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;GenerationType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;IDENTITY&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Long&lt;/span&gt; id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Column&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;nullable &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; length &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; streamKey&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Column&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;nullable &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; columnDefinition &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;TEXT&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; payload&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Enumerated&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;EnumType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Column&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;nullable &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; length &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxStatus&lt;/span&gt; status&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Column&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;nullable &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; retryCount&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Column&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;nullable &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; updatable &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;LocalDateTime&lt;/span&gt; createdAt&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Column&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;nullable &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;LocalDateTime&lt;/span&gt; updatedAt&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;상태 전이도에서 &lt;code class=&quot;language-text&quot;&gt;AFTER_COMMIT&lt;/code&gt; 경로와 Worker 경로가 모두 보인다. 평상시에는 &lt;code class=&quot;language-text&quot;&gt;PENDING → PUBLISHED&lt;/code&gt;로 바로 전환되고, Redis 장애 시에만 Worker를 거친다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;mermaid&quot;&gt;&lt;pre class=&quot;language-mermaid&quot;&gt;&lt;code class=&quot;language-mermaid&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;flowchart&lt;/span&gt; TD
+    S&lt;span class=&quot;token text string&quot;&gt;(( ))&lt;/span&gt; &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|&quot;record()&quot;|&lt;/span&gt; P&lt;span class=&quot;token text string&quot;&gt;[PENDING]&lt;/span&gt;
+
+    P &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|&quot;AFTER_COMMIT&quot;|&lt;/span&gt; PUB&lt;span class=&quot;token text string&quot;&gt;[PUBLISHED]&lt;/span&gt;
+    P &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|&quot;Worker&amp;lt;br/&gt;SKIP LOCKED&quot;|&lt;/span&gt; IP&lt;span class=&quot;token text string&quot;&gt;[IN_PROGRESS]&lt;/span&gt;
+
+    IP &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|&quot;publish ok&quot;|&lt;/span&gt; PUB
+    IP &lt;span class=&quot;token arrow operator&quot;&gt;-.-&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|&quot;fail or stale&quot;|&lt;/span&gt; P
+    IP &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|&quot;10x fail&quot;|&lt;/span&gt; DL&lt;span class=&quot;token text string&quot;&gt;[DEAD_LETTER]&lt;/span&gt;
+
+    PUB &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|&quot;cleanup 24h&quot;|&lt;/span&gt; E&lt;span class=&quot;token text string&quot;&gt;(( ))&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;style&lt;/span&gt; S &lt;span class=&quot;token style&quot;&gt;&lt;span class=&quot;token property&quot;&gt;fill&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#000&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;token property&quot;&gt;stroke&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#000&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;style&lt;/span&gt; E &lt;span class=&quot;token style&quot;&gt;&lt;span class=&quot;token property&quot;&gt;fill&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#fff&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;token property&quot;&gt;stroke&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#000&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;style&lt;/span&gt; PUB &lt;span class=&quot;token style&quot;&gt;&lt;span class=&quot;token property&quot;&gt;fill&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#d4edda&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;token property&quot;&gt;stroke&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#28a745&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;style&lt;/span&gt; DL &lt;span class=&quot;token style&quot;&gt;&lt;span class=&quot;token property&quot;&gt;fill&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#f8d7da&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;token property&quot;&gt;stroke&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt;#dc3545&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;트랜잭션 경계 설계 — 처음에 틀렸고, 두 번째에도 틀렸다&lt;/h2&gt;
+&lt;p&gt;Outbox 테이블에 이벤트를 저장하는 것까지는 단순하다. 핵심은 &lt;strong&gt;트랜잭션이 확실히 커밋된 후에&lt;/strong&gt; Redis Stream으로 이벤트를 릴레이하는 타이밍을 어떻게 잡느냐다. 여기서 세 번의 시행착오를 거쳤다.&lt;/p&gt;
+&lt;h3&gt;1차 시도: 폴링 전용 — 전부 Outbox로 돌리자&lt;/h3&gt;
+&lt;p&gt;처음에는 가장 단순한 방식을 선택했다. 모든 &lt;code class=&quot;language-text&quot;&gt;streamPublisher.publish()&lt;/code&gt; 호출을 &lt;code class=&quot;language-text&quot;&gt;outboxEventRecorder.record()&lt;/code&gt;로 교체하고, 500ms 폴링 Worker가 일괄 처리하는 구조다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;방식&lt;/th&gt;
+&lt;th&gt;장점&lt;/th&gt;
+&lt;th&gt;단점&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;AFTER_COMMIT&lt;/code&gt; + 폴링 재시도&lt;/td&gt;
+&lt;td&gt;평시 지연 0ms. 실패 시에만 폴링&lt;/td&gt;
+&lt;td&gt;구현 복잡도 증가&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Polling 전용&lt;/td&gt;
+&lt;td&gt;구현 단순. 일관된 경로&lt;/td&gt;
+&lt;td&gt;최대 500ms 지연 발생&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&quot;모든 이벤트가 동일한 경로를 타면 동작의 예측 가능성이 올라간다.&quot; 이 논리로 폴링 전용을 선택했다. 테스트를 돌리기 전까지는.&lt;/p&gt;
+&lt;h3&gt;현실과 충돌: 기존 테스트 7개가 전멸했다&lt;/h3&gt;
+&lt;p&gt;모든 이벤트를 Outbox 폴링 경로로 바꿨더니 기존 통합 테스트가 줄줄이 깨졌다. 실패 원인을 분석하면 크게 세 가지였다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;첫 번째: 요청-응답 패턴과의 충돌.&lt;/strong&gt; &lt;code class=&quot;language-text&quot;&gt;enterRoomAsync()&lt;/code&gt;는 이벤트를 Redis Stream에 쏘고 &lt;code class=&quot;language-text&quot;&gt;CompletableFuture&lt;/code&gt;로 Consumer의 처리 결과를 5초 안에 기다리는 구조다. Outbox 폴링 500ms 지연이 끼어들면서 타임아웃이 발생했다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;두 번째: 이벤트 순서 역전.&lt;/strong&gt; &lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt;이 Outbox에 &lt;code class=&quot;language-text&quot;&gt;RoomCreateEvent&lt;/code&gt;를 저장하면, 500ms 후에야 Consumer에 도달한다. 그 사이에 &lt;code class=&quot;language-text&quot;&gt;enterRoomAsync()&lt;/code&gt;가 &lt;code class=&quot;language-text&quot;&gt;RoomJoinEvent&lt;/code&gt;를 직접 Redis에 쏘면, &quot;방 참가&quot; 이벤트가 &quot;방 생성&quot; 이벤트보다 먼저 처리된다. Consumer가 &lt;code class=&quot;language-text&quot;&gt;방이 존재하지 않습니다&lt;/code&gt; 예외를 던졌다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;세 번째: 실시간 게임 입력의 체감 지연.&lt;/strong&gt; 미니게임 탭 이벤트, 카드 선택 같은 인게임 액션에 500ms 지연이 붙으면 게임이 안 된다.&lt;/p&gt;
+&lt;h3&gt;2차 시도: 그러면 Outbox를 다 빼자?&lt;/h3&gt;
+&lt;p&gt;테스트를 고치기 위해 전부 &lt;code class=&quot;language-text&quot;&gt;streamPublisher.publish()&lt;/code&gt; 직접 발행으로 되돌렸다. 테스트는 통과한다. 하지만 이러면 처음에 해결하려던 Dual Write Problem이 그대로 살아난다. &lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt;에서 DB 커밋은 됐는데 Redis 발행이 실패하면 유령 방이 생긴다.&lt;/p&gt;
+&lt;h3&gt;3차 시도: 이벤트 발행 경로를 분류하자&lt;/h3&gt;
+&lt;p&gt;코드베이스의 모든 &lt;code class=&quot;language-text&quot;&gt;streamPublisher.publish()&lt;/code&gt; 호출을 전수 조사해서 분류했다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;경로&lt;/th&gt;
+&lt;th&gt;DB 변경&lt;/th&gt;
+&lt;th&gt;실시간성&lt;/th&gt;
+&lt;th&gt;Outbox 필요?&lt;/th&gt;
+&lt;th&gt;이유&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;saveRoomEntity()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;즉시 필요&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;필요&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;DB 저장과 이벤트 발행의 원자성 보장&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;enterRoomAsync()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;없음 (Consumer에서)&lt;/td&gt;
+&lt;td&gt;즉시 필요&lt;/td&gt;
+&lt;td&gt;불필요&lt;/td&gt;
+&lt;td&gt;CompletableFuture 요청-응답 패턴&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;WebSocket 컨트롤러&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;즉시 필요&lt;/td&gt;
+&lt;td&gt;불필요&lt;/td&gt;
+&lt;td&gt;사용자 인터랙션 실시간 응답&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;미니게임/레이싱 입력&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;즉시 필요&lt;/td&gt;
+&lt;td&gt;불필요&lt;/td&gt;
+&lt;td&gt;0.1초가 중요한 인게임 액션&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;세션 이벤트, QR코드&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;준실시간&lt;/td&gt;
+&lt;td&gt;불필요&lt;/td&gt;
+&lt;td&gt;DB 원자성 불필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Outbox가 필요한 경로는 &lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt; 하나뿐이었다.&lt;/strong&gt; DB 상태 변경과 이벤트 발행이 같은 트랜잭션에서 원자적으로 일어나야 하는 유일한 지점이다.&lt;/p&gt;
+&lt;p&gt;하지만 여기에 500ms 폴링 지연을 넣으면 이벤트 순서 역전이 발생한다. 지연 시간 0ms를 보장하면서도 원자성을 지키는 방법이 필요했다.&lt;/p&gt;
+&lt;h2&gt;2단 Outbox — AFTER_COMMIT 즉시 발행 + 폴링 재시도&lt;/h2&gt;
+&lt;p&gt;처음에 &quot;구현 복잡도&quot; 때문에 버렸던 &lt;code class=&quot;language-text&quot;&gt;@TransactionalEventListener(AFTER_COMMIT)&lt;/code&gt; 카드를 다시 꺼냈다. 1차 시도에서 이걸 포기한 이유는 &quot;트랜잭션이 없는 호출 경로에서 동작이 달라진다&quot;였는데, 이제 Outbox를 적용하는 곳이 &lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt; 하나뿐이고 여기에는 &lt;code class=&quot;language-text&quot;&gt;@Transactional&lt;/code&gt;이 확실히 붙어있다. 처음에 우려했던 문제가 사라진 것이다.&lt;/p&gt;
+&lt;p&gt;동작 흐름은 이렇다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;mermaid&quot;&gt;&lt;pre class=&quot;language-mermaid&quot;&gt;&lt;code class=&quot;language-mermaid&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;sequenceDiagram&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; C as createRoom&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; OR as OutboxEventRecorder
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; DB as MySQL
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; AR as AfterCommitRelay
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; R as Redis Stream
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; W as Worker &lt;span class=&quot;token text string&quot;&gt;(Fallback)&lt;/span&gt;
+
+    C&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;OR&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; record&lt;span class=&quot;token text string&quot;&gt;(streamKey, event)&lt;/span&gt;
+    OR&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; INSERT outbox_event &lt;span class=&quot;token text string&quot;&gt;(PENDING)&lt;/span&gt;
+    OR&lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&gt;&lt;/span&gt;C&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; Spring Event &lt;span class=&quot;token text string&quot;&gt;(OutboxSavedEvent)&lt;/span&gt;
+    C&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; saveRoomEntity&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;Note over&lt;/span&gt; DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; TX COMMIT
+
+    &lt;span class=&quot;token keyword&quot;&gt;rect&lt;/span&gt; rgb&lt;span class=&quot;token text string&quot;&gt;(200, 255, 200)&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;Note right of&lt;/span&gt; AR&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; ⚡ Happy Path — 지연 0ms
+        AR&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;R&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; streamPublisher.publish&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;alt&lt;/span&gt; Redis 정상
+            AR&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; markPublished&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token text string&quot;&gt;[REQUIRES_NEW]&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; Redis 장애
+            &lt;span class=&quot;token keyword&quot;&gt;Note over&lt;/span&gt; AR&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; 예외 삼킴, PENDING 유지
+        &lt;span class=&quot;token keyword&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;rect&lt;/span&gt; rgb&lt;span class=&quot;token text string&quot;&gt;(255, 220, 200)&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;Note right of&lt;/span&gt; W&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; 🔄 Fallback — Redis 장애 시에만 동작
+        W&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; PENDING 조회 &lt;span class=&quot;token text string&quot;&gt;(SKIP LOCKED)&lt;/span&gt;
+        W&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;R&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; publish&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        W&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; markPublished&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;평상시:&lt;/strong&gt; 트랜잭션 커밋 직후 &lt;code class=&quot;language-text&quot;&gt;AFTER_COMMIT&lt;/code&gt;이 실행되어 Redis에 즉시 발행한다. 지연 0ms.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Redis 장애 시:&lt;/strong&gt; 즉시 발행이 실패하면 예외를 삼킨다. DB에는 이미 PENDING 상태로 Outbox 레코드가 커밋되어 있다. 500ms 후 Worker가 재시도한다.&lt;/p&gt;
+&lt;h3&gt;OutboxEventRecorder — 저장 + Spring 이벤트 발행&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Component&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxEventRecorder&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@Transactional&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;propagation &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Propagation&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;REQUIRED&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;StreamKey&lt;/span&gt; streamKey&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BaseEvent&lt;/span&gt; event&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; payload &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; objectMapper&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;writeValueAsString&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;event&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt; outboxEvent &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;streamKey&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getRedisKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; payload&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        outboxEventRepository&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;saveAndFlush&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;outboxEvent&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;token comment&quot;&gt;// Spring 내부 이벤트 → 트랜잭션 커밋 후 AfterCommitRelay가 수신&lt;/span&gt;
+        applicationEventPublisher&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;publishEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxSavedEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;outboxEvent&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; streamKey&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getRedisKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; payload&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;saveAndFlush()&lt;/code&gt;를 쓰는 이유가 있다. &lt;code class=&quot;language-text&quot;&gt;save()&lt;/code&gt;만 하면 &lt;code class=&quot;language-text&quot;&gt;GenerationType.IDENTITY&lt;/code&gt;에서 ID 할당이 flush 시점까지 지연될 수 있다. &lt;code class=&quot;language-text&quot;&gt;OutboxSavedEvent&lt;/code&gt;에 &lt;code class=&quot;language-text&quot;&gt;outboxEventId&lt;/code&gt;를 담아야 하므로 즉시 flush해서 ID를 확보한다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Propagation.REQUIRED&lt;/code&gt;로 설정한 이유도 있다. &lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt;의 &lt;code class=&quot;language-text&quot;&gt;@Transactional&lt;/code&gt;에 참여해서, 비즈니스 데이터(&lt;code class=&quot;language-text&quot;&gt;RoomEntity&lt;/code&gt;)와 Outbox 레코드가 함께 커밋된다. 이게 Outbox 패턴의 핵심 — 단일 트랜잭션 원자성이다.&lt;/p&gt;
+&lt;h3&gt;OutboxAfterCommitRelay — 커밋 직후 즉시 발행&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Component&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxAfterCommitRelay&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;token annotation punctuation&quot;&gt;@TransactionalEventListener&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;phase &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;TransactionPhase&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;AFTER_COMMIT&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;onOutboxSaved&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;OutboxSavedEvent&lt;/span&gt; savedEvent&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BaseEvent&lt;/span&gt; baseEvent &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; objectMapper&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;readValue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+                savedEvent&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;payload&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BaseEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+            streamPublisher&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;publish&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+                &lt;span class=&quot;token class-name&quot;&gt;StreamKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;fromRedisKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;savedEvent&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;streamKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; baseEvent&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+            &lt;span class=&quot;token comment&quot;&gt;// REQUIRES_NEW로 새 트랜잭션 강제&lt;/span&gt;
+            eventProcessor&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;markPublished&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;savedEvent&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;outboxEventId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Exception&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;token comment&quot;&gt;// 실패해도 예외를 삼킨다. PENDING으로 남아있으니 Worker가 재시도&lt;/span&gt;
+            log&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;warn&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;Outbox 즉시 발행 실패: id={}&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; savedEvent&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;outboxEventId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 메서드에서 주의해야 할 곳이 두 군데다.&lt;/p&gt;
+&lt;p&gt;첫 번째는 &lt;code class=&quot;language-text&quot;&gt;try-catch&lt;/code&gt;로 예외를 삼키는 부분이다. &lt;code class=&quot;language-text&quot;&gt;AFTER_COMMIT&lt;/code&gt;에서 예외가 터져도 이미 커밋된 트랜잭션에는 영향이 없지만, 명시적으로 삼켜서 안전하게 실패한다.&lt;/p&gt;
+&lt;p&gt;두 번째는 &lt;code class=&quot;language-text&quot;&gt;markPublished()&lt;/code&gt;의 트랜잭션 전파 레벨이다. &lt;code class=&quot;language-text&quot;&gt;AFTER_COMMIT&lt;/code&gt; 리스너 내에서는 원래 트랜잭션의 동기화 컨텍스트가 아직 활성 상태다. &lt;code class=&quot;language-text&quot;&gt;Propagation.REQUIRED&lt;/code&gt;로 호출하면 이미 커밋된 트랜잭션에 참여하려 해서 DB 변경이 반영되지 않는다. 처음에 이걸 모르고 &lt;code class=&quot;language-text&quot;&gt;REQUIRED&lt;/code&gt;로 호출했다가 &lt;code class=&quot;language-text&quot;&gt;PUBLISHED&lt;/code&gt;로 전환이 안 되는 버그를 겪었다. &lt;code class=&quot;language-text&quot;&gt;markPublished()&lt;/code&gt;를 &lt;code class=&quot;language-text&quot;&gt;Propagation.REQUIRES_NEW&lt;/code&gt;로 설정해서 강제로 새 트랜잭션을 열어야 한다. Worker에서 호출할 때도 &lt;code class=&quot;language-text&quot;&gt;relay()&lt;/code&gt; 메서드가 &lt;code class=&quot;language-text&quot;&gt;@Transactional&lt;/code&gt; 없이 실행되므로 &lt;code class=&quot;language-text&quot;&gt;REQUIRES_NEW&lt;/code&gt;든 &lt;code class=&quot;language-text&quot;&gt;REQUIRED&lt;/code&gt;든 어차피 새 트랜잭션이 열린다. 기능 차이가 없다.&lt;/p&gt;
+&lt;h3&gt;createRoom() — 최종 형태&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Transactional&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Room&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;createRoom&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;String&lt;/span&gt; hostName&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Room&lt;/span&gt; room &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; roomCommandService&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;saveIfAbsentRoom&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;joinCode&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;PlayerName&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;hostName&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BaseEvent&lt;/span&gt; event &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;RoomCreateEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;hostName&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; joinCode&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;// Outbox 경로: DB 저장과 원자적으로 묶이고, 커밋 직후 즉시 발행 (0ms)&lt;/span&gt;
+    outboxEventRecorder&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;StreamKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;ROOM_BROADCAST&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; event&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token function&quot;&gt;saveRoomEntity&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;joinCode&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; room&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;나머지 이벤트 발행 경로(&lt;code class=&quot;language-text&quot;&gt;broadcastReady()&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;enterRoomAsync()&lt;/code&gt;, 미니게임 입력 등)는 &lt;code class=&quot;language-text&quot;&gt;streamPublisher.publish()&lt;/code&gt; 직접 발행을 유지한다. DB 원자성이 필요 없고 실시간성이 핵심인 경로들이다.&lt;/p&gt;
+&lt;h2&gt;Outbox Relay Worker — 처음 구현에서 삽질한 이야기&lt;/h2&gt;
+&lt;h3&gt;폴링 간격과 배치 설정값&lt;/h3&gt;
+&lt;p&gt;Worker는 &lt;code class=&quot;language-text&quot;&gt;AFTER_COMMIT&lt;/code&gt; 즉시 발행이 실패한 이벤트만 수거하는 Fallback 역할이다. 평상시에는 PENDING 이벤트가 없다.&lt;/p&gt;
+&lt;p&gt;폴링 간격 500ms, 배치 50건, 최대 재시도 10회. 500ms는 Redis 장애 복구 후 밀린 이벤트를 빠르게 처리하면서 DB 부하를 최소화하는 균형점이다. PENDING이 없으면 인덱스만 타고 빈 결과를 반환하므로 부하가 거의 없다. 10회(=5초) 연속 실패하면 인프라 장애로 판단해 DEAD_LETTER로 뺀다.&lt;/p&gt;
+&lt;h3&gt;처음 구현: @Transactional로 배치 전체를 감쌌다&lt;/h3&gt;
+&lt;p&gt;처음 작성한 Worker 코드는 이랬다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Scheduled&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fixedDelay &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token annotation punctuation&quot;&gt;@Transactional&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;// 이게 시스템을 죽일 수 있다&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;relay&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token class-name&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; pendingEvents &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; outboxEventRepository
+        &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;findPendingEventsForUpdate&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;BATCH_SIZE&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt; event &lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; pendingEvents&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        streamPublisher&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;publish&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;// Redis I/O&lt;/span&gt;
+        event&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;markPublished&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Redis에 장애가 나서 &lt;code class=&quot;language-text&quot;&gt;publish()&lt;/code&gt;가 타임아웃(1초)까지 블로킹되면, 50개를 순회하는 동안 최대 50초 동안 DB 커넥션 하나를 물고 놓지 않는다. &lt;strong&gt;Redis 장애가 DB 장애로 전파되는 Cascading Failure&lt;/strong&gt;가 발생한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;mermaid&quot;&gt;&lt;pre class=&quot;language-mermaid&quot;&gt;&lt;code class=&quot;language-mermaid&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;sequenceDiagram&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; W as Worker
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; DB as HikariCP &lt;span class=&quot;token text string&quot;&gt;(max 10)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;participant&lt;/span&gt; R as Redis &lt;span class=&quot;token text string&quot;&gt;(장애)&lt;/span&gt;
+
+    W&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; getConnection&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token text string&quot;&gt;[1/10]&lt;/span&gt;
+    W&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; SELECT PENDING FOR UPDATE
+    &lt;span class=&quot;token keyword&quot;&gt;loop&lt;/span&gt; 50 events
+        W&lt;span class=&quot;token arrow operator&quot;&gt;-&gt;&gt;&lt;/span&gt;R&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; publish&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; → timeout 1s
+        &lt;span class=&quot;token keyword&quot;&gt;Note over&lt;/span&gt; DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; 커넥션 점유 중...
+    &lt;span class=&quot;token keyword&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;Note over&lt;/span&gt; W&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; 50초간 커넥션 1개 점유
+    &lt;span class=&quot;token keyword&quot;&gt;Note over&lt;/span&gt; DB&lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; 다른 스케줄러/요청도&amp;lt;br/&gt;커넥션 대기 → Pool Exhausted&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;해결: 트랜잭션과 Redis I/O를 완전히 분리했다&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;relay()&lt;/code&gt; 메서드에서 &lt;code class=&quot;language-text&quot;&gt;@Transactional&lt;/code&gt;을 제거하고, DB 조작을 별도 컴포넌트(&lt;code class=&quot;language-text&quot;&gt;OutboxEventProcessor&lt;/code&gt;)의 개별 트랜잭션 메서드로 분리했다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Scheduled&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fixedDelay &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;relay&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;// 1단계: TX-1 — PENDING → IN_PROGRESS + COMMIT (DB 커넥션 즉시 반환)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; events &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; eventProcessor&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;fetchAndMarkInProgress&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;BATCH_SIZE&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;events&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;isEmpty&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt; event &lt;span class=&quot;token operator&quot;&gt;:&lt;/span&gt; events&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;token comment&quot;&gt;// 2단계: No TX — Redis I/O&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BaseEvent&lt;/span&gt; baseEvent &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; objectMapper&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;readValue&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;event&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getPayload&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;BaseEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+            streamPublisher&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;publish&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;StreamKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;fromRedisKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;event&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getStreamKey&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; baseEvent&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+            &lt;span class=&quot;token comment&quot;&gt;// 3단계: TX-2 — 단건 업데이트&lt;/span&gt;
+            eventProcessor&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;markPublished&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;event&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;Exception&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            eventProcessor&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;handleFailure&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;event&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;getId&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;같은 클래스 안에 두지 않고 별도 컴포넌트로 분리한 이유&lt;/strong&gt;가 있다. Spring AOP의 Self-Invocation 제약 때문이다. 같은 클래스 내에서 &lt;code class=&quot;language-text&quot;&gt;this.fetchAndMarkInProgress()&lt;/code&gt;로 호출하면 프록시를 타지 않아 &lt;code class=&quot;language-text&quot;&gt;@Transactional&lt;/code&gt;이 동작하지 않는다.&lt;/p&gt;
+&lt;h3&gt;IN_PROGRESS에서 서버가 죽으면?&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;IN_PROGRESS&lt;/code&gt; 상태를 도입하면 새로운 엣지 케이스가 생긴다. Worker가 &lt;code class=&quot;language-text&quot;&gt;IN_PROGRESS&lt;/code&gt;로 바꾼 후 Redis 발행 전에 서버가 죽으면, 해당 이벤트는 영원히 &lt;code class=&quot;language-text&quot;&gt;IN_PROGRESS&lt;/code&gt;에 갇힌다.&lt;/p&gt;
+&lt;p&gt;별도 스케줄러로 복구한다. 1분마다 돌면서 &lt;code class=&quot;language-text&quot;&gt;updatedAt&lt;/code&gt; 기준 5분 이상 &lt;code class=&quot;language-text&quot;&gt;IN_PROGRESS&lt;/code&gt;로 남아있는 이벤트를 &lt;code class=&quot;language-text&quot;&gt;PENDING&lt;/code&gt;으로 되돌린다. 처음에는 &lt;code class=&quot;language-text&quot;&gt;createdAt&lt;/code&gt;으로 판별했는데, 이러면 생성된 지 5분이 지난 이벤트가 방금 &lt;code class=&quot;language-text&quot;&gt;IN_PROGRESS&lt;/code&gt;로 전환되자마자 복구 대상이 되는 문제가 있었다. &lt;code class=&quot;language-text&quot;&gt;updatedAt&lt;/code&gt;을 도입해서 상태 전이 시점 기준으로 판별하도록 수정했다. 이 복구 시 중복 발행이 발생할 수 있지만, 기존에 구축해둔 &lt;code class=&quot;language-text&quot;&gt;@RedisLock&lt;/code&gt; 기반 Consumer 멱등성이 안전하게 흡수한다.&lt;/p&gt;
+&lt;h2&gt;동시성 제어 — 다중 인스턴스에서 중복 발행 방어&lt;/h2&gt;
+&lt;p&gt;서버가 2대 이상일 때 각 서버의 Worker가 동시에 같은 PENDING 레코드를 읽으면 Redis에 이벤트가 2번 발행된다.&lt;/p&gt;
+&lt;p&gt;처음에 Redisson 분산 락을 쓰려고 했다. 하지만 Outbox를 도입하는 이유가 &quot;Redis 장애 대비&quot;인데, 릴레이 동시성 제어를 Redis에 맡기면 순환 의존이다.&lt;/p&gt;
+&lt;p&gt;MySQL &lt;code class=&quot;language-text&quot;&gt;SELECT ... FOR UPDATE SKIP LOCKED&lt;/code&gt;를 선택했다. 다른 트랜잭션이 락을 잡은 행을 무시하고 다음 행을 가져오므로, 각 서버가 서로 다른 레코드를 처리한다. 데드락 없이, 대기 없이.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;java&quot;&gt;&lt;pre class=&quot;language-java&quot;&gt;&lt;code class=&quot;language-java&quot;&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Query&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    value &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;SELECT * FROM outbox_event &quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;
+            &lt;span class=&quot;token string&quot;&gt;&quot;WHERE status = &apos;PENDING&apos; &quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;
+            &lt;span class=&quot;token string&quot;&gt;&quot;ORDER BY id ASC &quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;
+            &lt;span class=&quot;token string&quot;&gt;&quot;LIMIT :size &quot;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;
+            &lt;span class=&quot;token string&quot;&gt;&quot;FOR UPDATE SKIP LOCKED&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    nativeQuery &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token class-name&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;token generics&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;token class-name&quot;&gt;OutboxEvent&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;&gt;&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;findPendingEventsForUpdate&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token annotation punctuation&quot;&gt;@Param&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;size&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;int&lt;/span&gt; size&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;처리 완료된 레코드 정리&lt;/h2&gt;
+&lt;p&gt;매일 새벽 4시에 24시간 이전의 PUBLISHED 레코드를 삭제한다. 장애 역추적을 위해 24시간 보존 기간을 둔다.&lt;/p&gt;
+&lt;h2&gt;결과&lt;/h2&gt;
+&lt;h3&gt;Before&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;mermaid&quot;&gt;&lt;pre class=&quot;language-mermaid&quot;&gt;&lt;code class=&quot;language-mermaid&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;flowchart&lt;/span&gt; LR
+    A&lt;span class=&quot;token text string&quot;&gt;[Controller / Service]&lt;/span&gt; &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|직접 호출|&lt;/span&gt; B&lt;span class=&quot;token text string&quot;&gt;[StreamPublisher]&lt;/span&gt;
+    B &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|publish|&lt;/span&gt; C&lt;span class=&quot;token text string&quot;&gt;[Redis Stream]&lt;/span&gt;
+    B &lt;span class=&quot;token arrow operator&quot;&gt;-.-&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|실패 시|&lt;/span&gt; D&lt;span class=&quot;token text string&quot;&gt;[이벤트 유실]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;After&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;mermaid&quot;&gt;&lt;pre class=&quot;language-mermaid&quot;&gt;&lt;code class=&quot;language-mermaid&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;flowchart&lt;/span&gt; TB
+    &lt;span class=&quot;token keyword&quot;&gt;subgraph&lt;/span&gt; Outbox_경로
+        A1&lt;span class=&quot;token text string&quot;&gt;[createRoom]&lt;/span&gt; &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|record|&lt;/span&gt; B1&lt;span class=&quot;token text string&quot;&gt;[OutboxEventRecorder]&lt;/span&gt;
+        B1 &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|same TX|&lt;/span&gt; C1&lt;span class=&quot;token text string&quot;&gt;[(MySQL)]&lt;/span&gt;
+        C1 &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|AFTER_COMMIT 0ms|&lt;/span&gt; D1&lt;span class=&quot;token text string&quot;&gt;[AfterCommitRelay]&lt;/span&gt;
+        D1 &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|publish|&lt;/span&gt; E1&lt;span class=&quot;token text string&quot;&gt;[Redis Stream]&lt;/span&gt;
+        D1 &lt;span class=&quot;token arrow operator&quot;&gt;-.-&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|실패|&lt;/span&gt; F1&lt;span class=&quot;token text string&quot;&gt;[PENDING → Worker 재시도]&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;subgraph&lt;/span&gt; 직접_발행_경로
+        A2&lt;span class=&quot;token text string&quot;&gt;[WebSocket / 미니게임]&lt;/span&gt; &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|publish|&lt;/span&gt; E2&lt;span class=&quot;token text string&quot;&gt;[Redis Stream]&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;end&lt;/span&gt;
+
+    E1 &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt; G&lt;span class=&quot;token text string&quot;&gt;[Consumer]&lt;/span&gt;
+    E2 &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt; G
+    G &lt;span class=&quot;token arrow operator&quot;&gt;--&gt;&lt;/span&gt;&lt;span class=&quot;token label property&quot;&gt;|RedisLock|&lt;/span&gt; H&lt;span class=&quot;token text string&quot;&gt;[멱등성 보장]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt;: DB 원자성 + 즉시 발행(0ms) + Redis 장애 시 자동 재시도&lt;/li&gt;
+&lt;li&gt;나머지: 직접 발행 유지. 실시간 게임에 영향 없음&lt;/li&gt;
+&lt;li&gt;Worker 트랜잭션 분리로 Redis 장애 → DB 장애 전파 차단&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;SKIP LOCKED&lt;/code&gt;로 다중 인스턴스 중복 발행 차단&lt;/li&gt;
+&lt;li&gt;At-least-once + Consumer 멱등성 = 전체 정합성 보장&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;정리&lt;/h2&gt;
+&lt;p&gt;이번 설계에서 핵심 판단은 다섯 가지였다.&lt;/p&gt;
+&lt;p&gt;첫째, &lt;strong&gt;이벤트 발행 경로를 분류한 것&lt;/strong&gt;이다. 처음에는 모든 이벤트를 Outbox로 돌리려 했다가 기존 테스트가 전멸했다. 전수 조사해서 &quot;DB 원자성이 필요한 경로&quot;와 &quot;실시간성이 핵심인 경로&quot;를 분리했다. &lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt;만 Outbox를 적용하고 나머지는 직접 발행을 유지한 것이 이번 설계의 출발점이다.&lt;/p&gt;
+&lt;p&gt;둘째, &lt;strong&gt;AFTER_COMMIT 즉시 발행 + 폴링 재시도의 2단 구조를 채택한 것&lt;/strong&gt;이다. 처음에는 &quot;구현 복잡도&quot; 때문에 폴링 전용을 선택했다가, 500ms 지연이 만드는 문제를 직접 겪었다. &lt;code class=&quot;language-text&quot;&gt;createRoom()&lt;/code&gt;에만 적용하면 &lt;code class=&quot;language-text&quot;&gt;@Transactional&lt;/code&gt; 보장이 확실하므로 처음에 우려했던 문제가 없다. 적용 범위를 좁힌 덕분에 처음에 포기했던 카드를 다시 꺼낼 수 있었다.&lt;/p&gt;
+&lt;p&gt;셋째, &lt;strong&gt;Relay Worker의 트랜잭션과 Redis I/O를 분리한 것&lt;/strong&gt;이다. &lt;code class=&quot;language-text&quot;&gt;@Transactional&lt;/code&gt;로 배치 전체를 감싸는 실수를 했고, Cascading Failure 위험을 발견했다. &lt;code class=&quot;language-text&quot;&gt;IN_PROGRESS&lt;/code&gt; 상태를 도입해서 DB 커넥션 점유를 최소화했다.&lt;/p&gt;
+&lt;p&gt;넷째, 동시성 제어에 Redis 락이 아닌 MySQL &lt;code class=&quot;language-text&quot;&gt;SKIP LOCKED&lt;/code&gt;를 선택한 것이다. Outbox의 존재 이유가 Redis 장애 대비인데, 릴레이 동시성 제어를 Redis에 맡기면 순환 의존이 된다.&lt;/p&gt;
+&lt;p&gt;다섯째, &lt;strong&gt;Outbox의 At-least-once 특성을 Consumer의 멱등성으로 보완한 것&lt;/strong&gt;이다. 기존에 구축해둔 &lt;code class=&quot;language-text&quot;&gt;@RedisLock&lt;/code&gt; 기반 멱등성 방어 로직이 중복 발행을 안전하게 흡수한다. 새로운 패턴과 기존 인프라가 맞물려서 전체 시스템의 정합성이 완성되는 구조다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[비동기 컨텍스트 전파의 두 단계: 외부 브로커 경유와 내부 스레드풀 전파 분리하기]]></title><description><![CDATA[ZZOL의 모든 유저 액션은 Redis Stream을 경유한다. WebSocket으로 들어온 요청이 Redis Stream…]]></description><link>https://minjun.blog/trace_context_propagation/</link><guid isPermaLink="false">https://minjun.blog/trace_context_propagation/</guid><pubDate>Fri, 06 Mar 2026 05:14:41 GMT</pubDate><content:encoded>&lt;p&gt;ZZOL의 모든 유저 액션은 Redis Stream을 경유한다. WebSocket으로 들어온 요청이 Redis Stream에 발행되고, 별도 스레드풀에서 소비되어 게임 로직이 실행된다. 이 구조에서 한 가지 문제가 있었다. 유저 요청의 시작부터 끝까지를 하나의 trace로 추적할 수 없었다.&lt;/p&gt;
 &lt;h2&gt;분산 추적이 왜 필요한가&lt;/h2&gt;
 &lt;p&gt;ZZOL은 실시간 멀티플레이어 게임 서비스다. 유저의 액션 하나가 처리되는 경로가 단순하지 않다.&lt;/p&gt;
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Client → WebSocket → Inbound Thread → Redis Stream → Consumer Thread → Business Logic → WebSocket → Client&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
