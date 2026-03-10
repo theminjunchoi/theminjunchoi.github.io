@@ -1,7 +1,7 @@
 ---
 title: 지연 시간 0ms를 보장하는 Transactional Outbox 도입기
 date: 2026-03-08 01:19:31
-updated: 2026-03-10 14:54:52
+updated: 2026-03-10 21:39:02
 publish: true
 tags:
   - ZZOL
@@ -100,7 +100,7 @@ public class OutboxEvent {
 
 `id`를 AUTO_INCREMENT로 설정한 이유가 있다. Outbox 폴링 시 `id` 기준으로 정렬하면 이벤트 발행 순서가 비즈니스 트랜잭션 커밋 순서와 일치한다.
 
-`createdAt`과 `updatedAt`을 분리한 이유도 있다. 처음에는 `createdAt` 하나로 stale 이벤트 복구와 PUBLISHED 레코드 정리를 둘 다 처리했는데, 생성된 지 5분이 지난 이벤트가 방금 `IN_PROGRESS`로 전환되자마자 복구 대상이 되는 버그가 있었다. `updatedAt`을 도입해서 **상태 전이 시점 기준으로 stale을 판별**하고, `createdAt`은 **이벤트 수명 기준으로 cleanup에만 사용**하도록 분리했다.
+`createdAt`과 `updatedAt`을 분리한 이유도 있다. stale 이벤트 복구 스케줄러는 "5분 이상 IN_PROGRESS로 남아있는 레코드"를 PENDING으로 되돌리는데, 처음에는 이 기준을 `createdAt`으로 잡았다. 문제는 Redis가 장기 장애일 때 발생한다. AFTER_COMMIT 즉시 발행이 실패하고 Worker 재시도도 계속 실패하면 이벤트가 PENDING 상태로 수 분간 남아있게 된다. Redis가 복구되어 Worker가 해당 레코드를 IN_PROGRESS로 전환하는 시점에, `createdAt`은 이미 5분을 훌쩍 넘긴 상태다. 복구 스케줄러가 이걸 stale로 판단해서 PENDING으로 되돌려버린다. `updatedAt`을 도입해서 **상태가 바뀔 때마다 시각을 갱신**하면, IN_PROGRESS로 전환된 시점이 기준이 되므로 이 문제가 해결된다.
 
 ## 이벤트의 상태는 어떻게 흘러가는가
 
@@ -155,7 +155,7 @@ Outbox 테이블에 이벤트를 저장한 후, 그걸 Redis로 보내는 타이
 
 모든 이벤트를 Outbox 폴링 경로로 바꿨더니 기존 통합 테스트가 줄줄이 깨졌다. 실패 원인을 분석하면 크게 세 가지였다.
 
-**첫 번째: 요청-응답 패턴과의 충돌.** `enterRoomAsync()`는 이벤트를 Redis Stream에 쏘고 `CompletableFuture`로 Consumer의 처리 결과를 5초 안에 기다리는 구조다. Outbox 폴링 500ms 지연이 끼어들면서 타임아웃이 발생했다.
+**첫 번째: 요청-응답 패턴과의 충돌.** `enterRoomAsync()`는 이벤트를 Redis Stream에 쏘고 `CompletableFuture`로 Consumer의 처리 결과를 5초 안에 기다리는 구조다. 5초면 500ms 지연을 감당할 수 있어 보이지만, 실제로는 단순하지 않았다. Outbox 폴링 500ms 지연에 Consumer의 처리 시간이 더해지고, 이전 테스트에서 발행된 stale 이벤트가 같은 Consumer 그룹에서 먼저 처리되면서 대기열이 밀린다. 테스트 환경에서는 이런 지연이 누적되어 5초를 넘기는 경우가 발생했다.
 
 **두 번째: 이벤트 순서 역전.** `createRoom()`이 Outbox에 `RoomCreateEvent`를 저장하면, 500ms 후에야 Consumer에 도달한다. 그 사이에 `enterRoomAsync()`가 `RoomJoinEvent`를 직접 Redis에 쏘면, "방 참가" 이벤트가 "방 생성" 이벤트보다 먼저 처리된다.
 
@@ -287,7 +287,14 @@ public class OutboxAfterCommitRelay {
 
 첫 번째는 `try-catch`로 예외를 삼키는 부분이다. `AFTER_COMMIT`에서 예외가 터져도 이미 커밋된 트랜잭션에는 영향이 없지만, 명시적으로 삼켜서 안전하게 실패한다.
 
-두 번째는 `markPublished()`의 트랜잭션 전파 레벨이다. `AFTER_COMMIT` 리스너는 원래 트랜잭션이 커밋된 직후에 실행되는데, Spring 내부적으로 원래 트랜잭션의 동기화 컨텍스트가 아직 활성 상태다. 여기서 `Propagation.REQUIRED`(기본값)로 새 DB 작업을 하면, Spring이 "아직 활성인" 원래 트랜잭션에 참여하려 한다. 하지만 그 트랜잭션은 이미 커밋됐기 때문에 변경 사항이 DB에 반영되지 않는다. 처음에 이걸 모르고 `REQUIRED`로 호출했다가 `PUBLISHED`로 전환이 안 되는 버그를 겪었다. `Propagation.REQUIRES_NEW`로 설정해서 강제로 새 트랜잭션을 열어야 한다.
+두 번째는 `markPublished()`의 트랜잭션 전파 레벨이다. Spring의 `@Transactional`에는 `propagation`이라는 속성이 있다.
+
+- `Propagation.REQUIRED` (기본값): 이미 진행 중인 트랜잭션이 있으면 그 트랜잭션에 참여한다. 없으면 새로 만든다.
+- `Propagation.REQUIRES_NEW`: 항상 새 트랜잭션을 만든다. 기존 트랜잭션이 있어도 무시한다.
+
+`AFTER_COMMIT` 리스너는 트랜잭션 커밋 직후에 실행되지만, Spring 내부적으로 원래 트랜잭션의 동기화 컨텍스트가 아직 정리되지 않은 상태다. `REQUIRED`로 호출하면 Spring이 이 "아직 정리 안 된" 트랜잭션에 참여하려 하는데, 이미 커밋이 끝난 트랜잭션이라 **JPA 더티 체킹이 동작하지 않는다.** 엔티티 필드를 바꿔도 flush가 일어나지 않고, UPDATE 쿼리가 DB에 나가지 않는다.
+
+다만 이건 JPA 더티 체킹 패턴(`findById()` → 엔티티 상태 변경 → flush 기대)에서만 발생하는 문제다. JPQL이나 네이티브 쿼리로 `UPDATE ... SET status = 'PUBLISHED'`처럼 SQL을 직접 실행하면 더티 체킹을 거치지 않으므로 `REQUIRED`로도 DB에 반영된다. 이 프로젝트의 `markPublished()`는 더티 체킹 패턴이므로 `REQUIRES_NEW`로 새 트랜잭션을 강제해야 했다.
 
 ### createRoom() — 최종 형태
 
@@ -313,7 +320,11 @@ public Room createRoom(String hostName) {
 
 Worker는 `AFTER_COMMIT` 즉시 발행이 실패한 이벤트만 수거하는 Fallback 역할이다. 평상시에는 PENDING 이벤트가 없다.
 
-폴링 간격 500ms, 배치 50건, 최대 재시도 10회. 500ms는 Redis 장애 복구 후 밀린 이벤트를 빠르게 처리하면서 DB 부하를 최소화하는 균형점이다. PENDING이 없으면 인덱스만 타고 빈 결과를 반환하므로 부하가 거의 없다. 10회(=5초) 연속 실패하면 인프라 장애로 판단해 DEAD_LETTER로 뺀다.
+**폴링 간격 500ms.** 처음에는 100ms로 잡았다. 100ms면 초당 10회 폴링인데, PENDING 이벤트가 없는 평시에도 불필요한 쿼리가 계속 나간다. 반대로 1초 이상으로 잡으면 Redis 장애가 복구된 후 밀린 이벤트를 처리하는 데 체감 지연이 생긴다. 500ms면 초당 2회로, 평시에는 인덱스만 타고 빈 결과를 반환하므로 DB 부하가 거의 없으면서도 장애 복구 시 충분히 빠르게 반응한다.
+
+**배치 사이즈 50건.** 이 서비스에서 이벤트가 가장 몰리는 시점은 미니게임 진행 중 전체 플레이어가 동시에 입력하는 순간이다. 방 최대 인원이 9명이고, 초당 발생하는 이벤트는 최대 20~30건 수준이다. 500ms 폴링 주기 동안 쌓이는 이벤트는 최대 15건 정도이므로, 50건이면 충분한 여유를 둔 값이다.
+
+**최대 재시도 10회.** 500ms 간격으로 10회면 약 5초다. 5초 동안 Redis가 연속으로 응답하지 않으면 일시적 네트워크 지연이 아니라 인프라 수준의 장애로 판단할 수 있다. 이 시점에서 무한 재시도하는 것보다 DEAD_LETTER로 빼고 알림을 보내는 게 적절하다.
 
 ### 처음 구현: @Transactional로 배치 전체를 감쌌다
 
@@ -377,9 +388,11 @@ public void relay() {
 }
 ```
 
-1단계에서 DB 커넥션을 잡고, PENDING 레코드를 IN_PROGRESS로 바꾸고, **즉시 커밋해서 커넥션을 반환**한다. 2단계에서 Redis I/O가 아무리 오래 걸려도 DB 커넥션에는 영향이 없다. 3단계에서 다시 짧게 DB 커넥션을 잡아서 상태를 갱신한다.
+1단계에서 DB 커넥션을 잡고, PENDING 레코드를 IN_PROGRESS로 바꾸고, **즉시 커밋해서 커넥션을 반환**한다. 이전 코드에서는 `@Transactional`이 메서드 전체를 감싸고 있었기 때문에 Redis I/O가 끝날 때까지 커넥션을 물고 있었다. 이제는 1단계가 끝나는 순간 커넥션이 풀로 돌아간다.
 
-여기서 `OutboxEventProcessor`를 **같은 클래스 안에 두지 않고 별도 컴포넌트로 분리한 이유**가 있다. Spring의 `@Transactional`은 AOP 프록시 기반으로 동작한다. 같은 클래스 내에서 `this.fetchAndMarkInProgress()`로 호출하면 프록시를 거치지 않아 `@Transactional`이 동작하지 않는다. 별도 Bean으로 분리해야 프록시를 통한 트랜잭션 관리가 정상 작동한다.
+2단계에서는 트랜잭션 없이 Redis I/O만 수행한다. 이 구간에서 Redis 타임아웃이 1초든 10초든 DB 커넥션 풀에는 아무 영향이 없다. DB 커넥션을 들고 있지 않기 때문이다.
+
+3단계에서 다시 짧게 DB 커넥션을 잡아서 상태를 갱신한다. 발행 성공이면 PUBLISHED로, 실패면 retry 카운트를 올리고 PENDING으로 되돌린다. 이 UPDATE는 단건이라 수 ms 이내에 끝나고 커넥션을 반환한다.
 
 ### IN_PROGRESS에서 서버가 죽으면?
 
