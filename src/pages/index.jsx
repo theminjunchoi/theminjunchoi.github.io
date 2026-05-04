@@ -1,16 +1,12 @@
 import React from "react"
 import _ from "lodash"
-import { graphql } from "gatsby"
+import { graphql, navigate } from "gatsby"
 
 import Layout from "components/Layout"
 import SEO from "components/SEO"
-import Bio from "components/Bio"
 import PostList from "components/PostList"
 import SideTagList from "components/SideTagList"
-import Divider from "components/Divider"
 import Info from "components/Info"
-import VerticalSpace from "components/VerticalSpace"
-import Tab from "components/Tab"
 
 import { title, description, siteUrl } from "../../gatsby-meta-config"
 
@@ -30,16 +26,15 @@ const BlogIndex = ({ data }) => {
   }
 
   return (
-
     <Layout>
       <SEO title={title} description={description} url={siteUrl} />
-      {/* <VerticalSpace size={48} /> */}
       <Info author={author} language={language} />
-      {/* <Bio author={author} language={language}/> */}
-      <Tab postsCount={posts.length} activeTab="posts" />
-      {/* <Divider /> */}
       <SideTagList tags={tags} postCount={posts.length} />
-      <PostList postList={posts} />
+      <PostList
+        postList={posts}
+        currentPage={1}
+        onPageChange={page => navigate(`/posts?page=${page}`)}
+      />
     </Layout>
   )
 }

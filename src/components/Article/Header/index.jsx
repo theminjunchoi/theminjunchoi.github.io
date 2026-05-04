@@ -5,7 +5,6 @@ import { writer } from "../../../../gatsby-meta-config"
 
 import Divider from "components/Divider"
 import TagList from "components/TagList"
-import Bio from "components/Bio"
 
 const Wrapper = styled.div`
   margin-top: 32px;
@@ -15,58 +14,59 @@ const Wrapper = styled.div`
 `
 
 const ArticleTitle = styled.h1`
-  margin-bottom: 25.6px;
-  line-height: 1.2;
-  font-size: 40px;
+  margin-bottom: 20px;
+  line-height: 1.25;
+  font-size: 36px;
   font-weight: 700;
   color: ${props => props.theme.colors.text};
+  word-break: break-word;
 `
 
-const Information = styled.div`
-  margin-bottom: 32px;
-  font-size: 16px;
+const MetaRow = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: ${props => props.theme.colors.tertiaryText};
 `
 
 const Author = styled.span`
-  padding-bottom: 15px;
-  font-weight: 700;
-  color: ${props => props.theme.colors.text};
-`
-
-const Date = styled.span`
-  font-weight: 300;
+  font-weight: 600;
   color: ${props => props.theme.colors.secondaryText};
 `
 
-const Property = styled.strong`
-  font-weight: 300;
-  color: ${props => props.theme.colors.secondaryText}
+const Dot = styled.span`
+  opacity: 0.4;
+`
+
+const TagsRow = styled.div`
+  margin-top: 16px;
+  margin-bottom: 4px;
 `
 
 const Header = ({ title, date, tags, minToRead, updated }) => {
   return (
     <Wrapper>
-      <ArticleTitle> {title} </ArticleTitle>
-      <Information>
-        <div>
-          <Author> @{writer} </Author>
-          <Date>· {minToRead} min read </Date>
-        </div>
-        
-
-        <div>
-          <Property>Created Date </Property><Date>· {date} </Date>
-          
-        </div>
-        <div>
-          <Property>Updated Date</Property><Date>· {updated} </Date>
-        </div>
-      </Information>
-      {tags && <TagList tagList={tags} />}
-      <Divider mt="0" />
+      <ArticleTitle>{title}</ArticleTitle>
+      <MetaRow>
+        <Author>@{writer}</Author>
+        <Dot>·</Dot>
+        <span>{minToRead} min read</span>
+        <Dot>·</Dot>
+        <span>{date}</span>
+      </MetaRow>
+      {updated && (
+        <MetaRow>
+          <span>Updated {updated}</span>
+        </MetaRow>
+      )}
+      {tags && (
+        <TagsRow>
+          <TagList tagList={tags} />
+        </TagsRow>
+      )}
+      <Divider mt="24px" mb="32px" />
     </Wrapper>
   )
 }

@@ -1,6 +1,5 @@
 import React from "react"
 import { graphql } from "gatsby"
-
 import styled from "styled-components"
 
 import Layout from "components/Layout"
@@ -11,46 +10,46 @@ import Divider from "components/Divider"
 import { description, siteUrl } from "../../gatsby-meta-config"
 
 const Header = styled.div`
+  margin-bottom: 8px;
+
   @media (max-width: 768px) {
-    padding: 0px 15px;
+    padding: 0 15px;
   }
+`
+
+const SeriesLabel = styled.span`
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  background-color: ${props => props.theme.colors.accentBg};
+  color: ${props => props.theme.colors.accentText};
 `
 
 const Title = styled.h1`
-  margin-bottom: 15px;
-  line-height: 1.2;
-  font-size: 44.8px;
-  font-weight: bold;
+  margin: 0 0 16px;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
   color: ${props => props.theme.colors.text};
-  word-break: break-all;
+  word-break: break-word;
 `
 
-const Subtitle = styled.h3`
-  display: inline-block;
-  padding: 2px 3px;
-  margin-top: 32px;
-  margin-bottom: 8px;
-  font-size: 20px;
-  font-weight: bold;
-  background-color: ${props => props.theme.colors.text};
-  color: ${props => props.theme.colors.bodyBackground};
-  letter-spacing: -1px;
-`
-
-const SeriesInform = styled.div`
+const Meta = styled.div`
   display: flex;
   align-items: center;
-  font-size: 16px;
-  color: ${props => props.theme.colors.text};
-
-  & > span {
-    margin: 0 3px;
-  }
+  gap: 8px;
+  font-size: 14px;
+  color: ${props => props.theme.colors.tertiaryText};
+  margin-bottom: 28px;
 `
 
-const Date = styled.span`
-  color: ${props => props.theme.colors.tertiaryText};
-  font-weight: lighter;
+const Dot = styled.span`
+  opacity: 0.4;
 `
 
 const Series = ({ pageContext, data }) => {
@@ -66,17 +65,13 @@ const Series = ({ pageContext, data }) => {
       />
 
       <Header>
-        <Subtitle> SERIES </Subtitle>
-        <Title> {seriesName} </Title>
-
-        <SeriesInform>
+        <SeriesLabel>Series</SeriesLabel>
+        <Title>{seriesName}</Title>
+        <Meta>
           <span>{posts.length} Posts</span>
-          <span>·</span>
-          <Date>
-            Last updated on {posts[posts.length - 1].frontmatter.date}
-          </Date>
-        </SeriesInform>
-
+          <Dot>·</Dot>
+          <span>Last updated {posts[posts.length - 1].frontmatter.date}</span>
+        </Meta>
         <Divider />
       </Header>
 
@@ -99,8 +94,8 @@ export const pageQuery = graphql`
           slug
         }
         frontmatter {
-          date(formatString: "YYYY년 MM월 DD일 HH:MM")
-          updated(formatString: "YYYY년 MM월 DD일 HH:MM")
+          date(formatString: "YYYY년 MM월 DD일")
+          updated(formatString: "YYYY년 MM월 DD일")
           title
           tags
         }

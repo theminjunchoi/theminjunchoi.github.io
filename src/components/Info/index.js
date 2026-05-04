@@ -60,9 +60,8 @@ const profileImageRoot =
 
 const Profile = styled.div`
   flex: 0 0 auto;
-  margin-right: 30px;
-  width: 210px;
-  height: 210px;
+  width: 140px;
+  height: 140px;
   border-radius: 999px;
   background-image: url(${profileImageRoot}/${props => props.theme.colors.profile}.png);
   background-size: cover;
@@ -98,8 +97,9 @@ function Info({ author, language = 'ko' }) {
 
   return (
     <BioWrapper className="bio">
+      <Profile className="thumbnail-wrapper"/>
         <div className="introduction korean">
-        
+
             <Author className="title">
                 안녕하세요.
                 <br />
@@ -148,7 +148,6 @@ function Info({ author, language = 'ko' }) {
             </Link>
         </LinksWrapper>
         </div>
-      <Profile className="thumbnail-wrapper"/>
     </BioWrapper>
   );
 }

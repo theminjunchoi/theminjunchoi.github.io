@@ -33,7 +33,7 @@ const Tag = styled.li`
   transition: color 0.3s;
 
   &:hover {
-    color: ${props => props.theme.colors.text};
+    color: ${props => props.theme.colors.accentText};
   }
 
   & > a {
@@ -49,11 +49,11 @@ const SideTagList = ({ tags, postCount }) => {
         <Title>TAG LIST</Title>
         <ul>
           <Tag>
-            <Link to="/tags">all ({postCount})</Link>
+            <Link to="/posts">all ({postCount})</Link>
           </Tag>
           {_.map(tags, tag => (
             <Tag>
-              <Link to={`/tags?q=${tag.fieldValue}`}>
+              <Link to={`/posts?q=${tag.fieldValue}`}>
                 {tag.fieldValue} ({tag.totalCount})
               </Link>
             </Tag>

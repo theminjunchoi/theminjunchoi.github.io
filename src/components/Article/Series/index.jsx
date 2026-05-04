@@ -7,15 +7,19 @@ import { AiOutlineArrowLeft } from "react-icons/ai"
 
 const SeriesWrapper = styled.div`
   margin-bottom: 32px;
-  padding: 16px;
+  padding: 20px 24px;
   background-color: ${props => props.theme.colors.seriesBackground};
+  border: 1px solid ${props => props.theme.colors.divider};
+  border-radius: 12px;
 `
 
 const SeriesHeader = styled.h2`
-  margin-bottom: 16px;
-  font-size: 16px;
-  font-weight: bold;
-  color: ${props => props.theme.colors.text};
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: ${props => props.theme.colors.tertiaryText};
 
   & > span {
     font-weight: normal;
@@ -28,7 +32,7 @@ const SeriesHeader = styled.h2`
   }
 
   & > a:hover {
-    text-decoration: underline;
+    color: ${props => props.theme.colors.text};
   }
 `
 

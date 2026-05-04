@@ -10,10 +10,10 @@ import { useAbout } from "../../../gatsby-meta-config"
 const TabWrapper = styled.div`
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 4px;
   border-bottom: 1px solid ${props => props.theme.colors.divider};
-  margin-top: 35px;
-  margin-bottom: 48px;
+  margin-top: 28px;
+  margin-bottom: 28px;
 
   & a {
     text-decoration: none;
@@ -23,30 +23,30 @@ const TabWrapper = styled.div`
 const TabButton = styled.button`
   display: flex;
   align-items: center;
-  padding: 0 10px;
-  height: 43px;
+  padding: 0 14px;
+  height: 40px;
   background-color: transparent;
   border: none;
   border-bottom: 2px solid;
   border-bottom-color: ${props =>
-    props.active ? props.theme.colors.text : "transparent"};
+    props.active ? props.theme.colors.accent : "transparent"};
   font-size: 14px;
   color: ${props =>
-    props.active ? props.theme.colors.text : props.theme.colors.tertiaryText};
-  font-weight: ${props => (props.active ? "bold" : "normal")};
-  letter-spacing: 1px;
+    props.active ? props.theme.colors.accentText : props.theme.colors.tertiaryText};
+  font-weight: ${props => (props.active ? "600" : "normal")};
+  letter-spacing: 0.3px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
     color: ${props => props.theme.colors.text};
     border-bottom-color: ${props =>
-      props.active ? props.theme.colors.text : props.theme.colors.divider};
+      props.active ? props.theme.colors.accent : props.theme.colors.divider};
   }
 
   & svg {
-    margin-right: 10px;
-    height: 20px;
+    margin-right: 8px;
+    height: 18px;
   }
 `
 
@@ -55,8 +55,10 @@ const Badge = styled.span`
   margin-left: 7px;
   padding: 3px 6px;
   border-radius: 50px;
-  background-color: ${props => props.theme.colors.tagBackground};
-  color: ${props => props.theme.colors.tagText};
+  background-color: ${props =>
+    props.active ? props.theme.colors.accentBg : props.theme.colors.tagBackground};
+  color: ${props =>
+    props.active ? props.theme.colors.accentText : props.theme.colors.tagText};
   font-weight: normal;
   font-size: 13px;
   letter-spacing: 0.3px;
@@ -68,9 +70,9 @@ const Tab = ({ postsCount, activeTab }) => {
 
   return (
     <TabWrapper>
-      <Link to="/">
+      <Link to="/posts">
         <TabButton active={activeTab == "posts"}>
-          POSTS <Badge>{postsCount}</Badge>
+          POSTS <Badge active={activeTab == "posts"}>{postsCount}</Badge>
         </TabButton>
       </Link>
       <Link to="/about">

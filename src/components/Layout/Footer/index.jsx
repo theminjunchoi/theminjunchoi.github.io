@@ -4,27 +4,28 @@ import styled from "styled-components"
 import { title } from "../../../../gatsby-meta-config"
 
 const FooterWrapper = styled.footer`
-  margin-top: 32px;
-  padding: 40px 0;
+  margin-top: 48px;
+  padding: 28px 0;
   border-top: 1px solid ${props => props.theme.colors.divider};
   text-align: center;
-  font-size: 11pt;
-  font-weight: lighter;
-  color: ${props => props.theme.colors.secondaryText};
+  font-size: 13px;
+  color: ${props => props.theme.colors.tertiaryText};
 
   & > a {
-    color: ${props => props.theme.colors.text};
+    color: ${props => props.theme.colors.secondaryText};
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: ${props => props.theme.colors.text};
+    }
   }
 `
 
 const Footer = () => {
   return (
     <FooterWrapper>
-      © {title}, Built with Gatsby and{" "}
-      <a href="https://github.com/devHudi/gatsby-starter-hoodie" target="blank">
-        gatsby-starter-hoodie
-      </a>{" "}
-      theme.
+      © {new Date().getFullYear()} {title}
     </FooterWrapper>
   )
 }

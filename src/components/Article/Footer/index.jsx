@@ -51,19 +51,21 @@ const ArticleButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: ${props => (props.right ? "flex-end" : "flex-start")};
-  padding: 20.8px 16px;
+  padding: 18px 20px;
   max-width: 250px;
   flex-basis: 250px;
-  font-size: 17.6px;
-  border-radius: 5px;
-  background-color: ${props => props.theme.colors.nextPostButtonBackground};
+  font-size: 15px;
+  border-radius: 12px;
+  border: 1px solid ${props => props.theme.colors.divider};
+  background-color: ${props => props.theme.colors.bodyBackground};
   color: ${props => props.theme.colors.text};
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s;
 
   &:hover {
-    background-color: ${props =>
-      props.theme.colors.hoveredNextPostButtonBackground};
+    border-color: ${props => props.theme.colors.activatedBorder};
+    box-shadow: 0 4px 16px ${props => props.theme.colors.headerShadow};
+    transform: translateY(-1px);
   }
 
   & ${ArrowFlexWrapper} {
