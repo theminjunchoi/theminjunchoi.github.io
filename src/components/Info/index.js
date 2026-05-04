@@ -1,56 +1,19 @@
-import React from 'react';
-import ReactRotatingText from 'react-rotating-text';
-import styled from "styled-components"
-import './style.scss';
+import React from "react"
+import styled, { keyframes, useTheme } from "styled-components"
+import ReactRotatingText from "react-rotating-text"
 import { siteUrl, links } from "../../../gatsby-meta-config"
-import {
-    FaGithub,
-    FaKaggle,
-    FaFacebook,
-    FaTwitter,
-    FaLinkedin,
-    FaInstagram,
-} from "react-icons/fa"
+import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa"
+import { FaXTwitter, FaRegEnvelope } from "react-icons/fa6"
 
-import {
-    FaXTwitter,
-    FaRegEnvelope,
-    FaMedium,
-    FaBlogger,
-    FaRegFileLines,
-    FaLink,
-} from "react-icons/fa6"
-
-const BioWrapper = styled.div`
-  display: flex;
-
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
-`
-const Author = styled.div`
-  color: ${props => props.theme.colors.text};
+const fadeSlideUp = keyframes`
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
 `
 
-const LinksWrapper = styled.div`
-  & a {
-    margin-right: 9.6px;
-  }
-
-  & svg {
-    width: 25.6px;
-    height: 25.6px;
-    cursor: pointer;
-  }
-
-  & svg path {
-    fill: ${props => props.theme.colors.icon};
-    transition: fill 0.3s;
-  }
-
-  & a:hover svg path {
-    fill: ${props => props.theme.colors.text};
-  }
+const blink = keyframes`
+  0%   { opacity: 0; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
 `
 
 const profileImageRoot =
@@ -58,98 +21,222 @@ const profileImageRoot =
     ? "http://localhost:8000"
     : siteUrl
 
-const Profile = styled.div`
-  flex: 0 0 auto;
-  width: 140px;
-  height: 140px;
-  border-radius: 999px;
-  background-image: url(${profileImageRoot}/${props => props.theme.colors.profile}.png);
+/* ── Layout ─────────────────────────────────────────── */
+
+const HeroWrapper = styled.section`
+  position: relative;
+  width: 100%;
+  padding: 48px 0 52px;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 40px 0 40px;
+  }
+`
+
+const DotGrid = styled.div`
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    ${props => props.theme.colors.divider} 1.5px,
+    transparent 1.5px
+  );
+  background-size: 24px 24px;
+  pointer-events: none;
+  mask-image: radial-gradient(
+    ellipse 110% 90% at 50% 0%,
+    black 20%,
+    transparent 72%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 110% 90% at 50% 0%,
+    black 20%,
+    transparent 72%
+  );
+`
+
+const ContentRow = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+`
+
+/* ── Profile ─────────────────────────────────────────── */
+
+const ProfileGlowContainer = styled.div`
+  position: relative;
+  flex-shrink: 0;
+  display: none;
+  animation: ${fadeSlideUp} 0.55s ease both;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -24px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      ${props => props.theme.colors.accent}20 0%,
+      transparent 68%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+`
+
+const ProfileRing = styled.div`
+  position: relative;
+  z-index: 1;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(
+    140deg,
+    ${props => props.theme.colors.accent},
+    ${props => props.theme.colors.accent}35
+  );
+`
+
+const ProfileImage = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid ${props => props.theme.colors.bodyBackground};
+  background-image: url(${profileImageRoot}/${props => props.$profile}.png);
   background-size: cover;
   background-position: center;
 `
 
-const Link = ({ link, children }) => {
-    if (!link) return null
-    return (
-      <a href={link} target="_blank" rel="noreferrer">
-        {children}
-      </a>
-    )
+/* ── Text ─────────────────────────────────────────────── */
+
+const TextContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: ${fadeSlideUp} 0.55s 0.1s ease both;
+`
+
+const IntroText = styled.div`
+  font-weight: 100;
+  font-size: 21px;
+  line-height: 1.25;
+  color: ${props => props.theme.colors.text};
+
+  strong {
+    font-weight: 600;
+    display: inline-block;
   }
 
-function Info({ author, language = 'ko' }) {
-  if (!author) return null;
-  const { bio, name } = author;
-  const {
-    github,
-    kaggle,
-    instagram,
-    facebook,
-    twitter,
-    x,
-    blogger,
-    medium,
-    linkedIn,
-    email,
-    resume,
-    link,
-  } = links
+  .react-rotating-text-cursor {
+    animation: ${blink} 0.8s cubic-bezier(0.68, 0.01, 0.01, 0.99) 0s infinite;
+  }
 
+  @media (min-width: 768px) {
+    font-size: 26px;
+  }
+`
+
+/* ── Social links ─────────────────────────────────────── */
+
+const SocialRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+  animation: ${fadeSlideUp} 0.55s 0.2s ease both;
+`
+
+const SocialBtn = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme.colors.divider};
+  background: ${props => props.theme.colors.bodyBackground};
+  text-decoration: none;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.accent}65;
+    background: ${props => props.theme.colors.accentBg};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px ${props => props.theme.colors.accent}1a;
+  }
+
+  svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  svg path {
+    fill: ${props => props.theme.colors.tertiaryText};
+    transition: fill 0.18s;
+  }
+
+  &:hover svg path {
+    fill: ${props => props.theme.colors.accent};
+  }
+`
+
+
+/* ── Component ───────────────────────────────────────── */
+
+const SocialLink = ({ link, children }) => {
+  if (!link) return null
   return (
-    <BioWrapper className="bio">
-      <Profile className="thumbnail-wrapper"/>
-        <div className="introduction korean">
-
-            <Author className="title">
-                안녕하세요.
-                <br />
-                <ReactRotatingText items={bio.description} />
-                <br />
-                {bio.role} <strong>{name}</strong>입니다.
-                <br />
-            </Author>
-
-          <LinksWrapper>
-            <Link link={github}>
-                <FaGithub />
-            </Link>
-            <Link link={linkedIn}>
-                <FaLinkedin />
-            </Link>
-            <Link link={kaggle}>
-                <FaKaggle />
-            </Link>
-            <Link link={instagram}>
-                <FaInstagram />
-            </Link>
-            <Link link={facebook}>
-                <FaFacebook />
-            </Link>
-            <Link link={twitter}>
-                <FaTwitter />
-            </Link>
-            <Link link={x}>
-                <FaXTwitter />
-            </Link>
-            <Link link={medium}>
-                <FaMedium />
-            </Link>
-            <Link link={blogger}>
-                <FaBlogger />
-            </Link>
-            <Link link={email}>
-                <FaRegEnvelope />
-            </Link>
-            <Link link={resume}>
-                <FaRegFileLines />
-            </Link>
-            <Link link={link}>
-                <FaLink />
-            </Link>
-        </LinksWrapper>
-        </div>
-    </BioWrapper>
-  );
+    <SocialBtn href={link} target="_blank" rel="noreferrer">
+      {children}
+    </SocialBtn>
+  )
 }
 
-export default Info;
+function Info({ author }) {
+  if (!author) return null
+  const theme = useTheme()
+  const { bio, name } = author
+  const { github, linkedIn, instagram, x, email } = links
+
+  return (
+    <HeroWrapper>
+      <DotGrid />
+      <ContentRow>
+        <TextContent>
+          <IntroText>
+            안녕하세요.
+            <br />
+            <ReactRotatingText items={bio.description} />
+            <br />
+            {bio.role} <strong>{name}</strong>입니다.
+          </IntroText>
+
+          <SocialRow>
+            <SocialLink link={github}><FaGithub /></SocialLink>
+            <SocialLink link={linkedIn}><FaLinkedin /></SocialLink>
+            <SocialLink link={x}><FaXTwitter /></SocialLink>
+            <SocialLink link={instagram}><FaInstagram /></SocialLink>
+            <SocialLink link={email}><FaRegEnvelope /></SocialLink>
+          </SocialRow>
+        </TextContent>
+
+        <ProfileGlowContainer>
+          <ProfileRing>
+            <ProfileImage $profile={theme.colors.profile} />
+          </ProfileRing>
+        </ProfileGlowContainer>
+      </ContentRow>
+    </HeroWrapper>
+  )
+}
+
+export default Info
