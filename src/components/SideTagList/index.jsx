@@ -3,34 +3,23 @@ import _ from "lodash"
 import styled from "styled-components"
 import { Link } from "gatsby"
 
-const RelativeWrapper = styled.div`
-  position: relative;
-`
-
-const Wrapper = styled.aside`
-  position: absolute;
-  left: 112%;
-  top: 0px;
-  width: 200px;
-  height: 100px;
+const Title = styled.p`
+  margin: 0 0 14px;
   font-size: 16px;
-
-  @media (max-width: 1300px) {
-    display: none;
-  }
-`
-
-const Title = styled.div`
-  margin-bottom: 25px;
-  font-weight: bold;
+  font-weight: 700;
   color: ${props => props.theme.colors.secondaryText};
 `
 
-const Tag = styled.li`
-  margin-bottom: 16px;
-  color: ${props => props.theme.colors.tertiaryText};
+const TagItem = styled.li`
+  margin-bottom: 11px;
+  font-size: 15px;
+  color: ${props => props.theme.colors.secondaryText};
   cursor: pointer;
-  transition: color 0.3s;
+  transition: color 0.2s;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   &:hover {
     color: ${props => props.theme.colors.accentText};
@@ -44,23 +33,21 @@ const Tag = styled.li`
 
 const SideTagList = ({ tags, postCount }) => {
   return (
-    <RelativeWrapper>
-      <Wrapper>
-        <Title>TAG LIST</Title>
-        <ul>
-          <Tag>
-            <Link to="/posts">all ({postCount})</Link>
-          </Tag>
-          {_.map(tags, tag => (
-            <Tag>
-              <Link to={`/posts?q=${tag.fieldValue}`}>
-                {tag.fieldValue} ({tag.totalCount})
-              </Link>
-            </Tag>
-          ))}
-        </ul>
-      </Wrapper>
-    </RelativeWrapper>
+    <div>
+      <Title>태그 목록</Title>
+      <ul>
+        <TagItem>
+          <Link to="/posts">전체 ({postCount})</Link>
+        </TagItem>
+        {_.map(tags, tag => (
+          <TagItem key={tag.fieldValue}>
+            <Link to={`/posts?q=${tag.fieldValue}`}>
+              {tag.fieldValue} ({tag.totalCount})
+            </Link>
+          </TagItem>
+        ))}
+      </ul>
+    </div>
   )
 }
 

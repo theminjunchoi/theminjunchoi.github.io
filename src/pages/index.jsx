@@ -1,5 +1,6 @@
 import React from "react"
 import _ from "lodash"
+import styled from "styled-components"
 import { graphql, navigate } from "gatsby"
 
 import Layout from "components/Layout"
@@ -7,8 +8,30 @@ import SEO from "components/SEO"
 import PostList from "components/PostList"
 import SideTagList from "components/SideTagList"
 import Info from "components/Info"
+import PopularPosts from "components/PopularPosts"
 
 import { title, description, siteUrl } from "../../gatsby-meta-config"
+
+const RelativeWrapper = styled.div`
+  position: relative;
+`
+
+const RightSidebar = styled.aside`
+  position: absolute;
+  left: calc(100% + 36px);
+  top: 0;
+  width: 200px;
+
+  @media (max-width: 1300px) {
+    display: none;
+  }
+`
+
+const SidebarDivider = styled.hr`
+  border: none;
+  border-bottom: 1px solid ${props => props.theme.colors.divider};
+  margin: 24px 0;
+`
 
 const BlogIndex = ({ data }) => {
   const posts = data.allMarkdownRemark.nodes
@@ -29,12 +52,18 @@ const BlogIndex = ({ data }) => {
     <Layout>
       <SEO title={title} description={description} url={siteUrl} />
       <Info author={author} language={language} />
-      <SideTagList tags={tags} postCount={posts.length} />
-      <PostList
-        postList={posts}
-        currentPage={1}
-        onPageChange={page => navigate(`/posts?page=${page}`)}
-      />
+      <RelativeWrapper>
+        <RightSidebar>
+          <PopularPosts allPosts={posts} />
+          <SidebarDivider />
+          <SideTagList tags={tags} postCount={posts.length} />
+        </RightSidebar>
+        <PostList
+          postList={posts}
+          currentPage={1}
+          onPageChange={page => navigate(`/posts?page=${page}`)}
+        />
+      </RelativeWrapper>
     </Layout>
   )
 }

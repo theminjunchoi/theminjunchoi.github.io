@@ -8,6 +8,7 @@ const BodyWrapper = styled.div`
   padding-left: 24px;
   padding-right: 24px;
   box-sizing: border-box;
+  min-height: calc(100vh - 120px);
 `
 
 const Body = ({ children }) => {

@@ -7,7 +7,6 @@ import Bio from "components/Bio"
 import VerticalSpace from "components/VerticalSpace"
 import Article from "components/Article"
 import Comment from "components/Article/Footer/Comment"
-import Tab from "components/Tab"
 import Info from "components/Info"
 
 import NotFoundPage from "pages/404"
@@ -47,7 +46,6 @@ const BlogIndex = ({ data }) => {
       {/* <VerticalSpace size={48} /> */}
       {/* <Bio /> */}
       <Info author={author} language={language} />
-      <Tab postsCount={postsCount} activeTab="about" />
       <Article>
         {/* <Wrapper>
           <ArticleTitle>{aboutPost.frontmatter.title}</ArticleTitle>

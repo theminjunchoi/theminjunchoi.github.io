@@ -7,6 +7,7 @@
   "author": "Hudi",
   "dependencies": {
     "@giscus/react": "^2.3.0",
+    "@supabase/supabase-js": "^2.105.1",
     "babel-eslint": "^10.1.0",
     "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^8.57.1",

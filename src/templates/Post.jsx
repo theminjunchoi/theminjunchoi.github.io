@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import SEO from "components/SEO"
 import { graphql } from "gatsby"
 
@@ -6,6 +6,7 @@ import Layout from "components/Layout"
 import Article from "components/Article"
 
 import { siteUrl } from "../../gatsby-meta-config"
+import { incrementViewCount } from "../utils/supabase"
 
 const Post = ({ data }) => {
   const post = data.markdownRemark
@@ -14,6 +15,10 @@ const Post = ({ data }) => {
   const { title, date, updated, tags, series } = post.frontmatter
   const { excerpt } = post
   const { readingTime, slug } = post.fields
+
+  useEffect(() => {
+    incrementViewCount(slug)
+  }, [slug])
 
   let filteredSeries = []
   if (series !== null) {
