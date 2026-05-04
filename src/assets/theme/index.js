@@ -54,7 +54,7 @@ export const light = {
     figcaption: "#FFFFFF",
     accent: "#2563EB",
     accentBg: "#DBEAFE",
-    accentText: "#2563EB",
+    accentText: "#2158E0",
     secondAccentText: "#3B82F6",
   },
 }
@@ -98,7 +98,7 @@ export const dark = {
     figcaption: "#242424",
     accent: "#93C5FD",
     accentBg: "#1e3a5f",
-    accentText: "#93C5FD",
+    accentText: "#60A5FA",
     secondAccentText: "#60A5FA",
   },
 }
