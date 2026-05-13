@@ -11,7 +11,6 @@ const HeaderWrapper = styled.header`
   top: ${props => (props.isHidden ? -64 : 0)}px;
   left: 0;
   right: 0;
-  padding: 0 32px;
   height: 60px;
   background-color: ${props => props.theme.colors.headerBackground};
   box-shadow: 0 1px 0 ${props => props.theme.colors.divider};
@@ -19,10 +18,6 @@ const HeaderWrapper = styled.header`
   opacity: ${props => (props.isHidden ? 0 : 1)};
   transition: top 0.4s, opacity 0.4s;
   z-index: 999;
-
-  @media (max-width: 768px) {
-    padding: 0 16px;
-  }
 `
 
 const Inner = styled.div`
@@ -37,6 +32,10 @@ const Inner = styled.div`
   @media (max-width: 720px) {
     padding: 0 20px;
   }
+
+  @media (max-width: 480px) {
+    padding: 0 14px;
+  }
 `
 
 const BlogTitle = styled.span`
@@ -45,7 +44,7 @@ const BlogTitle = styled.span`
   font-size: 16px;
   letter-spacing: -0.02em;
   color: ${props => props.theme.colors.text};
-  flex-shrink: 0;
+  justify-self: start;
 
   & > a {
     text-decoration: none;
@@ -56,12 +55,8 @@ const BlogTitle = styled.span`
 const NavLinks = styled.nav`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 2px;
-  margin-left: 0;
-
-  @media (max-width: 480px) {
-    gap: 0;
-  }
 `
 
 const NavLink = styled.span`
@@ -84,8 +79,8 @@ const NavLink = styled.span`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 8px;
-    font-size: 13px;
+    padding: 6px 6px;
+    font-size: 12.5px;
   }
 `
 
