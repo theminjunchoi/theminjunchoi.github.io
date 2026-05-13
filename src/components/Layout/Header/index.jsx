@@ -26,19 +26,24 @@ const HeaderWrapper = styled.header`
 `
 
 const Inner = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   height: 100%;
-  max-width: 900px;
+  max-width: 1180px;
   margin: 0 auto;
+  padding: 0 32px;
+
+  @media (max-width: 720px) {
+    padding: 0 20px;
+  }
 `
 
 const BlogTitle = styled.span`
-  letter-spacing: -0.5px;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 16px;
+  letter-spacing: -0.02em;
   color: ${props => props.theme.colors.text};
   flex-shrink: 0;
 
@@ -52,10 +57,9 @@ const NavLinks = styled.nav`
   display: flex;
   align-items: center;
   gap: 2px;
-  margin-left: 32px;
+  margin-left: 0;
 
   @media (max-width: 480px) {
-    margin-left: 12px;
     gap: 0;
   }
 `
@@ -85,16 +89,11 @@ const NavLink = styled.span`
   }
 `
 
-const NavLeft = styled.div`
-  display: flex;
-  align-items: center;
-`
-
 const Actions = styled.div`
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 4px;
-  margin-left: 16px;
 `
 
 const IconButton = styled.button`
@@ -190,22 +189,21 @@ const Header = ({ toggleTheme }) => {
   return (
     <HeaderWrapper isHidden={hidden}>
       <Inner>
-        <NavLeft>
-          <BlogTitle>
-            <Link to="/">{title}</Link>
-          </BlogTitle>
-          <NavLinks>
-            <Link to="/posts" style={{ textDecoration: "none" }}>
-              <NavLink active={isActive("/posts")}>Posts</NavLink>
-            </Link>
-            <Link to="/series" style={{ textDecoration: "none" }}>
-              <NavLink active={isActive("/series")}>Series</NavLink>
-            </Link>
-            <Link to="/about" style={{ textDecoration: "none" }}>
-              <NavLink active={isActive("/about")}>About</NavLink>
-            </Link>
-          </NavLinks>
-        </NavLeft>
+        <BlogTitle>
+          <Link to="/">{title}</Link>
+        </BlogTitle>
+
+        <NavLinks>
+          <Link to="/posts" style={{ textDecoration: "none" }}>
+            <NavLink active={isActive("/posts")}>Posts</NavLink>
+          </Link>
+          <Link to="/series" style={{ textDecoration: "none" }}>
+            <NavLink active={isActive("/series")}>Series</NavLink>
+          </Link>
+          <Link to="/about" style={{ textDecoration: "none" }}>
+            <NavLink active={isActive("/about")}>About</NavLink>
+          </Link>
+        </NavLinks>
 
         <Actions>
           <IconButton onClick={toggleTheme}>

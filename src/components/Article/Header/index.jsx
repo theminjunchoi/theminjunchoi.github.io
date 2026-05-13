@@ -1,73 +1,88 @@
 import React from "react"
 import styled from "styled-components"
 
-import { writer } from "../../../../gatsby-meta-config"
-
-import Divider from "components/Divider"
-import TagList from "components/TagList"
-
-const Wrapper = styled.div`
-  margin-top: 32px;
-  @media (max-width: 768px) {
-    padding: 0 15px;
-  }
+const PostHd = styled.div`
+  padding: 64px 0 36px;
 `
 
-const ArticleTitle = styled.h1`
-  margin-bottom: 20px;
-  line-height: 1.25;
-  font-size: 36px;
+const PostEyebrow = styled.div`
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: ${props => props.theme.colors.tertiaryText};
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+`
+
+const PostTitle = styled.h1`
+  font-size: clamp(28px, 4vw, 38px);
   font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -0.028em;
   color: ${props => props.theme.colors.text};
-  word-break: break-word;
+  word-break: keep-all;
+  margin-bottom: 24px;
 `
 
-const MetaRow = styled.div`
+const PostMeta = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: ${props => props.theme.colors.tertiaryText};
+  padding-bottom: 28px;
+  border-bottom: 1px solid ${props => props.theme.colors.divider};
+`
+
+const MetaItem = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: ${props => props.theme.colors.tertiaryText};
 `
 
-const Author = styled.span`
-  font-weight: 600;
+const MetaLabel = styled.span`
+  color: ${props => props.theme.colors.mutedText};
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10.5px;
+`
+
+const MetaValue = styled.span`
   color: ${props => props.theme.colors.secondaryText};
-`
-
-const Dot = styled.span`
-  opacity: 0.4;
-`
-
-const TagsRow = styled.div`
-  margin-top: 16px;
-  margin-bottom: 4px;
 `
 
 const Header = ({ title, date, tags, minToRead, updated }) => {
   return (
-    <Wrapper>
-      <ArticleTitle>{title}</ArticleTitle>
-      <MetaRow>
-        <Author>@{writer}</Author>
-        <Dot>·</Dot>
-        <span>{minToRead} min read</span>
-        <Dot>·</Dot>
-        <span>{date}</span>
-      </MetaRow>
-      {updated && (
-        <MetaRow>
-          <span>Updated {updated}</span>
-        </MetaRow>
+    <PostHd>
+      {tags && tags.length > 0 && (
+        <PostEyebrow>
+          {tags.join(" · ")}
+        </PostEyebrow>
       )}
-      {tags && (
-        <TagsRow>
-          <TagList tagList={tags} />
-        </TagsRow>
-      )}
-      <Divider mt="24px" mb="32px" />
-    </Wrapper>
+
+      <PostTitle>{title}</PostTitle>
+
+      <PostMeta>
+        <MetaItem>
+          <MetaLabel>date</MetaLabel>
+          <MetaValue>{date}</MetaValue>
+        </MetaItem>
+        {updated && (
+          <MetaItem>
+            <MetaLabel>updated</MetaLabel>
+            <MetaValue>{updated}</MetaValue>
+          </MetaItem>
+        )}
+        {minToRead && (
+          <MetaItem>
+            <MetaLabel>read</MetaLabel>
+            <MetaValue>{minToRead} min</MetaValue>
+          </MetaItem>
+        )}
+      </PostMeta>
+    </PostHd>
   )
 }
 

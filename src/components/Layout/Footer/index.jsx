@@ -1,31 +1,38 @@
 import React from "react"
 import styled from "styled-components"
 
-import { title } from "../../../../gatsby-meta-config"
-
 const FooterWrapper = styled.footer`
-  margin-top: 48px;
-  padding: 28px 0;
+  margin-top: 64px;
+  padding: 32px 0 48px;
   border-top: 1px solid ${props => props.theme.colors.divider};
-  text-align: center;
-  font-size: 13px;
+`
+
+const FooterInner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
   color: ${props => props.theme.colors.tertiaryText};
+  letter-spacing: 0.02em;
 
-  & > a {
-    color: ${props => props.theme.colors.secondaryText};
-    text-decoration: none;
-    transition: color 0.2s;
-
-    &:hover {
-      color: ${props => props.theme.colors.text};
-    }
+  @media (max-width: 720px) {
+    padding: 0 20px;
   }
 `
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear()
   return (
     <FooterWrapper>
-      © {new Date().getFullYear()} {title}
+      <FooterInner>
+        <span>© {currentYear} minjun.blog · written by 최민준</span>
+      </FooterInner>
     </FooterWrapper>
   )
 }

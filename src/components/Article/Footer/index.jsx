@@ -1,106 +1,98 @@
 import React, { useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector } from "react-redux"
-import styled, { useTheme } from "styled-components"
-import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi"
+import styled, { useTheme, css } from "styled-components"
 import MDSpinner from "react-md-spinner"
 import Divider from "components/Divider"
 import Giscus from "@giscus/react"
 
-const ArticleButtonContainer = styled.div`
+/* ── End Mark ────────────────────────────────────────── */
+
+const PostFootEnd = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 48px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: ${props => props.theme.colors.tertiaryText};
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+`
 
-  @media (max-width: 768px) {
-    margin-bottom: 80px;
-    padding: 0 12.8px;
-    flex-direction: column;
+const EndMark = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
 
-    & > div:first-child {
-      margin-bottom: 12.8px;
-    }
+  &::before,
+  &::after {
+    content: "";
+    width: 30px;
+    height: 1px;
+    background: ${props => props.theme.colors.mutedText};
   }
 `
 
-const ArrowFlexWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
+/* ── Post Nav ────────────────────────────────────────── */
+
+const PostNav = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 `
 
-const ArticleButtonTextWrapper = styled.div`
+const PostNavCard = styled.div`
   display: flex;
-  align-items: flex-end;
   flex-direction: column;
-  overflow: hidden;
-`
-
-const Arrow = styled.div`
+  padding: 22px 24px;
+  border: 1px solid ${props =>
+    props.$empty ? props.theme.colors.divider : props.theme.colors.divider};
+  border-radius: 14px;
+  transition: all 0.22s;
+  background: ${props => props.theme.colors.bodyBackground};
+  min-height: 96px;
   position: relative;
-  left: 0;
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-  flex-basis: 24px;
-  transition: left 0.3s;
-`
-
-const ArticleButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: ${props => (props.right ? "flex-end" : "flex-start")};
-  padding: 18px 20px;
-  max-width: 250px;
-  flex-basis: 250px;
-  font-size: 15px;
-  border-radius: 12px;
-  border: 1px solid ${props => props.theme.colors.divider};
-  background-color: ${props => props.theme.colors.bodyBackground};
-  color: ${props => props.theme.colors.text};
-  cursor: pointer;
-  transition: all 0.2s;
+  overflow: hidden;
+  text-align: ${props => (props.$isNext ? "right" : "left")};
+  align-items: ${props => (props.$isNext ? "flex-end" : "flex-start")};
+  cursor: ${props => (props.$empty ? "default" : "pointer")};
+  pointer-events: ${props => (props.$empty ? "none" : "auto")};
+  opacity: ${props => (props.$empty ? 0.35 : 1)};
+  border-style: ${props => (props.$empty ? "dashed" : "solid")};
 
   &:hover {
-    border-color: ${props => props.theme.colors.activatedBorder};
-    box-shadow: 0 4px 16px ${props => props.theme.colors.headerShadow};
-    transform: translateY(-1px);
-  }
-
-  & ${ArrowFlexWrapper} {
-    flex-direction: ${props => (props.right ? "row-reverse" : "row")};
-  }
-
-  & ${ArticleButtonTextWrapper} {
-    align-items: ${props => (props.right ? "flex-end" : "flex-start")};
-  }
-
-  & ${Arrow} {
-    ${props => (props.right ? "margin-left: 16px" : "margin-right: 16px")};
-  }
-
-  &:hover ${Arrow} {
-    left: ${props => (props.right ? 2 : -2)}px;
-  }
-
-  @media (max-width: 768px) {
-    max-width: inherit;
-    flex-basis: inherit;
+    border-color: ${props => props.theme.colors.text};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px -4px ${props => props.theme.colors.headerShadow};
   }
 `
 
-const ArticleButtonLabel = styled.div`
-  margin-bottom: 9.6px;
-  font-size: 12.8px;
+const PostNavLabel = styled.div`
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: ${props => props.theme.colors.tertiaryText};
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 8px;
 `
 
-const ArticleButtonTitle = styled.div`
-  padding: 2px 0;
-  width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
+const PostNavTitle = styled.div`
+  font-size: 14.5px;
+  font-weight: 600;
+  color: ${props => props.theme.colors.secondaryText};
+  line-height: 1.45;
+  word-break: keep-all;
+  letter-spacing: -0.01em;
 `
+
+/* ── Comment ─────────────────────────────────────────── */
 
 const CommentWrapper = styled.div`
   @media (max-width: 768px) {
@@ -120,22 +112,6 @@ const HiddenWrapper = styled.div`
   overflow: ${props => (props.isHidden ? "hidden" : "auto")};
 `
 
-const ArticleButton = ({ right, children, onClick }) => {
-  return (
-    <ArticleButtonWrapper right={right} onClick={onClick}>
-      <ArrowFlexWrapper>
-        <Arrow>{right ? <BiRightArrowAlt /> : <BiLeftArrowAlt />}</Arrow>
-        <ArticleButtonTextWrapper>
-          <ArticleButtonLabel>
-            {right ? <>Next Post</> : <>Previous Post</>}
-          </ArticleButtonLabel>
-          <ArticleButtonTitle>{children}</ArticleButtonTitle>
-        </ArticleButtonTextWrapper>
-      </ArrowFlexWrapper>
-    </ArticleButtonWrapper>
-  )
-}
-
 const Spinner = () => {
   const theme = useTheme()
   return (
@@ -145,7 +121,7 @@ const Spinner = () => {
   )
 }
 
-const Comment = ({title}) => {
+const Comment = ({ title }) => {
   const { theme } = useSelector(state => state.theme)
   const [spinner, setSpinner] = useState(true)
 
@@ -161,66 +137,78 @@ const Comment = ({title}) => {
 
       <HiddenWrapper isHidden={spinner}>
         <HiddenWrapper isHidden={theme === "light"}>
-        <Giscus
-              id="comments"
-              repo="theminjunchoi/theminjunchoi.github.io"
-              repoId="R_kgDOLCr2fA"
-              category="Comments"
-              categoryId="DIC_kwDOLCr2fM4Ci46V"
-              mapping="pathname"
-              term={title}
-              reactionsEnabled="1"
-              emitMetadata="0"
-              lang="ko"
-              theme="dark"
-            />
-            
+          <Giscus
+            id="comments"
+            repo="theminjunchoi/theminjunchoi.github.io"
+            repoId="R_kgDOLCr2fA"
+            category="Comments"
+            categoryId="DIC_kwDOLCr2fM4Ci46V"
+            mapping="pathname"
+            term={title}
+            reactionsEnabled="1"
+            emitMetadata="0"
+            lang="ko"
+            theme="dark"
+          />
         </HiddenWrapper>
         <HiddenWrapper isHidden={theme === "dark"}>
           <Giscus
-              id="comments"
-              repo="theminjunchoi/theminjunchoi.github.io"
-              repoId="R_kgDOLCr2fA"
-              category="Comments"
-              categoryId="DIC_kwDOLCr2fM4Ci46V"
-              mapping="pathname"
-              term={title}
-              reactionsEnabled="1"
-              emitMetadata="0"
-              lang="ko"
-              theme="light"
-            />
+            id="comments"
+            repo="theminjunchoi/theminjunchoi.github.io"
+            repoId="R_kgDOLCr2fA"
+            category="Comments"
+            categoryId="DIC_kwDOLCr2fM4Ci46V"
+            mapping="pathname"
+            term={title}
+            reactionsEnabled="1"
+            emitMetadata="0"
+            lang="ko"
+            theme="light"
+          />
         </HiddenWrapper>
       </HiddenWrapper>
     </>
   )
 }
 
+/* ── Footer ──────────────────────────────────────────── */
+
 const Footer = ({ previous, next, title }) => {
   return (
     <>
-      <ArticleButtonContainer>
-        {previous ? (
-          <ArticleButton onClick={() => navigate(previous?.fields?.slug)}>
-            {previous?.frontmatter?.title}
-          </ArticleButton>
-        ) : (
-          <div></div>
-        )}
-        {next && (
-          <ArticleButton right onClick={() => navigate(next?.fields?.slug)}>
-            {next?.frontmatter?.title}
-          </ArticleButton>
-        )}
-      </ArticleButtonContainer>
+      <PostFootEnd>
+        <EndMark>end of post</EndMark>
+      </PostFootEnd>
+
+      <PostNav>
+        <PostNavCard
+          $empty={!previous}
+          onClick={previous ? () => navigate(previous?.fields?.slug) : undefined}
+        >
+          <PostNavLabel>← Previous</PostNavLabel>
+          <PostNavTitle>
+            {previous ? previous?.frontmatter?.title : "첫 번째 글입니다"}
+          </PostNavTitle>
+        </PostNavCard>
+
+        <PostNavCard
+          $isNext
+          $empty={!next}
+          onClick={next ? () => navigate(next?.fields?.slug) : undefined}
+        >
+          <PostNavLabel>Next →</PostNavLabel>
+          <PostNavTitle>
+            {next ? next?.frontmatter?.title : "마지막 글입니다"}
+          </PostNavTitle>
+        </PostNavCard>
+      </PostNav>
+
       <CommentWrapper>
         <Divider mt="32px" />
-        <Comment title={title}/>
+        <Comment title={title} />
       </CommentWrapper>
     </>
   )
 }
-
-
 
 export default Footer

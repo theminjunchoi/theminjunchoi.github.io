@@ -26,11 +26,11 @@ const profileImageRoot =
 const HeroWrapper = styled.section`
   position: relative;
   width: 100%;
-  padding: 48px 0 52px;
+  padding: 64px 0 56px;
   overflow: hidden;
 
-  @media (max-width: 768px) {
-    padding: 40px 0 40px;
+  @media (min-width: 768px) {
+    padding: 80px 0 80px;
   }
 `
 
@@ -38,20 +38,20 @@ const DotGrid = styled.div`
   position: absolute;
   inset: 0;
   background-image: radial-gradient(
-    ${props => props.theme.colors.divider} 1.5px,
-    transparent 1.5px
+    ${props => props.theme.colors.border} 1.4px,
+    transparent 1.4px
   );
-  background-size: 24px 24px;
+  background-size: 26px 26px;
   pointer-events: none;
   mask-image: radial-gradient(
-    ellipse 110% 90% at 50% 0%,
-    black 20%,
-    transparent 72%
+    ellipse 120% 100% at 50% 0%,
+    black 18%,
+    transparent 70%
   );
   -webkit-mask-image: radial-gradient(
-    ellipse 110% 90% at 50% 0%,
-    black 20%,
-    transparent 72%
+    ellipse 120% 100% at 50% 0%,
+    black 18%,
+    transparent 70%
   );
 `
 
@@ -125,24 +125,33 @@ const TextContent = styled.div`
   animation: ${fadeSlideUp} 0.55s 0.1s ease both;
 `
 
-const IntroText = styled.div`
-  font-weight: 100;
+const IntroText = styled.h1`
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 200;
   font-size: 21px;
-  line-height: 1.25;
+  line-height: 1.32;
   color: ${props => props.theme.colors.text};
+  word-break: keep-all;
+  letter-spacing: -0.012em;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 
-  strong {
-    font-weight: 600;
-    display: inline-block;
-  }
+  strong { font-weight: 700; }
 
   .react-rotating-text-cursor {
     animation: ${blink} 0.8s cubic-bezier(0.68, 0.01, 0.01, 0.99) 0s infinite;
   }
 
   @media (min-width: 768px) {
-    font-size: 26px;
+    font-size: 28px;
+    line-height: 1.32;
   }
+`
+
+const HeroLine = styled.span`
+  display: block;
+  min-height: 1.32em;
 `
 
 /* ── Social links ─────────────────────────────────────── */
@@ -213,11 +222,9 @@ function Info({ author }) {
       <ContentRow>
         <TextContent>
           <IntroText>
-            안녕하세요.
-            <br />
-            <ReactRotatingText items={bio.description} />
-            <br />
-            {bio.role} <strong>{name}</strong>입니다.
+            <HeroLine>안녕하세요.</HeroLine>
+            <HeroLine><ReactRotatingText items={bio.description} /></HeroLine>
+            <HeroLine>{bio.role} <strong>{name}</strong>입니다.</HeroLine>
           </IntroText>
 
           <SocialRow>

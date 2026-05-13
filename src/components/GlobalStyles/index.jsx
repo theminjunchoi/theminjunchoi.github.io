@@ -12,8 +12,16 @@ const GlobalStyles = createGlobalStyle`
   body {
     font-family: 'Noto Sans KR', sans-serif;
     background: ${props => props.theme.colors.bodyBackground};
+    color: ${props => props.theme.colors.text};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 15px;
+    letter-spacing: -0.005em;
+  }
+
+  ::selection {
+    background: ${props => props.theme.colors.accent};
+    color: #fff;
   }
 
   * {
