@@ -1,8 +1,8 @@
 ---
 title: 2023년 회고
 date: 2024-01-08 12:35:24
-updated: 2025-07-10 15:55:07
-series: 기록과 방향성에 대한 회고
+updated: 2026-05-14 17:59:59
+series: 회고
 publish: true
 tags:
   - 회고

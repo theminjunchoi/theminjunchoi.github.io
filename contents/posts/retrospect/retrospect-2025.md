@@ -1,12 +1,12 @@
 ---
 title: 2025년 회고
 date: 2026-01-01 09:44:21
-updated: 2026-02-07 21:50:01
+updated: 2026-05-14 17:59:59
 publish: true
 tags:
   - 회고
   - 우아한테크코스
-series: 기록과 방향성에 대한 회고
+series: 회고
 ---
 지난 회고: [[retrospect-2024-2]]
 
