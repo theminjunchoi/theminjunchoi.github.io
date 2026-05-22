@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react"
 import styled, { css } from "styled-components"
 
-import { animateScroll } from "react-scroll"
-
 import useScroll from "hooks/useScroll"
 
 import getElementOffset from "utils/getElmentOffset"
@@ -95,7 +93,7 @@ const Toc = ({ items, articleOffset }) => {
   }, [y])
 
   const handleClickTitle = index => {
-    animateScroll.scrollTo(headers[index] - 100)
+    window.scrollTo({ top: headers[index] - 100 })
   }
 
   return (

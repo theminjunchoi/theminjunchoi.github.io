@@ -68,6 +68,7 @@ public
 
 # Obsidian vault settings
 .obsidian/
+contents/.obsidian/
 
 # Yarn
 yarn-error.log
