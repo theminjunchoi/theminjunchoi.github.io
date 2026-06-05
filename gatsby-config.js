@@ -76,13 +76,6 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `static-attachments`,
-        path: `${__dirname}/contents/posts/attachments`,
-      },
-    },
-    {
       resolve: `gatsby-transformer-remark`,
       options: {
         commonmark: true,

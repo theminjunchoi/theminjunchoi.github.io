@@ -58,6 +58,9 @@ typings/
 .cache/
 public
 
+# auto-generated attachment copies (images live in contents/posts/attachments)
+static/attachments/
+
 # Mac files
 .DS_Store
 
