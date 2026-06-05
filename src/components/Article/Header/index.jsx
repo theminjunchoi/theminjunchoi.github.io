@@ -2,26 +2,26 @@ import React from "react"
 import styled from "styled-components"
 
 const PostHd = styled.div`
-  padding: 64px 0 36px;
+  padding: ${props => props.theme.space[16]} 0 ${props => props.theme.space[9]};
 `
 
 const PostEyebrow = styled.div`
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  margin-bottom: 16px;
+  margin-bottom: ${props => props.theme.space[4]};
 `
 
 const PostTitle = styled.h1`
-  font-size: clamp(28px, 4vw, 38px);
+  font-size: ${props => props.theme.font.titlePost};
   font-weight: 700;
   line-height: 1.22;
   letter-spacing: -0.028em;
   color: ${props => props.theme.colors.text};
   word-break: keep-all;
-  margin-bottom: 24px;
+  margin-bottom: ${props => props.theme.space[6]};
 `
 
 const PostMeta = styled.div`
@@ -30,9 +30,9 @@ const PostMeta = styled.div`
   flex-wrap: wrap;
   gap: 18px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: ${props => props.theme.font.sm};
   color: ${props => props.theme.colors.tertiaryText};
-  padding-bottom: 28px;
+  padding-bottom: ${props => props.theme.space[7]};
   border-bottom: 1px solid ${props => props.theme.colors.divider};
 `
 
@@ -46,7 +46,7 @@ const MetaLabel = styled.span`
   color: ${props => props.theme.colors.mutedText};
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
 `
 
 const MetaValue = styled.span`

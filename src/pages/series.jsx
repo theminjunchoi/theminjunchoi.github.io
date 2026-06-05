@@ -4,51 +4,15 @@ import styled from "styled-components"
 import SEO from "components/SEO"
 import { graphql, Link } from "gatsby"
 import Layout from "components/Layout"
+import PageHeader from "components/PageHeader"
 import { title, description, siteUrl } from "../../gatsby-meta-config"
-
-/* ── Page Header ─────────────────────────────────────── */
-
-const PageHd = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 64px 0 32px;
-  border-bottom: 1px solid ${props => props.theme.colors.divider};
-  margin-bottom: 40px;
-`
-
-const PageEyebrow = styled.span`
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: ${props => props.theme.colors.accentText};
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-`
-
-const PageTitle = styled.h1`
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: clamp(32px, 4.2vw, 44px);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  color: ${props => props.theme.colors.text};
-  margin-top: 2px;
-`
-
-const PageCounter = styled.p`
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  color: ${props => props.theme.colors.tertiaryText};
-  margin-top: 12px;
-`
 
 /* ── Series List ─────────────────────────────────────── */
 
 const SeriesListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: ${props => props.theme.space[5]};
 `
 
 /* ── Series Card ─────────────────────────────────────── */
@@ -56,24 +20,25 @@ const SeriesListWrapper = styled.div`
 const SeriesCardWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 320px;
-  gap: 32px;
-  padding: 28px 32px;
+  gap: ${props => props.theme.space[8]};
+  padding: ${props => props.theme.space[7]} ${props => props.theme.space[8]};
   border: 1px solid ${props => props.theme.colors.divider};
-  border-radius: 16px;
+  border-radius: ${props => props.theme.radius.xxl};
   background: ${props => props.theme.colors.bodyBackground};
   position: relative;
   overflow: hidden;
-  transition: all 0.22s;
+  transition: all ${props => props.theme.transition.base};
 
   &:hover {
     border-color: ${props => props.theme.colors.text};
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px -8px ${props => props.theme.colors.headerShadow};
+    box-shadow: ${props => props.theme.shadow.cardHover}
+      ${props => props.theme.colors.headerShadow};
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${props => props.theme.bp.md}) {
     grid-template-columns: 1fr;
-    padding: 22px 20px;
+    padding: ${props => props.theme.space[5]} ${props => props.theme.space[5]};
   }
 `
 
@@ -99,9 +64,9 @@ const SeriesMeta = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: ${props => props.theme.space[3]};
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -110,25 +75,25 @@ const SeriesMeta = styled.div`
 const SeriesCount = styled.span`
   display: inline-flex;
   padding: 2px 8px;
-  border-radius: 5px;
+  border-radius: ${props => props.theme.radius.sm};
   background: ${props => props.theme.colors.accentBg};
   color: ${props => props.theme.colors.accentText};
   font-weight: 600;
 `
 
 const SeriesTitle = styled.h2`
-  font-size: 26px;
+  font-size: ${props => props.theme.font.h1Sm};
   font-weight: 700;
   letter-spacing: -0.025em;
   color: ${props => props.theme.colors.text};
   line-height: 1.25;
   word-break: keep-all;
-  margin-bottom: 12px;
+  margin-bottom: ${props => props.theme.space[3]};
 `
 
 const SeriesCta = styled(Link)`
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: ${props => props.theme.font.sm};
   color: ${props => props.theme.colors.accent};
   font-weight: 500;
   padding: 2px 0;
@@ -147,20 +112,20 @@ const SeriesCta = styled(Link)`
 const SeriesPreview = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 18px 20px;
+  gap: ${props => props.theme.space[3]};
+  padding: ${props => props.theme.space[5]} ${props => props.theme.space[5]};
   background: ${props => props.theme.colors.background};
-  border-radius: 12px;
+  border-radius: ${props => props.theme.radius.lg};
   border: 1px solid ${props => props.theme.colors.divider};
 
-  @media (max-width: 768px) {
+  @media (max-width: ${props => props.theme.bp.md}) {
     display: none;
   }
 `
 
 const SeriesPreviewLabel = styled.div`
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -170,10 +135,10 @@ const SeriesPreviewLabel = styled.div`
 const PreviewItem = styled(Link)`
   display: flex;
   gap: 10px;
-  font-size: 13px;
+  font-size: ${props => props.theme.font.base};
   color: ${props => props.theme.colors.secondaryText};
   text-decoration: none;
-  transition: color 0.18s;
+  transition: color ${props => props.theme.transition.fast};
 
   &:hover {
     color: ${props => props.theme.colors.accent};
@@ -182,7 +147,7 @@ const PreviewItem = styled(Link)`
 
 const PreviewNum = styled.span`
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   flex-shrink: 0;
   min-width: 18px;
@@ -240,11 +205,12 @@ const SeriesPage = ({ data }) => {
     <Layout maxWidth="1180px">
       <SEO title={title} description={description} url={siteUrl} />
 
-      <PageHd>
-        <PageEyebrow>/ series · longform</PageEyebrow>
-        <PageTitle>시리즈</PageTitle>
-        <PageCounter>{seriesList.length} series</PageCounter>
-      </PageHd>
+      <PageHeader
+        eyebrow="/ series · longform"
+        title="시리즈"
+        counter={`${seriesList.length} series`}
+        mb="40px"
+      />
 
       <SeriesListWrapper>
         {seriesList.map(series => (

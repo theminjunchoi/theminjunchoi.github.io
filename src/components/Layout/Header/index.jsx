@@ -13,10 +13,12 @@ const HeaderWrapper = styled.header`
   right: 0;
   height: 60px;
   background-color: ${props => props.theme.colors.headerBackground};
-  box-shadow: 0 1px 0 ${props => props.theme.colors.divider};
+  box-shadow: ${props => props.theme.shadow.hairline}
+    ${props => props.theme.colors.divider};
   backdrop-filter: blur(8px);
   opacity: ${props => (props.isHidden ? 0 : 1)};
-  transition: top 0.4s, opacity 0.4s;
+  transition: top ${props => props.theme.transition.slow},
+    opacity ${props => props.theme.transition.slow};
   z-index: 999;
 `
 
@@ -25,15 +27,15 @@ const Inner = styled.div`
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   height: 100%;
-  max-width: 1180px;
+  max-width: ${props => props.theme.layout.maxWidth};
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 ${props => props.theme.space[8]};
 
-  @media (max-width: 720px) {
-    padding: 0 20px;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    padding: 0 ${props => props.theme.space[5]};
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: ${props => props.theme.bp.xs}) {
     padding: 0 14px;
   }
 `
@@ -41,7 +43,7 @@ const Inner = styled.div`
 const BlogTitle = styled.span`
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: ${props => props.theme.font.body};
   letter-spacing: -0.02em;
   color: ${props => props.theme.colors.text};
   justify-self: start;
@@ -61,8 +63,8 @@ const NavLinks = styled.nav`
 
 const NavLink = styled.span`
   padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: ${props => props.theme.radius.md};
+  font-size: ${props => props.theme.font.md};
   font-weight: ${props => (props.active ? "600" : "500")};
   color: ${props =>
     props.active
@@ -70,7 +72,7 @@ const NavLink = styled.span`
       : props.theme.colors.tertiaryText};
   background-color: ${props =>
     props.active ? props.theme.colors.accentBg : "transparent"};
-  transition: all 0.18s;
+  transition: all ${props => props.theme.transition.fast};
   cursor: pointer;
 
   &:hover {
@@ -78,9 +80,9 @@ const NavLink = styled.span`
     color: ${props => props.theme.colors.accentText};
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: ${props => props.theme.bp.xs}) {
     padding: 6px 6px;
-    font-size: 12.5px;
+    font-size: ${props => props.theme.font.sm};
   }
 `
 
@@ -98,10 +100,10 @@ const IconButton = styled.button`
   width: 34px;
   height: 34px;
   border: none;
-  border-radius: 8px;
+  border-radius: ${props => props.theme.radius.md};
   background: transparent;
   cursor: pointer;
-  transition: all 0.18s;
+  transition: all ${props => props.theme.transition.fast};
 
   &:hover {
     background-color: ${props => props.theme.colors.background};

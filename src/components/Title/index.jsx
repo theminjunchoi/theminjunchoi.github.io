@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 const Wrapper = styled.h1`
-  margin-bottom: 24px;
+  margin-bottom: ${props => props.theme.space[6]};
   font-size: ${props => props.size};
   font-weight: 700;
   line-height: 1.3;
@@ -12,7 +12,7 @@ const Wrapper = styled.h1`
   & > a {
     text-decoration: none;
     color: inherit;
-    transition: all 0.2s;
+    transition: all ${props => props.theme.transition.fast};
   }
 
   & > a:hover {

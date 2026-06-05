@@ -12,11 +12,11 @@ const TagListWrapper = styled.div`
 const TagBadge = styled.span`
   display: inline-block;
   padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 12.5px;
+  border-radius: ${props => props.theme.radius.sm};
+  font-size: ${props => props.theme.font.sm};
   font-weight: 500;
   letter-spacing: 0.1px;
-  transition: all 0.2s;
+  transition: all ${props => props.theme.transition.fast};
   background-color: ${props =>
     props.theme.name === "light" ? "#DBEAFE" : "#1e3a5f"};
   color: ${props =>

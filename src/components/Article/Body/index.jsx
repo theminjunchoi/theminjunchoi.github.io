@@ -10,10 +10,10 @@ import PrismTheme from "./PrismTheme"
 
 const Wrapper = styled.div`
   position: relative;
-  padding: 40px 0 56px;
+  padding: ${props => props.theme.space[10]} 0 ${props => props.theme.space[14]};
 
-  @media (max-width: 760px) {
-    padding: 32px 0 44px;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    padding: ${props => props.theme.space[8]} 0 ${props => props.theme.space[11]};
   }
 `
 

@@ -17,14 +17,14 @@ import { title, description, siteUrl, useAbout } from "../../gatsby-meta-config"
 const AboutLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 200px;
-  gap: 56px;
+  gap: ${props => props.theme.space[14]};
   align-items: start;
-  padding: 56px 0 72px;
+  padding: ${props => props.theme.space[14]} 0 ${props => props.theme.space[18]};
 
-  @media (max-width: 880px) {
+  @media (max-width: ${props => props.theme.bp.lg}) {
     grid-template-columns: 1fr;
-    gap: 32px;
-    padding: 40px 0 56px;
+    gap: ${props => props.theme.space[8]};
+    padding: ${props => props.theme.space[10]} 0 ${props => props.theme.space[14]};
   }
 `
 
@@ -37,16 +37,16 @@ const AboutBodyWrap = styled.div`
    ──────────────────────────────────────────────────── */
 
 const AboutBody = styled.article`
-  font-size: 16px;
+  font-size: ${props => props.theme.font.body};
   line-height: 1.75;
   color: ${props => props.theme.colors.secondaryText};
   word-break: keep-all;
 
   h2 {
     font-family: "Noto Sans KR", sans-serif;
-    font-size: 22px;
+    font-size: ${props => props.theme.font.h2};
     font-weight: 700;
-    margin-top: 44px;
+    margin-top: ${props => props.theme.space[11]};
     margin-bottom: 14px;
     color: ${props => props.theme.colors.text};
     letter-spacing: -0.02em;
@@ -57,7 +57,7 @@ const AboutBody = styled.article`
   }
 
   p {
-    margin-bottom: 16px;
+    margin-bottom: ${props => props.theme.space[4]};
     word-break: keep-all;
   }
 
@@ -65,15 +65,15 @@ const AboutBody = styled.article`
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: ${props => props.theme.space[4]};
     padding-left: 0;
     list-style: none;
   }
 
   ul li {
-    padding-left: 20px;
+    padding-left: ${props => props.theme.space[5]};
     position: relative;
-    font-size: 15px;
+    font-size: ${props => props.theme.font.lg};
     color: ${props => props.theme.colors.secondaryText};
     line-height: 1.65;
   }
@@ -91,7 +91,7 @@ const AboutBody = styled.article`
   a {
     color: ${props => props.theme.colors.accent};
     border-bottom: 1px solid ${props => props.theme.colors.accentBg};
-    transition: border-color 0.18s;
+    transition: border-color ${props => props.theme.transition.fast};
     text-decoration: none;
   }
 
@@ -99,11 +99,11 @@ const AboutBody = styled.article`
     border-color: ${props => props.theme.colors.accent};
   }
 
-  @media (max-width: 760px) {
-    font-size: 15px;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    font-size: ${props => props.theme.font.lg};
 
     h2 {
-      font-size: 19px;
+      font-size: ${props => props.theme.font.h3};
     }
   }
 `
@@ -116,7 +116,7 @@ const AboutTocSidebar = styled.aside`
   position: sticky;
   top: 84px;
 
-  @media (max-width: 880px) {
+  @media (max-width: ${props => props.theme.bp.lg}) {
     position: static;
     top: auto;
   }
@@ -124,7 +124,7 @@ const AboutTocSidebar = styled.aside`
 
 const TocLabel = styled.p`
   font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -136,12 +136,12 @@ const TocLabel = styled.p`
 const TocList = styled.nav`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: ${props => props.theme.space[2]};
 
-  @media (max-width: 880px) {
+  @media (max-width: ${props => props.theme.bp.lg}) {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: ${props => props.theme.space[2]};
   }
 `
 
@@ -149,11 +149,11 @@ const TocItem = styled.a`
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: ${props => props.theme.font.base};
   color: ${props =>
     props.$active ? props.theme.colors.accent : props.theme.colors.secondaryText};
   padding: 4px 0;
-  transition: color 0.18s;
+  transition: color ${props => props.theme.transition.fast};
   text-decoration: none;
   word-break: keep-all;
   line-height: 1.45;
@@ -166,7 +166,7 @@ const TocItem = styled.a`
     background: ${props =>
       props.$active ? props.theme.colors.accent : props.theme.colors.mutedText};
     flex-shrink: 0;
-    transition: all 0.18s;
+    transition: all ${props => props.theme.transition.fast};
   }
 
   &:hover {
@@ -178,10 +178,10 @@ const TocItem = styled.a`
     width: 16px;
   }
 
-  @media (max-width: 880px) {
+  @media (max-width: ${props => props.theme.bp.lg}) {
     padding: 6px 10px;
     background: ${props => props.theme.colors.background};
-    border-radius: 6px;
+    border-radius: ${props => props.theme.radius.sm};
 
     &::before {
       display: none;

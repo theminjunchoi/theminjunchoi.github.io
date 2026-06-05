@@ -2,8 +2,8 @@ import React from "react"
 import styled from "styled-components"
 
 const FooterWrapper = styled.footer`
-  margin-top: 64px;
-  padding: 32px 0 48px;
+  margin-top: ${props => props.theme.space[16]};
+  padding: ${props => props.theme.space[8]} 0 ${props => props.theme.space[12]};
   border-top: 1px solid ${props => props.theme.colors.divider};
 `
 
@@ -12,17 +12,17 @@ const FooterInner = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  max-width: 1180px;
+  gap: ${props => props.theme.space[4]};
+  max-width: ${props => props.theme.layout.maxWidth};
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 ${props => props.theme.space[8]};
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11.5px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   letter-spacing: 0.02em;
 
-  @media (max-width: 720px) {
-    padding: 0 20px;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    padding: 0 ${props => props.theme.space[5]};
   }
 `
 

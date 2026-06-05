@@ -1,3 +1,5 @@
+import { tokens } from "./tokens"
+
 const GRAY9 = "#191919"
 const GRAY8 = "#2D2D2D"
 const GRAY7 = "#404040"
@@ -17,6 +19,7 @@ const darkProfile = "profile_2026_square"
 
 export const light = {
   name: "light",
+  ...tokens,
   colors: {
     profile: lightProfile,
     bodyBackground: "#ffffff",
@@ -61,6 +64,7 @@ export const light = {
 
 export const dark = {
   name: "dark",
+  ...tokens,
   colors: {
     profile: darkProfile,
     bodyBackground: "#242424",

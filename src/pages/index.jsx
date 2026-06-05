@@ -7,6 +7,7 @@ import Layout from "components/Layout"
 import SEO from "components/SEO"
 import Info from "components/Info"
 import PopularPosts from "components/PopularPosts"
+import ArchiveList from "components/ArchiveList"
 
 import { title, description, siteUrl } from "../../gatsby-meta-config"
 
@@ -19,8 +20,8 @@ const SectionHead = styled.div`
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 26px;
+  gap: ${props => props.theme.space[6]};
+  margin-bottom: ${props => props.theme.space[6]};
 `
 
 const SectionTitle = styled.div`
@@ -30,19 +31,19 @@ const SectionTitle = styled.div`
   font-family: "Inter Tight", "Noto Sans KR", sans-serif;
 `
 
-/* JetBrains Mono, 11px, muted gray */
+/* JetBrains Mono, muted gray */
 const SectionLabel = styled.span`
   font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
+  font-size: ${props => props.theme.font.xs};
   font-weight: 500;
   color: ${props => props.theme.colors.tertiaryText};
   text-transform: uppercase;
   letter-spacing: 0.14em;
 `
 
-/* 20px, bold, dark */
+/* bold heading */
 const SectionHeading = styled.span`
-  font-size: 20px;
+  font-size: ${props => props.theme.font.h2};
   font-weight: 700;
   color: ${props => props.theme.colors.text};
   letter-spacing: -0.018em;
@@ -51,7 +52,7 @@ const SectionHeading = styled.span`
 /* JetBrains Mono link, bottom border on hover */
 const SectionActionLink = styled(Link)`
   font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
+  font-size: ${props => props.theme.font.sm};
   color: ${props => props.theme.colors.secondaryText};
   text-decoration: none;
   display: inline-flex;
@@ -59,7 +60,7 @@ const SectionActionLink = styled(Link)`
   gap: 6px;
   padding: 4px 0;
   border-bottom: 1px solid transparent;
-  transition: all 0.18s;
+  transition: all ${props => props.theme.transition.fast};
 
   &:hover {
     color: ${props => props.theme.colors.accent};
@@ -69,16 +70,16 @@ const SectionActionLink = styled(Link)`
 
 const SectionActionStatic = styled.span`
   font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
+  font-size: ${props => props.theme.font.sm};
   color: ${props => props.theme.colors.secondaryText};
 `
 
-/* ── Section wrapper (.section: padding 56px 0 0) ─── */
+/* ── Section wrapper ─── */
 const Section = styled.section`
-  padding: 56px 0 0;
+  padding: ${props => props.theme.space[14]} 0 0;
 
-  @media (max-width: 760px) {
-    padding: 48px 0 0;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    padding: ${props => props.theme.space[12]} 0 0;
   }
 `
 
@@ -90,7 +91,7 @@ const FeatGrid = styled.div`
   grid-template-columns: 1.55fr 1fr;
   gap: 18px;
 
-  @media (max-width: 760px) {
+  @media (max-width: ${props => props.theme.bp.md}) {
     grid-template-columns: 1fr;
     gap: 14px;
   }
@@ -101,13 +102,13 @@ const FeatCard = styled.article`
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 26px 28px;
+  padding: ${props => props.theme.space[6]} ${props => props.theme.space[7]};
   border: 1px solid ${props => props.theme.colors.divider};
-  border-radius: 16px;
+  border-radius: ${props => props.theme.radius.xxl};
   background: ${props => props.theme.colors.bodyBackground};
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: all ${props => props.theme.transition.card};
 
   &::before {
     content: "";
@@ -126,16 +127,17 @@ const FeatCard = styled.article`
   &:hover {
     border-color: ${props => props.theme.colors.text};
     transform: translateY(-3px);
-    box-shadow: 0 4px 20px -8px ${props => props.theme.colors.headerShadow};
+    box-shadow: ${props => props.theme.shadow.cardHover}
+      ${props => props.theme.colors.headerShadow};
   }
 
   &:hover::before {
     opacity: 1;
   }
 
-  @media (max-width: 760px) {
-    padding: 22px 22px;
-    border-radius: 14px;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    padding: ${props => props.theme.space[5]} ${props => props.theme.space[5]};
+    border-radius: ${props => props.theme.radius.xl};
   }
 `
 
@@ -149,7 +151,7 @@ const FeatMainCard = styled(FeatCard)`
     ),
     ${props => props.theme.colors.bodyBackground};
 
-  @media (max-width: 760px) {
+  @media (max-width: ${props => props.theme.bp.md}) {
     grid-row: auto;
   }
 `
@@ -160,7 +162,7 @@ const FeatMeta = styled.div`
   gap: 10px;
   margin-bottom: 14px;
   font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
 `
 
@@ -172,13 +174,13 @@ const FeatNum = styled.span`
   min-width: 26px;
   height: 20px;
   padding: 0 6px;
-  border-radius: 5px;
+  border-radius: ${props => props.theme.radius.sm};
   background: ${props =>
     props.$isMain ? props.theme.colors.accent : props.theme.colors.text};
   color: ${props => props.theme.colors.bodyBackground};
   font-weight: 600;
   letter-spacing: 0.04em;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
 `
 
 const FeatDate = styled.span`
@@ -187,29 +189,31 @@ const FeatDate = styled.span`
 
 const FeatTitle = styled.h3`
   font-family: "Inter Tight", "Noto Sans KR", sans-serif;
-  font-size: ${props => (props.$isMain ? "26px" : "17px")};
+  font-size: ${props =>
+    props.$isMain ? props.theme.font.h1Sm : props.theme.font.h4};
   font-weight: 700;
   line-height: ${props => (props.$isMain ? "1.28" : "1.4")};
   letter-spacing: -0.018em;
   color: ${props => props.theme.colors.text};
-  margin-bottom: 12px;
+  margin-bottom: ${props => props.theme.space[3]};
   word-break: keep-all;
-  transition: color 0.18s;
+  transition: color ${props => props.theme.transition.fast};
 
   ${FeatCard}:hover & {
     color: ${props => props.theme.colors.accent};
   }
 
-  @media (max-width: 760px) {
-    font-size: ${props => (props.$isMain ? "22px" : "16px")};
+  @media (max-width: ${props => props.theme.bp.md}) {
+    font-size: ${props =>
+      props.$isMain ? props.theme.font.h2 : props.theme.font.body};
   }
 `
 
 const FeatExcerpt = styled.p`
-  font-size: 14px;
+  font-size: ${props => props.theme.font.md};
   line-height: 1.7;
   color: ${props => props.theme.colors.secondaryText};
-  margin-bottom: 16px;
+  margin-bottom: ${props => props.theme.space[4]};
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -227,9 +231,9 @@ const FeatTags = styled.div`
 const Chip = styled.span`
   display: inline-block;
   padding: 3px 9px;
-  border-radius: 5px;
+  border-radius: ${props => props.theme.radius.sm};
   font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
   font-weight: 500;
   color: ${props => props.theme.colors.accentText};
   background: ${props => props.theme.colors.accentBg};
@@ -242,136 +246,22 @@ const Chip = styled.span`
    ──────────────────────────────────────────────────── */
 
 const ArchiveSection = styled.section`
-  padding: 56px 0 64px;
+  padding: ${props => props.theme.space[14]} 0 ${props => props.theme.space[16]};
 
-  @media (max-width: 760px) {
-    padding: 48px 0 48px;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    padding: ${props => props.theme.space[12]} 0 ${props => props.theme.space[12]};
   }
 `
 
 const ArchiveLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 220px;
-  gap: 56px;
+  gap: ${props => props.theme.space[14]};
   align-items: start;
 
-  @media (max-width: 880px) {
+  @media (max-width: ${props => props.theme.bp.lg}) {
     grid-template-columns: 1fr;
-    gap: 40px;
-  }
-`
-
-/* .year-block */
-const YearBlock = styled.section`
-  margin-bottom: 44px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`
-
-/* .year-head: grid auto auto 1fr */
-const YearHead = styled.header`
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
-`
-
-const YearNum = styled.span`
-  font-family: "Inter Tight", sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: ${props => props.theme.colors.text};
-`
-
-const YearCount = styled.span`
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
-  color: ${props => props.theme.colors.tertiaryText};
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-`
-
-const YearLine = styled.span`
-  height: 1px;
-  background: ${props => props.theme.colors.divider};
-`
-
-/* .row: grid 56px 1fr auto 20px, gap 18px */
-const Row = styled(Link)`
-  display: grid;
-  grid-template-columns: 56px 1fr auto 20px;
-  align-items: center;
-  gap: 18px;
-  padding: 14px 0;
-  border-bottom: 1px solid ${props => props.theme.colors.divider};
-  text-decoration: none;
-  transition: all 0.22s;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  @media (max-width: 720px) {
-    grid-template-columns: 50px 1fr 16px;
-    gap: 12px;
-  }
-`
-
-const RowDate = styled.span`
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11.5px;
-  color: ${props => props.theme.colors.tertiaryText};
-  letter-spacing: 0.04em;
-`
-
-const RowTitle = styled.span`
-  font-size: 14.5px;
-  font-weight: 500;
-  color: ${props => props.theme.colors.text};
-  line-height: 1.45;
-  letter-spacing: -0.005em;
-  word-break: keep-all;
-  transition: color 0.18s;
-
-  ${Row}:hover & {
-    color: ${props => props.theme.colors.accent};
-  }
-`
-
-const RowTags = styled.span`
-  display: flex;
-  gap: 5px;
-  flex-wrap: nowrap;
-
-  @media (max-width: 720px) {
-    display: none;
-  }
-`
-
-const RowTag = styled.span`
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  font-weight: 500;
-  color: ${props => props.theme.colors.tertiaryText};
-  text-transform: lowercase;
-  letter-spacing: 0.04em;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: ${props => props.theme.colors.background};
-`
-
-const RowArrow = styled.span`
-  font-size: 14px;
-  color: ${props => props.theme.colors.mutedText};
-  transition: all 0.18s;
-
-  ${Row}:hover & {
-    color: ${props => props.theme.colors.accent};
-    transform: translateX(4px);
+    gap: ${props => props.theme.space[10]};
   }
 `
 
@@ -388,7 +278,7 @@ const Aside = styled.aside`
 
 const AsideLabel = styled.p`
   font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -409,11 +299,11 @@ const FTag = styled(Link)`
   align-items: center;
   gap: 5px;
   padding: 4px 9px;
-  border-radius: 6px;
+  border-radius: ${props => props.theme.radius.sm};
   background: ${props => props.theme.colors.background};
   text-decoration: none;
-  font-size: 12px;
-  transition: all 0.18s;
+  font-size: ${props => props.theme.font.sm};
+  transition: all ${props => props.theme.transition.fast};
 
   &:hover {
     background: ${props => props.theme.colors.accentBg};
@@ -424,7 +314,7 @@ const FTag = styled(Link)`
 const FTagName = styled.span`
   color: ${props => props.theme.colors.secondaryText};
   font-weight: 500;
-  transition: color 0.18s;
+  transition: color ${props => props.theme.transition.fast};
 
   ${FTag}:hover & {
     color: ${props => props.theme.colors.accentText};
@@ -433,20 +323,9 @@ const FTagName = styled.span`
 
 const FTagCount = styled.span`
   font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
 `
-
-/* ── Helpers ─────────────────────────────────────────── */
-
-const toShortDate = dateStr => {
-  const d = new Date(dateStr)
-  const m = String(d.getMonth() + 1).padStart(2, "0")
-  const day = String(d.getDate()).padStart(2, "0")
-  return `${m}.${day}`
-}
-
-const toYear = dateStr => new Date(dateStr).getFullYear()
 
 /* ── Page ────────────────────────────────────────────── */
 
@@ -466,8 +345,6 @@ const BlogIndex = ({ data }) => {
   }
 
   const latestPosts = posts.slice(0, 3)
-  const postsByYear = _.groupBy(posts, post => toYear(post.frontmatter.date))
-  const years = Object.keys(postsByYear).sort((a, b) => b - a)
 
   return (
     <Layout maxWidth="1180px">
@@ -562,39 +439,7 @@ const BlogIndex = ({ data }) => {
         </SectionHead>
 
         <ArchiveLayout>
-          <div>
-            {years.map(year => {
-              const yearPosts = postsByYear[year]
-              return (
-                <YearBlock key={year}>
-                  <YearHead>
-                    <YearNum>{year}</YearNum>
-                    <YearCount>{yearPosts.length} posts</YearCount>
-                    <YearLine />
-                  </YearHead>
-                  <div>
-                    {yearPosts.map(post => {
-                      const { title: postTitle, date, tags: postTags } =
-                        post.frontmatter
-                      const { slug } = post.fields
-                      return (
-                        <Row key={slug} to={slug}>
-                          <RowDate>{toShortDate(date)}</RowDate>
-                          <RowTitle>{postTitle}</RowTitle>
-                          <RowTags>
-                            {(postTags || []).slice(0, 3).map(tag => (
-                              <RowTag key={tag}>{tag}</RowTag>
-                            ))}
-                          </RowTags>
-                          <RowArrow aria-hidden="true">→</RowArrow>
-                        </Row>
-                      )
-                    })}
-                  </div>
-                </YearBlock>
-              )
-            })}
-          </div>
+          <ArchiveList posts={posts} />
 
           <Aside>
             <AsideLabel>/ tags</AsideLabel>

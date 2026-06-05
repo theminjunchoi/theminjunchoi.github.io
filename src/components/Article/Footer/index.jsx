@@ -12,10 +12,10 @@ const PostFootEnd = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 24px 0;
+  gap: ${props => props.theme.space[4]};
+  padding: ${props => props.theme.space[6]} 0;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -24,7 +24,7 @@ const PostFootEnd = styled.div`
 const EndMark = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: ${props => props.theme.space[3]};
 
   &::before,
   &::after {
@@ -40,10 +40,10 @@ const EndMark = styled.div`
 const PostNav = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 8px;
+  gap: ${props => props.theme.space[4]};
+  margin-top: ${props => props.theme.space[2]};
 
-  @media (max-width: 640px) {
+  @media (max-width: ${props => props.theme.bp.sm}) {
     grid-template-columns: 1fr;
   }
 `
@@ -51,11 +51,10 @@ const PostNav = styled.div`
 const PostNavCard = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 22px 24px;
-  border: 1px solid ${props =>
-    props.$empty ? props.theme.colors.divider : props.theme.colors.divider};
-  border-radius: 14px;
-  transition: all 0.22s;
+  padding: ${props => props.theme.space[5]} ${props => props.theme.space[6]};
+  border: 1px solid ${props => props.theme.colors.divider};
+  border-radius: ${props => props.theme.radius.xl};
+  transition: all ${props => props.theme.transition.base};
   background: ${props => props.theme.colors.bodyBackground};
   min-height: 96px;
   position: relative;
@@ -70,21 +69,22 @@ const PostNavCard = styled.div`
   &:hover {
     border-color: ${props => props.theme.colors.text};
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px -4px ${props => props.theme.colors.headerShadow};
+    box-shadow: ${props => props.theme.shadow.navHover}
+      ${props => props.theme.colors.headerShadow};
   }
 `
 
 const PostNavLabel = styled.div`
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  margin-bottom: 8px;
+  margin-bottom: ${props => props.theme.space[2]};
 `
 
 const PostNavTitle = styled.div`
-  font-size: 14.5px;
+  font-size: ${props => props.theme.font.lg};
   font-weight: 600;
   color: ${props => props.theme.colors.secondaryText};
   line-height: 1.45;
@@ -95,7 +95,7 @@ const PostNavTitle = styled.div`
 /* ── Comment ─────────────────────────────────────────── */
 
 const CommentWrapper = styled.div`
-  @media (max-width: 768px) {
+  @media (max-width: ${props => props.theme.bp.md}) {
     padding: 0 15px;
   }
 `

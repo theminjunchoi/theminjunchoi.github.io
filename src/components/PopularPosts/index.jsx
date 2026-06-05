@@ -13,25 +13,26 @@ const PopGrid = styled.div`
   grid-template-columns: repeat(5, 1fr);
   gap: 0;
   border: 1px solid ${props => props.theme.colors.divider};
-  border-radius: 14px;
+  border-radius: ${props => props.theme.radius.xl};
   overflow: hidden;
   background: ${props => props.theme.colors.bodyBackground};
 
-  @media (max-width: 900px) {
+  @media (max-width: ${props => props.theme.bp.lg}) {
     grid-template-columns: 1fr 1fr;
   }
 
-  @media (max-width: 540px) {
+  @media (max-width: ${props => props.theme.bp.sm}) {
     grid-template-columns: 1fr;
   }
 `
 
 const PopCard = styled.div`
   position: relative;
-  padding: 22px 22px 24px;
+  padding: ${props => props.theme.space[5]} ${props => props.theme.space[5]}
+    ${props => props.theme.space[6]};
   border-right: 1px solid ${props => props.theme.colors.divider};
   cursor: pointer;
-  transition: background 0.22s;
+  transition: background ${props => props.theme.transition.base};
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -42,7 +43,7 @@ const PopCard = styled.div`
   }
 
   /* 2-col layout: right items lose border */
-  @media (max-width: 900px) {
+  @media (max-width: ${props => props.theme.bp.lg}) {
     border-bottom: 1px solid ${props => props.theme.colors.divider};
 
     &:nth-child(2n) {
@@ -54,11 +55,12 @@ const PopCard = styled.div`
     }
   }
 
-  @media (max-width: 540px) {
+  @media (max-width: ${props => props.theme.bp.sm}) {
     border-right: none;
     border-bottom: 1px solid ${props => props.theme.colors.divider};
     min-height: 150px;
-    padding: 18px 18px 20px;
+    padding: ${props => props.theme.space[4]} ${props => props.theme.space[4]}
+      ${props => props.theme.space[5]};
 
     &:last-child {
       border-bottom: none;
@@ -73,7 +75,7 @@ const PopCard = styled.div`
 /* .pop-rank: JetBrains Mono, 11px, accent color (POPULAR label) */
 const PopRank = styled.div`
   font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
+  font-size: ${props => props.theme.font.xs};
   font-weight: 600;
   color: ${props => props.theme.colors.accent};
   letter-spacing: 0.06em;
@@ -81,20 +83,20 @@ const PopRank = styled.div`
 
 /* .pop-rank-num: large, dark, displayed as block above POPULAR */
 const PopRankNum = styled.span`
-  font-size: 24px;
+  font-size: ${props => props.theme.font.h1Sm};
   font-weight: 700;
   color: ${props => props.theme.colors.text};
   display: block;
   font-family: "Inter Tight", sans-serif;
 
-  @media (max-width: 540px) {
-    font-size: 22px;
+  @media (max-width: ${props => props.theme.bp.sm}) {
+    font-size: ${props => props.theme.font.h2};
   }
 `
 
 /* .pop-title: pushed to bottom with margin-top: auto, 3-line clamp */
 const PopTitle = styled.h3`
-  font-size: 14.5px;
+  font-size: ${props => props.theme.font.lg};
   font-weight: 600;
   line-height: 1.45;
   color: ${props => props.theme.colors.secondaryText};
@@ -103,7 +105,7 @@ const PopTitle = styled.h3`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: color 0.18s;
+  transition: color ${props => props.theme.transition.fast};
   letter-spacing: -0.008em;
   margin-top: auto;
 
@@ -112,10 +114,10 @@ const PopTitle = styled.h3`
   }
 `
 
-/* .pop-date: JetBrains Mono, 10.5px, muted */
+/* .pop-date: JetBrains Mono, muted */
 const PopDate = styled.div`
   font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
+  font-size: ${props => props.theme.font.xs};
   color: ${props => props.theme.colors.tertiaryText};
   letter-spacing: 0.06em;
 `
@@ -123,7 +125,8 @@ const PopDate = styled.div`
 /* ── Skeleton ─────────────────────────────────────────── */
 
 const SkeletonCard = styled.div`
-  padding: 22px 22px 24px;
+  padding: ${props => props.theme.space[5]} ${props => props.theme.space[5]}
+    ${props => props.theme.space[6]};
   border-right: 1px solid ${props => props.theme.colors.divider};
   display: flex;
   flex-direction: column;
@@ -137,16 +140,16 @@ const SkeletonCard = styled.div`
 
 const SkeletonBar = styled.div`
   height: ${props => props.$h || "10px"};
-  border-radius: 4px;
+  border-radius: ${props => props.theme.radius.xs};
   background-color: ${props => props.theme.colors.divider};
   width: ${props => props.$w || "100%"};
 `
 
 const EmptyText = styled.p`
   margin: 0;
-  font-size: 13px;
+  font-size: ${props => props.theme.font.base};
   color: ${props => props.theme.colors.tertiaryText};
-  padding: 24px 0;
+  padding: ${props => props.theme.space[6]} 0;
 `
 
 /* ── Component ─────────────────────────────────────────── */

@@ -3,7 +3,7 @@ import styled from "styled-components"
 const StyledMarkdown = styled.div`
   /* ── Base ─────────────────────────────────────────── */
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 16px;
+  font-size: ${props => props.theme.font.body};
   line-height: 1.85;
   color: ${props => props.theme.colors.secondaryText};
   word-break: keep-all;
@@ -27,10 +27,10 @@ const StyledMarkdown = styled.div`
   }
 
   & h2 {
-    font-size: 24px;
+    font-size: ${props => props.theme.font.h1Sm};
     letter-spacing: -0.022em;
-    margin-top: 56px;
-    margin-bottom: 16px;
+    margin-top: ${props => props.theme.space[14]};
+    margin-bottom: ${props => props.theme.space[4]};
     position: relative;
   }
 
@@ -54,30 +54,30 @@ const StyledMarkdown = styled.div`
   }
 
   & h3 {
-    font-size: 19px;
+    font-size: ${props => props.theme.font.h3};
     letter-spacing: -0.018em;
-    margin-top: 40px;
-    margin-bottom: 12px;
+    margin-top: ${props => props.theme.space[10]};
+    margin-bottom: ${props => props.theme.space[3]};
     line-height: 1.4;
   }
 
   & h4 {
-    font-size: 16.5px;
+    font-size: ${props => props.theme.font.h4};
     color: ${props => props.theme.colors.secondaryText};
-    margin-top: 28px;
-    margin-bottom: 8px;
+    margin-top: ${props => props.theme.space[7]};
+    margin-bottom: ${props => props.theme.space[2]};
     line-height: 1.45;
   }
 
   & h5 {
-    font-size: 15px;
-    margin-top: 20px;
-    margin-bottom: 8px;
+    font-size: ${props => props.theme.font.h5};
+    margin-top: ${props => props.theme.space[5]};
+    margin-bottom: ${props => props.theme.space[2]};
   }
 
   & h6 {
-    font-size: 14px;
-    margin-top: 16px;
+    font-size: ${props => props.theme.font.h6};
+    margin-top: ${props => props.theme.space[4]};
     margin-bottom: 6px;
   }
 
@@ -113,7 +113,7 @@ const StyledMarkdown = styled.div`
     color: ${props => props.theme.colors.accent};
     border-bottom: 1px solid ${props => props.theme.colors.accentBg};
     text-decoration: none;
-    transition: all 0.18s;
+    transition: all ${props => props.theme.transition.fast};
   }
 
   & a:hover {
@@ -128,7 +128,7 @@ const StyledMarkdown = styled.div`
     font-size: 0.88em;
     padding: 1px 6px;
     background: ${props => props.theme.colors.background};
-    border-radius: 5px;
+    border-radius: ${props => props.theme.radius.sm};
     color: ${props => props.theme.colors.text};
     border: 1px solid ${props => props.theme.colors.divider};
     font-weight: 500;
@@ -139,12 +139,12 @@ const StyledMarkdown = styled.div`
   /* ── Code blocks ──────────────────────────────────── */
   & pre {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13.5px;
+    font-size: ${props => props.theme.font.md};
     line-height: 1.65;
-    padding: 22px 24px;
-    border-radius: 12px;
+    padding: ${props => props.theme.space[5]} ${props => props.theme.space[6]};
+    border-radius: ${props => props.theme.radius.lg};
     overflow-x: auto;
-    margin: 24px 0;
+    margin: ${props => props.theme.space[6]} 0;
 
     ::-webkit-scrollbar {
       height: 6px;
@@ -168,16 +168,17 @@ const StyledMarkdown = styled.div`
 
   & code[class*="language-"],
   & pre[class*="language-"] {
-    font-size: 13.5px;
+    font-size: ${props => props.theme.font.md};
   }
 
   /* ── Blockquote ───────────────────────────────────── */
   & blockquote {
-    margin: 28px 0;
-    padding: 18px 24px;
+    margin: ${props => props.theme.space[7]} 0;
+    padding: ${props => props.theme.space[5]} ${props => props.theme.space[6]};
     border-left: 3px solid ${props => props.theme.colors.accent};
     background: ${props => props.theme.colors.bodyBackground};
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 ${props => props.theme.radius.md}
+      ${props => props.theme.radius.md} 0;
     color: ${props => props.theme.colors.secondaryText};
     font-style: normal;
 
@@ -202,13 +203,13 @@ const StyledMarkdown = styled.div`
     padding-left: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: ${props => props.theme.space[2]};
     list-style: none;
   }
 
   & ul li,
   & ol li {
-    padding-left: 24px;
+    padding-left: ${props => props.theme.space[6]};
     position: relative;
     line-height: 1.75;
   }
@@ -247,7 +248,7 @@ const StyledMarkdown = styled.div`
   & ol ol,
   & ul ol,
   & ol ul {
-    margin: 8px 0 0;
+    margin: ${props => props.theme.space[2]} 0 0;
   }
 
   & li p {
@@ -259,16 +260,17 @@ const StyledMarkdown = styled.div`
     display: block;
     max-width: 100%;
     height: auto;
-    border-radius: 10px;
-    margin: 32px auto;
+    border-radius: ${props => props.theme.radius.lg};
+    margin: ${props => props.theme.space[8]} auto;
     border: 1px solid ${props => props.theme.colors.divider};
-    box-shadow: 0 1px 0 ${props => props.theme.colors.headerShadow};
+    box-shadow: ${props => props.theme.shadow.hairline}
+      ${props => props.theme.colors.headerShadow};
   }
 
   & figcaption {
-    margin-top: 8px;
+    margin-top: ${props => props.theme.space[2]};
     text-align: center;
-    font-size: 12px;
+    font-size: ${props => props.theme.font.sm};
     font-style: italic;
     color: ${props => props.theme.colors.tertiaryText};
   }
@@ -277,17 +279,17 @@ const StyledMarkdown = styled.div`
   & table {
     width: 100%;
     border-collapse: collapse;
-    margin: 28px 0;
-    font-size: 14.5px;
+    margin: ${props => props.theme.space[7]} 0;
+    font-size: ${props => props.theme.font.lg};
     border: 1px solid ${props => props.theme.colors.divider};
-    border-radius: 10px;
+    border-radius: ${props => props.theme.radius.lg};
     overflow: hidden;
     display: table;
   }
 
   & th,
   & td {
-    padding: 12px 16px;
+    padding: ${props => props.theme.space[3]} ${props => props.theme.space[4]};
     text-align: left;
     border-bottom: 1px solid ${props => props.theme.colors.divider};
   }
@@ -311,12 +313,12 @@ const StyledMarkdown = styled.div`
   & hr {
     border: none;
     border-top: 1px solid ${props => props.theme.colors.divider};
-    margin: 44px 0;
+    margin: ${props => props.theme.space[11]} 0;
   }
 
   /* ── KaTeX ────────────────────────────────────────── */
   & .katex-display {
-    margin: 24px 0;
+    margin: ${props => props.theme.space[6]} 0;
     overflow-x: auto;
   }
 
@@ -337,12 +339,12 @@ const StyledMarkdown = styled.div`
   }
 
   /* ── Mobile ───────────────────────────────────────── */
-  @media (max-width: 760px) {
-    font-size: 15px;
-    padding: 32px 0 44px;
+  @media (max-width: ${props => props.theme.bp.md}) {
+    font-size: ${props => props.theme.font.lg};
+    padding: ${props => props.theme.space[8]} 0 ${props => props.theme.space[11]};
 
     & h2 {
-      font-size: 21px;
+      font-size: ${props => props.theme.font.h2};
     }
 
     & h2::before {
@@ -350,7 +352,7 @@ const StyledMarkdown = styled.div`
     }
 
     & h3 {
-      font-size: 17px;
+      font-size: ${props => props.theme.font.h4};
     }
   }
 `

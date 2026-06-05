@@ -15,7 +15,7 @@ const GlobalStyles = createGlobalStyle`
     color: ${props => props.theme.colors.text};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 15px;
+    font-size: ${props => props.theme.font.lg};
     letter-spacing: -0.005em;
   }
 
@@ -26,6 +26,13 @@ const GlobalStyles = createGlobalStyle`
 
   * {
     box-sizing: border-box;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid ${props => props.theme.colors.accent};
+    outline-offset: 2px;
+    border-radius: ${props => props.theme.radius.xs};
   }
 
   ::-webkit-scrollbar {

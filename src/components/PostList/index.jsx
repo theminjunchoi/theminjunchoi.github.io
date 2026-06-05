@@ -11,34 +11,35 @@ const PostListWrapper = styled.div`
   flex-direction: column;
   gap: 14px;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${props => props.theme.bp.md}) {
     padding: 0 4px;
   }
 `
 
 const PostCard = styled.article`
-  padding: 24px 28px;
+  padding: ${props => props.theme.space[6]} ${props => props.theme.space[7]};
   border: 1px solid ${props => props.theme.colors.divider};
-  border-radius: 14px;
-  transition: all 0.22s ease;
+  border-radius: ${props => props.theme.radius.xl};
+  transition: all ${props => props.theme.transition.base} ease;
   background-color: ${props => props.theme.colors.bodyBackground};
   cursor: pointer;
 
   &:hover {
     border-color: ${props => props.theme.colors.activatedBorder};
-    box-shadow: 0 4px 20px ${props => props.theme.colors.headerShadow};
+    box-shadow: ${props => props.theme.shadow.cardHover}
+      ${props => props.theme.colors.headerShadow};
     transform: translateY(-2px);
   }
 `
 
 const PostTitle = styled.h2`
-  margin: 8px 0 10px;
-  font-size: 19px;
+  margin: ${props => props.theme.space[2]} 0 10px;
+  font-size: ${props => props.theme.font.h3};
   font-weight: 700;
   line-height: 1.45;
   color: ${props => props.theme.colors.text};
   word-break: break-word;
-  transition: color 0.2s;
+  transition: color ${props => props.theme.transition.fast};
 
   ${PostCard}:hover & {
     color: ${props => props.theme.colors.accentText};
@@ -48,7 +49,7 @@ const PostTitle = styled.h2`
 const Excerpt = styled.p`
   margin-bottom: 14px;
   line-height: 1.65;
-  font-size: 14.5px;
+  font-size: ${props => props.theme.font.lg};
   color: ${props => props.theme.colors.secondaryText};
   word-break: break-word;
   display: -webkit-box;
@@ -58,8 +59,8 @@ const Excerpt = styled.p`
 `
 
 const PostMeta = styled.div`
-  margin-top: 4px;
-  font-size: 13px;
+  margin-top: ${props => props.theme.space[1]};
+  font-size: ${props => props.theme.font.base};
   color: ${props => props.theme.colors.tertiaryText};
 `
 
@@ -76,9 +77,9 @@ const PaginationWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 4px;
-  margin-top: 36px;
-  margin-bottom: 8px;
+  gap: ${props => props.theme.space[1]};
+  margin-top: ${props => props.theme.space[9]};
+  margin-bottom: ${props => props.theme.space[2]};
 `
 
 const PageButton = styled.button`
@@ -88,7 +89,7 @@ const PageButton = styled.button`
   min-width: 36px;
   height: 36px;
   padding: 0 8px;
-  border-radius: 8px;
+  border-radius: ${props => props.theme.radius.md};
   border: 1px solid
     ${props =>
       props.active ? props.theme.colors.accent : props.theme.colors.divider};
@@ -100,10 +101,10 @@ const PageButton = styled.button`
       : props.disabled
       ? props.theme.colors.mutedText
       : props.theme.colors.secondaryText};
-  font-size: 13px;
+  font-size: ${props => props.theme.font.base};
   font-weight: ${props => (props.active ? "600" : "400")};
   cursor: ${props => (props.disabled ? "default" : "pointer")};
-  transition: all 0.18s;
+  transition: all ${props => props.theme.transition.fast};
   pointer-events: ${props => (props.disabled ? "none" : "auto")};
 
   &:hover {

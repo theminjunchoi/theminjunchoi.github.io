@@ -42,18 +42,18 @@ const TocWrapper = styled.div`
       `}
   }
 
-  @media (max-width: 1300px) {
+  @media (max-width: ${props => props.theme.bp.toc}) {
     display: None;
   }
 `
 
 const ParagraphTitle = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: ${props => props.theme.space[2]};
   padding-left: ${props => (props.subtitle ? 19.2 : 0)}px;
-  font-size: 14.4px;
+  font-size: ${props => props.theme.font.md};
   color: ${props => props.theme.colors.mutedText};
   line-height: 1.3;
-  transition: all 0.2s;
+  transition: all ${props => props.theme.transition.fast};
 
   ${props =>
     props.active &&
