@@ -262,9 +262,6 @@ const StyledMarkdown = styled.div`
     height: auto;
     border-radius: ${props => props.theme.radius.lg};
     margin: ${props => props.theme.space[8]} auto;
-    border: 1px solid ${props => props.theme.colors.divider};
-    box-shadow: ${props => props.theme.shadow.hairline}
-      ${props => props.theme.colors.headerShadow};
   }
 
   & figcaption {
