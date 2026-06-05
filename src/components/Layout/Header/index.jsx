@@ -3,7 +3,7 @@ import styled, { useTheme } from "styled-components"
 import { Link } from "gatsby"
 import { useLocation } from "@reach/router"
 import { title } from "../../../../gatsby-meta-config"
-import { FaSun, FaMoon, FaSearch } from "react-icons/fa"
+import { FaSun, FaMoon } from "react-icons/fa"
 
 const HeaderWrapper = styled.header`
   display: block;
@@ -211,11 +211,6 @@ const Header = ({ toggleTheme }) => {
               </IconRail>
             </ToggleWrapper>
           </IconButton>
-          <Link to="/search" style={{ textDecoration: "none" }}>
-            <IconButton as="div">
-              <FaSearch />
-            </IconButton>
-          </Link>
         </Actions>
       </Inner>
     </HeaderWrapper>
