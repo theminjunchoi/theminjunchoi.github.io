@@ -70,7 +70,19 @@ const Cursor = () => {
   const ringRef = useRef(null)
   const dotRef = useRef(null)
   const mouse = useRef({ x: -100, y: -100 })
-  const cur = useRef({ x: -100, y: -100, w: RING, h: RING, r: RING / 2 })
+  // r* = the four corner radii (TL, TR, BR, BL), eased independently so the
+  // ring can match elements with asymmetric corners (e.g. end cards in a
+  // joined grid that round only their outer side).
+  const cur = useRef({
+    x: -100,
+    y: -100,
+    w: RING,
+    h: RING,
+    rtl: RING / 2,
+    rtr: RING / 2,
+    rbr: RING / 2,
+    rbl: RING / 2,
+  })
   const target = useRef(null) // element currently snapped onto
   const rafRef = useRef(null)
 
@@ -149,9 +161,9 @@ const Cursor = () => {
     const loop = () => {
       if (ringEl) {
         const snap = target.current
-        let dx, dy, dw, dh, dr
+        let dx, dy, dw, dh, drtl, drtr, drbr, drbl
         if (snap && document.contains(snap)) {
-          // Destination = the element's box (centre, size, corner radius).
+          // Destination = the element's box (centre, size, per-corner radius).
           const r = snap.getBoundingClientRect()
           // Wide, short elements (list rows) get extra horizontal breathing room.
           const padX = r.width >= 480 && r.height <= 100 ? ROW_PAD_X : PAD
@@ -159,25 +171,36 @@ const Cursor = () => {
           dy = r.top + r.height / 2
           dw = r.width + padX
           dh = r.height + PAD
-          dr = (parseFloat(getComputedStyle(snap).borderTopLeftRadius) || 4) + PAD / 2
+          // Read each corner separately — end cards round only their outer side,
+          // so a single radius would bulge the square corners (or square the
+          // rounded ones). PAD/2 keeps the ring concentric with the box.
+          const cs = getComputedStyle(snap)
+          const pr = PAD / 2
+          drtl = (parseFloat(cs.borderTopLeftRadius) || 0) + pr
+          drtr = (parseFloat(cs.borderTopRightRadius) || 0) + pr
+          drbr = (parseFloat(cs.borderBottomRightRadius) || 0) + pr
+          drbl = (parseFloat(cs.borderBottomLeftRadius) || 0) + pr
         } else {
           // Destination = a small circle at the pointer.
           dx = mouse.current.x
           dy = mouse.current.y
           dw = RING
           dh = RING
-          dr = RING / 2
+          drtl = drtr = drbr = drbl = RING / 2
         }
-        // Ease position, size and radius together for one fluid morph.
+        // Ease position, size and each corner radius together for one fluid morph.
         const c = cur.current
         c.x += (dx - c.x) * EASE
         c.y += (dy - c.y) * EASE
         c.w += (dw - c.w) * EASE
         c.h += (dh - c.h) * EASE
-        c.r += (dr - c.r) * EASE
+        c.rtl += (drtl - c.rtl) * EASE
+        c.rtr += (drtr - c.rtr) * EASE
+        c.rbr += (drbr - c.rbr) * EASE
+        c.rbl += (drbl - c.rbl) * EASE
         ringEl.style.width = `${c.w}px`
         ringEl.style.height = `${c.h}px`
-        ringEl.style.borderRadius = `${c.r}px`
+        ringEl.style.borderRadius = `${c.rtl}px ${c.rtr}px ${c.rbr}px ${c.rbl}px`
         ringEl.style.transform = `translate3d(${c.x}px, ${c.y}px, 0) translate(-50%, -50%)`
       }
       if (overIframe()) hide()
