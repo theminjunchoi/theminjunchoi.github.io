@@ -2,6 +2,7 @@ import React from "react"
 import _ from "lodash"
 import styled from "styled-components"
 import { Link } from "gatsby"
+import { linkHover } from "assets/theme/mixins"
 
 const Title = styled.p`
   margin: 0 0 14px;
@@ -15,14 +16,10 @@ const TagItem = styled.li`
   font-size: 15px;
   color: ${props => props.theme.colors.secondaryText};
   cursor: pointer;
-  transition: color 0.2s;
+  ${linkHover}
 
   &:last-child {
     margin-bottom: 0;
-  }
-
-  &:hover {
-    color: ${props => props.theme.colors.accentText};
   }
 
   & > a {

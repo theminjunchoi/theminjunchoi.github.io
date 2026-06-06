@@ -5,6 +5,7 @@ import styled, { useTheme, css } from "styled-components"
 import MDSpinner from "react-md-spinner"
 import Divider from "components/Divider"
 import Giscus from "@giscus/react"
+import { cardHover } from "assets/theme/mixins"
 
 /* ── End Mark ────────────────────────────────────────── */
 
@@ -54,7 +55,6 @@ const PostNavCard = styled.div`
   padding: ${props => props.theme.space[5]} ${props => props.theme.space[6]};
   border: 1px solid ${props => props.theme.colors.divider};
   border-radius: ${props => props.theme.radius.xl};
-  transition: all ${props => props.theme.transition.base};
   background: ${props => props.theme.colors.bodyBackground};
   min-height: 96px;
   position: relative;
@@ -65,13 +65,7 @@ const PostNavCard = styled.div`
   pointer-events: ${props => (props.$empty ? "none" : "auto")};
   opacity: ${props => (props.$empty ? 0.35 : 1)};
   border-style: ${props => (props.$empty ? "dashed" : "solid")};
-
-  &:hover {
-    border-color: ${props => props.theme.colors.text};
-    transform: translateY(-2px);
-    box-shadow: ${props => props.theme.shadow.navHover}
-      ${props => props.theme.colors.headerShadow};
-  }
+  ${cardHover}
 `
 
 const PostNavLabel = styled.div`

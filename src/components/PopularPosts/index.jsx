@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { navigate } from "gatsby"
 import { getTopPosts } from "../../utils/supabase"
+import { cardTitleHover } from "assets/theme/mixins"
 
-/* ── Outer border container ─────────────────────────────
-   .popular: single outer border, border-radius, overflow hidden
-   Cards separated by border-right (not individual card borders)
+/* ── Joined card grid ───────────────────────────────────
+   A single outer border with the cards attached and divided by
+   border-right (not separate, floating cards). On hover a card
+   "pops out": it rounds, lifts, and gains a full border ring +
+   shadow — drawn with box-shadow so neighbours don't shift. The
+   grid is NOT overflow-clipped, or the lift/ring would be cut off.
    ──────────────────────────────────────────────────── */
 
 const PopGrid = styled.div`
@@ -14,7 +18,6 @@ const PopGrid = styled.div`
   gap: 0;
   border: 1px solid ${props => props.theme.colors.divider};
   border-radius: ${props => props.theme.radius.xl};
-  overflow: hidden;
   background: ${props => props.theme.colors.bodyBackground};
 
   @media (max-width: ${props => props.theme.bp.lg}) {
@@ -32,17 +35,26 @@ const PopCard = styled.div`
     ${props => props.theme.space[6]};
   border-right: 1px solid ${props => props.theme.colors.divider};
   cursor: pointer;
-  transition: background ${props => props.theme.transition.base};
+  transition: all ${props => props.theme.transition.card};
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 180px;
+  min-height: 150px;
+
+  /* End cards round their OUTER corners to match the container, so they pop
+     out with one rounded side on hover (middle cards stay rectangular). */
+  &:first-child {
+    border-top-left-radius: ${props => props.theme.radius.xl};
+    border-bottom-left-radius: ${props => props.theme.radius.xl};
+  }
 
   &:last-child {
     border-right: none;
+    border-top-right-radius: ${props => props.theme.radius.xl};
+    border-bottom-right-radius: ${props => props.theme.radius.xl};
   }
 
-  /* 2-col layout: right items lose border */
+  /* 2-col layout: dividers + corner rounding (1 = TL, 2 = TR, last = BL) */
   @media (max-width: ${props => props.theme.bp.lg}) {
     border-bottom: 1px solid ${props => props.theme.colors.divider};
 
@@ -53,45 +65,75 @@ const PopCard = styled.div`
     &:nth-last-child(-n + 2) {
       border-bottom: none;
     }
+
+    &:first-child {
+      border-radius: 0;
+      border-top-left-radius: ${props => props.theme.radius.xl};
+    }
+
+    &:nth-child(2) {
+      border-top-right-radius: ${props => props.theme.radius.xl};
+    }
+
+    &:last-child {
+      border-radius: 0;
+      border-bottom-left-radius: ${props => props.theme.radius.xl};
+    }
   }
 
   @media (max-width: ${props => props.theme.bp.sm}) {
     border-right: none;
     border-bottom: 1px solid ${props => props.theme.colors.divider};
-    min-height: 150px;
+    min-height: 130px;
     padding: ${props => props.theme.space[4]} ${props => props.theme.space[4]}
       ${props => props.theme.space[5]};
 
+    /* 1-col stack: only first (top) and last (bottom) cards round */
+    &:nth-child(n) {
+      border-radius: 0;
+    }
+
+    &:first-child {
+      border-top-left-radius: ${props => props.theme.radius.xl};
+      border-top-right-radius: ${props => props.theme.radius.xl};
+    }
+
     &:last-child {
       border-bottom: none;
+      border-bottom-left-radius: ${props => props.theme.radius.xl};
+      border-bottom-right-radius: ${props => props.theme.radius.xl};
     }
   }
 
+  /* Pop out on hover keeping the grid's rectangular border: a full border
+     ring (box-shadow, so neighbours don't shift) + lift + shadow. */
   &:hover {
-    background: ${props => props.theme.colors.background};
+    z-index: 1;
+    transform: translateY(-2px);
+    background: ${props => props.theme.colors.bodyBackground};
+    box-shadow: 0 0 0 1px ${props => props.theme.colors.text},
+      ${props => props.theme.shadow.cardHover}
+      ${props => props.theme.colors.headerShadow};
   }
 `
 
-/* .pop-rank: JetBrains Mono, 11px, accent color (POPULAR label) */
-const PopRank = styled.div`
+/* .pop-meta: top eyebrow row — rank (#1, accent) + view count (muted) */
+const PopMeta = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-family: "JetBrains Mono", monospace;
   font-size: ${props => props.theme.font.xs};
-  font-weight: 600;
-  color: ${props => props.theme.colors.accent};
   letter-spacing: 0.06em;
 `
 
-/* .pop-rank-num: large, dark, displayed as block above POPULAR */
-const PopRankNum = styled.span`
-  font-size: ${props => props.theme.font.h1Sm};
-  font-weight: 700;
-  color: ${props => props.theme.colors.text};
-  display: block;
-  font-family: "Inter Tight", sans-serif;
+const PopRank = styled.span`
+  font-weight: 600;
+  color: ${props => props.theme.colors.accent};
+`
 
-  @media (max-width: ${props => props.theme.bp.sm}) {
-    font-size: ${props => props.theme.font.h2};
-  }
+const PopViews = styled.span`
+  color: ${props => props.theme.colors.tertiaryText};
 `
 
 /* .pop-title: pushed to bottom with margin-top: auto, 3-line clamp */
@@ -105,16 +147,12 @@ const PopTitle = styled.h3`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: color ${props => props.theme.transition.fast};
   letter-spacing: -0.008em;
   margin-top: auto;
-
-  ${PopCard}:hover & {
-    color: ${props => props.theme.colors.accent};
-  }
+  ${cardTitleHover(PopCard)}
 `
 
-/* .pop-date: JetBrains Mono, muted */
+/* .pop-date: JetBrains Mono, muted — sits at the bottom of the card */
 const PopDate = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: ${props => props.theme.font.xs};
@@ -131,7 +169,7 @@ const SkeletonCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 180px;
+  min-height: 150px;
 
   &:last-child {
     border-right: none;
@@ -145,6 +183,14 @@ const SkeletonBar = styled.div`
   width: ${props => props.$w || "100%"};
 `
 
+/* Skeleton title block — pinned to the bottom like the real PopTitle */
+const SkeletonTitle = styled.div`
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
 const EmptyText = styled.p`
   margin: 0;
   font-size: ${props => props.theme.font.base};
@@ -153,6 +199,12 @@ const EmptyText = styled.p`
 `
 
 /* ── Component ─────────────────────────────────────────── */
+
+// Compact view count: 1234 → "1.2k", 980 → "980".
+const formatViews = views => {
+  const n = views || 0
+  return n >= 1000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k` : `${n}`
+}
 
 const PopularPosts = ({ allPosts }) => {
   const [popularPosts, setPopularPosts] = useState([])
@@ -186,10 +238,11 @@ const PopularPosts = ({ allPosts }) => {
       <PopGrid>
         {[0, 1, 2, 3, 4].map(i => (
           <SkeletonCard key={i}>
-            <SkeletonBar $h="24px" $w="40px" />
-            <SkeletonBar $h="10px" $w="90%" />
-            <SkeletonBar $h="10px" $w="70%" />
-            <SkeletonBar $h="10px" $w="80%" />
+            <SkeletonBar $h="11px" $w="55%" />
+            <SkeletonTitle>
+              <SkeletonBar $h="13px" $w="90%" />
+              <SkeletonBar $h="13px" $w="65%" />
+            </SkeletonTitle>
           </SkeletonCard>
         ))}
       </PopGrid>
@@ -204,10 +257,10 @@ const PopularPosts = ({ allPosts }) => {
     <PopGrid>
       {popularPosts.map((post, i) => (
         <PopCard key={post.slug} onClick={() => navigate(post.slug)}>
-          <PopRank>
-            <PopRankNum>{String(i + 1).padStart(2, "0")}</PopRankNum>
-            POPULAR
-          </PopRank>
+          <PopMeta>
+            <PopRank>#{i + 1}</PopRank>
+            <PopViews>{formatViews(post.view_count)} views</PopViews>
+          </PopMeta>
           <PopTitle>{post.title}</PopTitle>
           {post.date && <PopDate>{post.date}</PopDate>}
         </PopCard>

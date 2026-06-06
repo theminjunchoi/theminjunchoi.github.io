@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { navigate } from "gatsby"
 
 import TagList from "components/TagList"
+import { cardHover, cardTitleHover } from "assets/theme/mixins"
 
 const POSTS_PER_PAGE = 10
 
@@ -20,16 +21,9 @@ const PostCard = styled.article`
   padding: ${props => props.theme.space[6]} ${props => props.theme.space[7]};
   border: 1px solid ${props => props.theme.colors.divider};
   border-radius: ${props => props.theme.radius.xl};
-  transition: all ${props => props.theme.transition.base} ease;
   background-color: ${props => props.theme.colors.bodyBackground};
   cursor: pointer;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.activatedBorder};
-    box-shadow: ${props => props.theme.shadow.cardHover}
-      ${props => props.theme.colors.headerShadow};
-    transform: translateY(-2px);
-  }
+  ${cardHover}
 `
 
 const PostTitle = styled.h2`
@@ -39,11 +33,7 @@ const PostTitle = styled.h2`
   line-height: 1.45;
   color: ${props => props.theme.colors.text};
   word-break: break-word;
-  transition: color ${props => props.theme.transition.fast};
-
-  ${PostCard}:hover & {
-    color: ${props => props.theme.colors.accentText};
-  }
+  ${cardTitleHover(PostCard)}
 `
 
 const Excerpt = styled.p`

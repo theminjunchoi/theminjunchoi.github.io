@@ -6,6 +6,12 @@ import { graphql, Link, navigate } from "gatsby"
 import Layout from "components/Layout"
 import PageHeader from "components/PageHeader"
 import { title, description, siteUrl } from "../../gatsby-meta-config"
+import {
+  cardHover,
+  cardTitleHover,
+  linkHover,
+  chipHoverSubtle,
+} from "assets/theme/mixins"
 
 /* ── Series List ─────────────────────────────────────── */
 
@@ -33,14 +39,7 @@ const SeriesCardWrapper = styled.div`
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: all ${props => props.theme.transition.base};
-
-  &:hover {
-    border-color: ${props => props.theme.colors.text};
-    transform: translateY(-2px);
-    box-shadow: ${props => props.theme.shadow.cardHover}
-      ${props => props.theme.colors.headerShadow};
-  }
+  ${cardHover}
 
   @media (max-width: ${props => props.theme.bp.md}) {
     grid-template-columns: 1fr;
@@ -107,11 +106,7 @@ const SeriesTitle = styled.h2`
   line-height: 1.25;
   word-break: keep-all;
   margin-bottom: ${props => props.theme.space[3]};
-  transition: color ${props => props.theme.transition.fast};
-
-  ${SeriesCardWrapper}:hover & {
-    color: ${props => props.theme.colors.accent};
-  }
+  ${cardTitleHover(SeriesCardWrapper)}
 `
 
 const TagRow = styled.div`
@@ -132,11 +127,7 @@ const Chip = styled(Link)`
   background: ${props => props.theme.colors.accentBg};
   letter-spacing: 0.02em;
   text-decoration: none;
-  transition: opacity ${props => props.theme.transition.fast};
-
-  &:hover {
-    opacity: 0.75;
-  }
+  ${chipHoverSubtle}
 `
 
 const SeriesCta = styled.span`
@@ -184,11 +175,7 @@ const PreviewItem = styled(Link)`
   text-decoration: none;
   line-height: 1.45;
   word-break: keep-all;
-  transition: color ${props => props.theme.transition.fast};
-
-  &:hover {
-    color: ${props => props.theme.colors.accent};
-  }
+  ${linkHover}
 `
 
 const PreviewNum = styled.span`

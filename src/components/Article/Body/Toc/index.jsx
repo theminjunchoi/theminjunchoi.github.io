@@ -63,7 +63,7 @@ const ParagraphTitle = styled.div`
     `}
 
   &:hover {
-    color: ${props => props.theme.colors.secondAccentText};
+    color: ${props => props.theme.colors.accent};
     cursor: pointer;
   }
 `

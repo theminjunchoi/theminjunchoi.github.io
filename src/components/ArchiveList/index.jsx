@@ -2,6 +2,7 @@ import React from "react"
 import _ from "lodash"
 import styled from "styled-components"
 import { Link } from "gatsby"
+import { cardTitleHover } from "assets/theme/mixins"
 
 /* Year-grouped archive rows. Shared between the home page and /posts. */
 
@@ -76,11 +77,7 @@ const RowTitle = styled.span`
   line-height: 1.45;
   letter-spacing: -0.005em;
   word-break: keep-all;
-  transition: color ${props => props.theme.transition.fast};
-
-  ${Row}:hover & {
-    color: ${props => props.theme.colors.accent};
-  }
+  ${cardTitleHover(Row)}
 `
 
 const RowTags = styled.span`

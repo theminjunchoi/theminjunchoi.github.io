@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { Link } from "gatsby"
+import { chipHoverSubtle } from "assets/theme/mixins"
 
 const TagListWrapper = styled.div`
   display: flex;
@@ -16,17 +17,9 @@ const TagBadge = styled.span`
   font-size: ${props => props.theme.font.sm};
   font-weight: 500;
   letter-spacing: 0.1px;
-  transition: all ${props => props.theme.transition.fast};
-  background-color: ${props =>
-    props.theme.name === "light" ? "#DBEAFE" : "#1e3a5f"};
-  color: ${props =>
-    props.theme.name === "light" ? "#2563EB" : "#93C5FD"};
-
-  &:hover {
-    background-color: ${props =>
-      props.theme.name === "light" ? "#BFDBFE" : "#1e4a7a"};
-    filter: none;
-  }
+  background-color: ${props => props.theme.colors.accentBg};
+  color: ${props => props.theme.colors.accent};
+  ${chipHoverSubtle}
 `
 
 const SelectedTagBadge = styled(TagBadge)`

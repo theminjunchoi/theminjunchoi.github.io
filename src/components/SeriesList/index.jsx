@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import _ from "lodash"
 import { Link } from "gatsby"
+import { cardHover, cardTitleHover } from "assets/theme/mixins"
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,13 +25,7 @@ const Card = styled.div`
   border-radius: 14px;
   background-color: ${props => props.theme.colors.bodyBackground};
   cursor: pointer;
-  transition: all 0.22s ease;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.activatedBorder};
-    box-shadow: 0 4px 20px ${props => props.theme.colors.headerShadow};
-    transform: translateY(-2px);
-  }
+  ${cardHover}
 `
 
 const Left = styled.div`
@@ -45,11 +40,7 @@ const SeriesName = styled.h2`
   line-height: 1.4;
   color: ${props => props.theme.colors.text};
   word-break: break-word;
-  transition: color 0.2s;
-
-  ${Card}:hover & {
-    color: ${props => props.theme.colors.secondaryText};
-  }
+  ${cardTitleHover(Card)}
 `
 
 const Meta = styled.div`

@@ -10,6 +10,7 @@ import PopularPosts from "components/PopularPosts"
 import ArchiveList from "components/ArchiveList"
 
 import { title, description, siteUrl } from "../../gatsby-meta-config"
+import { cardHover, cardTitleHover, chipHover } from "assets/theme/mixins"
 
 /* ── Section head ───────────────────────────────────────
    .section-head: flex, space-between, baseline
@@ -108,32 +109,7 @@ const FeatCard = styled.article`
   background: ${props => props.theme.colors.bodyBackground};
   cursor: pointer;
   overflow: hidden;
-  transition: all ${props => props.theme.transition.card};
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      ${props => props.theme.colors.accent}0d,
-      transparent 50%
-    );
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-  }
-
-  &:hover {
-    border-color: ${props => props.theme.colors.text};
-    transform: translateY(-3px);
-    box-shadow: ${props => props.theme.shadow.cardHover}
-      ${props => props.theme.colors.headerShadow};
-  }
-
-  &:hover::before {
-    opacity: 1;
-  }
+  ${cardHover}
 
   @media (max-width: ${props => props.theme.bp.md}) {
     padding: ${props => props.theme.space[5]} ${props => props.theme.space[5]};
@@ -197,11 +173,7 @@ const FeatTitle = styled.h3`
   color: ${props => props.theme.colors.text};
   margin-bottom: ${props => props.theme.space[3]};
   word-break: keep-all;
-  transition: color ${props => props.theme.transition.fast};
-
-  ${FeatCard}:hover & {
-    color: ${props => props.theme.colors.accent};
-  }
+  ${cardTitleHover(FeatCard)}
 
   @media (max-width: ${props => props.theme.bp.md}) {
     font-size: ${props =>
@@ -303,12 +275,7 @@ const FTag = styled(Link)`
   background: ${props => props.theme.colors.background};
   text-decoration: none;
   font-size: ${props => props.theme.font.sm};
-  transition: all ${props => props.theme.transition.fast};
-
-  &:hover {
-    background: ${props => props.theme.colors.accentBg};
-    transform: translateY(-1px);
-  }
+  ${chipHover}
 `
 
 const FTagName = styled.span`

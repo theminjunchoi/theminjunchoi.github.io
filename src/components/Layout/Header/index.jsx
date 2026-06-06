@@ -4,6 +4,7 @@ import { Link } from "gatsby"
 import { useLocation } from "@reach/router"
 import { title } from "../../../../gatsby-meta-config"
 import { FaSun, FaMoon } from "react-icons/fa"
+import { chipHover } from "assets/theme/mixins"
 
 const HeaderWrapper = styled.header`
   display: block;
@@ -72,13 +73,8 @@ const NavLink = styled.span`
       : props.theme.colors.tertiaryText};
   background-color: ${props =>
     props.active ? props.theme.colors.accentBg : "transparent"};
-  transition: all ${props => props.theme.transition.fast};
   cursor: pointer;
-
-  &:hover {
-    background-color: ${props => props.theme.colors.accentBg};
-    color: ${props => props.theme.colors.accentText};
-  }
+  ${chipHover}
 
   @media (max-width: ${props => props.theme.bp.xs}) {
     padding: 6px 6px;
