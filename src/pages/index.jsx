@@ -343,7 +343,7 @@ const BlogIndex = ({ data }) => {
 
             if (isMain) {
               return (
-                <FeatMainCard key={slug} onClick={() => navigate(slug)}>
+                <FeatMainCard key={slug} data-clickable onClick={() => navigate(slug)}>
                   <FeatMeta>
                     <FeatNum $isMain>{num}</FeatNum>
                     <FeatDate>{date}</FeatDate>
@@ -364,7 +364,7 @@ const BlogIndex = ({ data }) => {
             }
 
             return (
-              <FeatCard key={slug} onClick={() => navigate(slug)}>
+              <FeatCard key={slug} data-clickable onClick={() => navigate(slug)}>
                 <FeatMeta>
                   <FeatNum>{num}</FeatNum>
                   <FeatDate>{date}</FeatDate>

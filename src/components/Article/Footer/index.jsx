@@ -177,6 +177,7 @@ const Footer = ({ previous, next, title }) => {
       <PostNav>
         <PostNavCard
           $empty={!previous}
+          data-clickable
           onClick={previous ? () => navigate(previous?.fields?.slug) : undefined}
         >
           <PostNavLabel>← Previous</PostNavLabel>
@@ -188,6 +189,7 @@ const Footer = ({ previous, next, title }) => {
         <PostNavCard
           $isNext
           $empty={!next}
+          data-clickable
           onClick={next ? () => navigate(next?.fields?.slug) : undefined}
         >
           <PostNavLabel>Next →</PostNavLabel>
@@ -197,7 +199,7 @@ const Footer = ({ previous, next, title }) => {
         </PostNavCard>
       </PostNav>
 
-      <CommentWrapper>
+      <CommentWrapper data-comments>
         <Divider mt="32px" />
         <Comment title={title} />
       </CommentWrapper>

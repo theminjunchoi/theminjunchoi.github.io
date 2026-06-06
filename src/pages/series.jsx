@@ -225,7 +225,7 @@ const SeriesCard = ({ series, index }) => {
   }
 
   return (
-    <SeriesCardWrapper onClick={handleCardClick}>
+    <SeriesCardWrapper data-clickable onClick={handleCardClick}>
       <AccentBar />
       <SeriesContent>
         <SeriesTop>

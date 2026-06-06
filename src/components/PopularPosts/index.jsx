@@ -256,7 +256,7 @@ const PopularPosts = ({ allPosts }) => {
   return (
     <PopGrid>
       {popularPosts.map((post, i) => (
-        <PopCard key={post.slug} onClick={() => navigate(post.slug)}>
+        <PopCard key={post.slug} data-clickable onClick={() => navigate(post.slug)}>
           <PopMeta>
             <PopRank>#{i + 1}</PopRank>
             <PopViews>{formatViews(post.view_count)} views</PopViews>

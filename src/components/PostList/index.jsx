@@ -156,7 +156,7 @@ const PostList = ({ postList, currentPage: controlledPage, onPageChange }) => {
           }
 
           return (
-            <PostCard key={slug} onClick={handleCardClick}>
+            <PostCard key={slug} data-clickable onClick={handleCardClick}>
               <TagWrapper>
                 <TagList tagList={tags} />
               </TagWrapper>
