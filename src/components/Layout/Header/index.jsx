@@ -62,7 +62,9 @@ const NavLinks = styled.nav`
   gap: 2px;
 `
 
-const NavLink = styled.span`
+const NavLink = styled.span.attrs({ "data-magnetic": true })`
+  display: inline-flex;
+  align-items: center;
   padding: 6px 12px;
   border-radius: ${props => props.theme.radius.md};
   font-size: ${props => props.theme.font.md};
