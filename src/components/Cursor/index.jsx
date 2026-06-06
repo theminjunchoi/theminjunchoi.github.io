@@ -13,6 +13,7 @@ import styled, { createGlobalStyle } from "styled-components"
    ──────────────────────────────────────────────────── */
 
 const RING = 30 // idle ring diameter (px)
+const MINI = 10 // shrunken idle ring over [data-cursor-mini] elements (px)
 const DOT = 6 // dot diameter (px)
 const PAD = 6 // extra padding around a snapped element (px)
 const ROW_PAD_X = 28 // wider horizontal padding for list rows (wide & short)
@@ -84,6 +85,7 @@ const Cursor = () => {
     rbl: RING / 2,
   })
   const target = useRef(null) // element currently snapped onto
+  const mini = useRef(false) // pointer is over a [data-cursor-mini] zone
   const rafRef = useRef(null)
 
   useEffect(() => {
@@ -139,14 +141,20 @@ const Cursor = () => {
       // Prefer the element explicitly marked as the magnetic target (its box
       // matches the visible hover area); else the nearest interactive element.
       let snap = null
+      // [data-no-magnetic] opts an element out of the snap (keeps the plain
+      // dot+ring), e.g. the header logo whose own hover effect owns the visual.
+      const optedOut = e.target.closest && e.target.closest("[data-no-magnetic]")
       const el =
         e.target.closest &&
         (e.target.closest("[data-magnetic]") || e.target.closest(INTERACTIVE))
-      if (el) {
+      if (el && !optedOut) {
         const r = el.getBoundingClientRect()
         if (r.width <= MAG_MAX_W && r.height <= MAG_MAX_H) snap = el
       }
       target.current = snap
+      // Shrink the idle ring over opted-in zones (e.g. the logo) so the
+      // element's own hover effect stays legible.
+      mini.current = !!(e.target.closest && e.target.closest("[data-cursor-mini]"))
 
       if (ringEl) ringEl.style.opacity = "1"
       // Hide the dot while wrapped so it reads as a single shape.
@@ -181,12 +189,13 @@ const Cursor = () => {
           drbr = (parseFloat(cs.borderBottomRightRadius) || 0) + pr
           drbl = (parseFloat(cs.borderBottomLeftRadius) || 0) + pr
         } else {
-          // Destination = a small circle at the pointer.
+          // Destination = a circle at the pointer (shrunken over mini zones).
+          const size = mini.current ? MINI : RING
           dx = mouse.current.x
           dy = mouse.current.y
-          dw = RING
-          dh = RING
-          drtl = drtr = drbr = drbl = RING / 2
+          dw = size
+          dh = size
+          drtl = drtr = drbr = drbl = size / 2
         }
         // Ease position, size and each corner radius together for one fluid morph.
         const c = cur.current

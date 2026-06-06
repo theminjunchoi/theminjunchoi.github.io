@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import styled, { useTheme } from "styled-components"
 import { Link } from "gatsby"
 import { useLocation } from "@reach/router"
@@ -52,8 +52,69 @@ const BlogTitle = styled.span`
   & > a {
     text-decoration: none;
     color: inherit;
+    display: inline-flex;
   }
 `
+
+/* Each glyph is its own inline-block so it can be nudged independently. The
+   transition gives the pull a slight trailing ease (and a smooth snap back). */
+const Char = styled.span`
+  display: inline-block;
+  white-space: pre;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
+`
+
+/* ── Magnetic logo ──────────────────────────────────────
+   On pointer move each letter is nudged toward the cursor, the pull scaling
+   with proximity (none past RADIUS). Transforms are written straight to the
+   DOM — no per-move re-render — and reset on leave. Skipped for reduced-motion. */
+const RADIUS = 70 // px: influence radius around each glyph's centre
+const MAX_PULL = 5 // px: strongest displacement when the cursor is on a glyph
+
+const MagneticLogo = ({ text }) => {
+  const refs = useRef([])
+  const reduced = useRef(false)
+
+  useEffect(() => {
+    reduced.current =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  }, [])
+
+  const handleMove = e => {
+    if (reduced.current) return
+    refs.current.forEach(el => {
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      const dx = e.clientX - (r.left + r.width / 2)
+      const dy = e.clientY - (r.top + r.height / 2)
+      const dist = Math.hypot(dx, dy) || 1
+      if (dist < RADIUS) {
+        const f = (1 - dist / RADIUS) * MAX_PULL
+        el.style.transform = `translate(${(dx / dist) * f}px, ${(dy / dist) * f}px)`
+      } else {
+        el.style.transform = "translate(0, 0)"
+      }
+    })
+  }
+
+  const reset = () => {
+    refs.current.forEach(el => {
+      if (el) el.style.transform = "translate(0, 0)"
+    })
+  }
+
+  return (
+    <span onMouseMove={handleMove} onMouseLeave={reset}>
+      {text.split("").map((ch, i) => (
+        <Char key={i} aria-hidden="true" ref={el => (refs.current[i] = el)}>
+          {ch}
+        </Char>
+      ))}
+    </span>
+  )
+}
 
 const NavLinks = styled.nav`
   display: flex;
@@ -185,7 +246,9 @@ const Header = ({ toggleTheme }) => {
     <HeaderWrapper isHidden={hidden}>
       <Inner>
         <BlogTitle>
-          <Link to="/">{title}</Link>
+          <Link to="/" aria-label={title} data-no-magnetic data-cursor-mini>
+            <MagneticLogo text={title} />
+          </Link>
         </BlogTitle>
 
         <NavLinks>
