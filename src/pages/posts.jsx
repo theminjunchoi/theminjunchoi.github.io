@@ -28,19 +28,19 @@ const FilterChip = styled.button`
   border-radius: ${props => props.theme.radius.md};
   border: none;
   background: ${props =>
-    props.$active ? props.theme.colors.text : props.theme.colors.background};
+    props.$active ? props.theme.colors.accentBg : props.theme.colors.background};
   color: ${props =>
     props.$active
-      ? props.theme.colors.bodyBackground
+      ? props.theme.colors.accentText
       : props.theme.colors.secondaryText};
   font-size: ${props => props.theme.font.sm};
-  font-weight: 500;
+  font-weight: ${props => (props.$active ? "600" : "500")};
   cursor: pointer;
   transition: all ${props => props.theme.transition.fast};
 
   &:hover {
     background: ${props =>
-      props.$active ? props.theme.colors.text : props.theme.colors.divider};
+      props.$active ? props.theme.colors.accentBg : props.theme.colors.divider};
   }
 `
 
