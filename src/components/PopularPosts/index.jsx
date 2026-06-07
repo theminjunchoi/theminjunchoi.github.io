@@ -93,6 +93,13 @@ const PopCard = styled.div`
       border-radius: 0;
     }
 
+    /* The 2-col block (max-width: lg) also matches here and strips the bottom
+       border off the last two cards via :nth-last-child — re-assert it so every
+       row keeps its divider; :last-child below still removes the final one. */
+    &:nth-last-child(-n + 2) {
+      border-bottom: 1px solid ${props => props.theme.colors.divider};
+    }
+
     &:first-child {
       border-top-left-radius: ${props => props.theme.radius.xl};
       border-top-right-radius: ${props => props.theme.radius.xl};
