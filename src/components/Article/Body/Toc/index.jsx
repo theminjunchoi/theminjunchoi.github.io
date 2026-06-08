@@ -71,6 +71,9 @@ const ParagraphTitle = styled.div`
     props.subtitle ? props.theme.font.sm : props.theme.font.base};
   color: ${props => props.theme.colors.mutedText};
   line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: color ${props => props.theme.transition.fast},
     border-color ${props => props.theme.transition.base};
 
@@ -134,6 +137,7 @@ const Toc = ({ items, articleOffset }) => {
                 subtitle={item.tagName === "H3"}
                 active={i === active}
                 reached={i <= active}
+                title={item.innerText}
                 onClick={() => handleClickTitle(i)}
               >
                 {item.innerText}
