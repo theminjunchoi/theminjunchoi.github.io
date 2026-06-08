@@ -47,19 +47,44 @@ const TocWrapper = styled.div`
   }
 `
 
-const ParagraphTitle = styled.div`
-  margin-bottom: ${props => props.theme.space[2]};
-  padding-left: ${props => (props.subtitle ? 19.2 : 0)}px;
-  font-size: ${props => props.theme.font.md};
+const TocLabel = styled.div`
+  margin-bottom: ${props => props.theme.space[3]};
+  padding-left: ${props => props.theme.space[4]};
+  font-size: ${props => props.theme.font.xs};
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: ${props => props.theme.colors.mutedText};
-  line-height: 1.3;
-  transition: all ${props => props.theme.transition.fast};
+`
+
+const TocList = styled.div`
+  position: relative;
+  border-left: 2px solid ${props => props.theme.colors.border};
+`
+
+const ParagraphTitle = styled.div`
+  position: relative;
+  margin-left: -2px;
+  padding: ${props => props.theme.space[1]} 0;
+  padding-left: ${props => (props.subtitle ? 28 : 16)}px;
+  border-left: 2px solid transparent;
+  font-size: ${props =>
+    props.subtitle ? props.theme.font.sm : props.theme.font.base};
+  color: ${props => props.theme.colors.mutedText};
+  line-height: 1.45;
+  transition: color ${props => props.theme.transition.fast},
+    border-color ${props => props.theme.transition.base};
+
+  ${props =>
+    props.reached &&
+    css`
+      border-left-color: ${props => props.theme.colors.accent};
+    `}
 
   ${props =>
     props.active &&
     css`
-      transform: translate(-11.2px, 0);
       color: ${props => props.theme.colors.accentText};
+      font-weight: 600;
     `}
 
   &:hover {
@@ -100,17 +125,21 @@ const Toc = ({ items, articleOffset }) => {
     <RevealOnScroll revealAt={revealAt} reverse>
       <TocWrapper stick={y > articleOffset - STICK_OFFSET}>
         <div>
-          {items.map((item, i) => (
-            <ParagraphTitle
-              key={i}
-              data-clickable
-              subtitle={item.tagName === "H3"}
-              active={i === active}
-              onClick={() => handleClickTitle(i)}
-            >
-              {item.innerText}
-            </ParagraphTitle>
-          ))}
+          <TocLabel>목차</TocLabel>
+          <TocList>
+            {items.map((item, i) => (
+              <ParagraphTitle
+                key={i}
+                data-clickable
+                subtitle={item.tagName === "H3"}
+                active={i === active}
+                reached={i <= active}
+                onClick={() => handleClickTitle(i)}
+              >
+                {item.innerText}
+              </ParagraphTitle>
+            ))}
+          </TocList>
         </div>
       </TocWrapper>
     </RevealOnScroll>
