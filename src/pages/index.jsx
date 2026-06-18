@@ -8,6 +8,7 @@ import SEO from "components/SEO"
 import Info from "components/Info"
 import PopularPosts from "components/PopularPosts"
 import ArchiveList from "components/ArchiveList"
+import TagGraph from "components/TagGraph"
 
 import { title, description, siteUrl } from "../../gatsby-meta-config"
 import { cardHover, cardTitleHover, chipHover } from "assets/theme/mixins"
@@ -418,6 +419,7 @@ const BlogIndex = ({ data }) => {
                 </FTag>
               ))}
             </FTagList>
+            <TagGraph posts={posts} tags={tags} />
           </Aside>
         </ArchiveLayout>
       </ArchiveSection>

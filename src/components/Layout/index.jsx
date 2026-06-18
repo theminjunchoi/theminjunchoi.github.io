@@ -7,7 +7,6 @@ import { setLight, setDark } from "reducers/theme"
 import { light, dark } from "assets/theme"
 
 import GlobalStyles from "components/GlobalStyles"
-import Cursor from "components/Cursor"
 
 import Header from "./Header"
 import Body from "./Body"
@@ -42,7 +41,6 @@ const Layout = ({ children, maxWidth }) => {
   return (
     <ThemeProvider theme={theme === "light" ? light : dark}>
       <GlobalStyles />
-      <Cursor />
       <Header toggleTheme={toggleTheme} />
       <Body maxWidth={maxWidth}>{children}</Body>
       <Footer />
