@@ -41,6 +41,17 @@ const SETTLE_TICKS = 300
 const tagRadius = count =>
   Math.max(TAG_MIN_R, Math.min(TAG_MAX_R, 4.5 + Math.sqrt(count) * 1.5))
 
+// Rounded-rect path (label backing plates) — works without ctx.roundRect.
+const roundRectPath = (ctx, x, y, w, h, r) => {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.arcTo(x + w, y, x + w, y + h, r)
+  ctx.arcTo(x + w, y + h, x, y + h, r)
+  ctx.arcTo(x, y + h, x, y, r)
+  ctx.arcTo(x, y, x + w, y, r)
+  ctx.closePath()
+}
+
 /* Build the raw graph spec (no x/y — positions live on the
    per-instance working copies inside GraphCanvas). */
 const buildGraph = (posts, tags) => {
@@ -196,8 +207,8 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
       const isLit = id =>
         !hoverId || id === hoverId || (neighbors && neighbors.has(id))
 
-      // ── Edges — faint hairlines in the divider grey. Only the hovered
-      //    node's own edges lift to accent; the rest recede. ──
+      // ── Edges — faint grey web at rest; on hover the hovered node's own
+      //    edges turn a soft accent blue and the rest recede. ──
       ctx.lineCap = "round"
       ctx.lineWidth = 1
       links.forEach(l => {
@@ -206,14 +217,13 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
         if (!s || !t) return
         const ps = project(s)
         const pt = project(t)
-        const lit =
-          !hoverId || l.source.id === hoverId || l.target.id === hoverId
+        const lit = l.source.id === hoverId || l.target.id === hoverId
         if (hoverId && lit) {
           ctx.strokeStyle = c.accent
-          ctx.globalAlpha = 0.4
+          ctx.globalAlpha = 0.45
         } else {
           ctx.strokeStyle = c.border
-          ctx.globalAlpha = hoverId ? 0.06 : 0.4
+          ctx.globalAlpha = hoverId ? 0.05 : 0.4
         }
         ctx.beginPath()
         ctx.moveTo(ps.x, ps.y)
@@ -222,25 +232,37 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
       })
       ctx.globalAlpha = 1
 
-      // ── Nodes — a quiet monochrome constellation. Tags vs posts are told
-      //    apart by size alone (like Obsidian), all in the same muted grey;
-      //    the single accent colour only appears on the hovered node. Each
-      //    node is punched out of the edge layer for a clean overlap. ──
+      // ── Nodes — a quiet grey constellation at rest (tags vs posts told
+      //    apart by size alone, like Obsidian). On hover the focused node and
+      //    its neighbours turn a soft accent blue; everything else dims. Each
+      //    is punched out of the edge layer for a clean overlap. ──
       nodes.forEach(n => {
         const p = project(n)
         const r = Math.max(2, n.r * view.zoom)
         const lit = isLit(n.id)
         const focused = n.id === hoverId
-        ctx.globalAlpha = lit ? 1 : 0.3
 
+        // cut-out (kept opaque so the web reads cleanly behind nodes)
+        ctx.globalAlpha = lit ? 1 : 0.4
         ctx.beginPath()
         ctx.arc(p.x, p.y, r + 1.5, 0, Math.PI * 2)
         ctx.fillStyle = c.bodyBackground
         ctx.fill()
 
+        let fill = c.tertiaryText
+        let alpha = 1
+        if (hoverId) {
+          if (lit) {
+            fill = c.accent
+            alpha = focused ? 1 : 0.6
+          } else {
+            alpha = 0.28
+          }
+        }
+        ctx.globalAlpha = alpha
         ctx.beginPath()
         ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
-        ctx.fillStyle = focused ? c.accent : c.tertiaryText
+        ctx.fillStyle = fill
         ctx.fill()
       })
       ctx.globalAlpha = 1
@@ -284,15 +306,19 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
           n.label.length > 24 ? `${n.label.slice(0, 23)}…` : n.label
         const w = ctx.measureText(text).width
         const x = p.x - w / 2
-        const y = p.y + r + 5
-        const box = { x: x - 3, y: y - 2, w: w + 6, h: fontSize + 4 }
+        const y = p.y + r + 6
+        const box = { x: x - 5, y: y - 3, w: w + 10, h: fontSize + 6 }
         if (overlaps(box.x, box.y, box.w, box.h)) return
         placed.push(box)
 
-        ctx.lineWidth = 3
-        ctx.strokeStyle = c.bodyBackground
-        ctx.strokeText(text, p.x, y)
-        ctx.fillStyle = focused ? c.text : c.secondaryText
+        // soft backing plate (theme bodyBackground) for crisp contrast
+        ctx.globalAlpha = 0.82
+        roundRectPath(ctx, box.x, box.y, box.w, box.h, 4)
+        ctx.fillStyle = c.bodyBackground
+        ctx.fill()
+
+        ctx.globalAlpha = 1
+        ctx.fillStyle = focused ? c.accentText : c.secondaryText
         ctx.fillText(text, p.x, y)
       })
       ctx.globalAlpha = 1
