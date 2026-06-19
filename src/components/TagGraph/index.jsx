@@ -104,6 +104,10 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
   const colorsRef = useRef(theme.colors)
   const apiRef = useRef(null)
 
+  // Softer hover blue for the graph only (lighter than the global accent).
+  const hoverBlueRef = useRef(null)
+  hoverBlueRef.current = theme.name === "dark" ? "#BFDBFE" : "#60A5FA"
+
   // Keep the colours the draw loop reads in sync with the theme, and
   // repaint immediately on a light/dark toggle even when the sim is idle.
   colorsRef.current = theme.colors
@@ -199,6 +203,8 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
 
     const draw = () => {
       const c = colorsRef.current
+      const hov = hoverBlueRef.current
+      const nodeScale = fullscreen ? 0.85 : 1 // 전체화면에서 노드만 살짝 작게
       const dpr = size.dpr
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, size.w, size.h)
@@ -219,7 +225,7 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
         const pt = project(t)
         const lit = l.source.id === hoverId || l.target.id === hoverId
         if (hoverId && lit) {
-          ctx.strokeStyle = c.accent
+          ctx.strokeStyle = hov
           ctx.globalAlpha = 0.45
         } else {
           ctx.strokeStyle = c.border
@@ -238,7 +244,7 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
       //    is punched out of the edge layer for a clean overlap. ──
       nodes.forEach(n => {
         const p = project(n)
-        const r = Math.max(2, n.r * view.zoom)
+        const r = Math.max(2, n.r * view.zoom * nodeScale)
         const lit = isLit(n.id)
         const focused = n.id === hoverId
 
@@ -253,7 +259,7 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
         let alpha = 1
         if (hoverId) {
           if (lit) {
-            fill = c.accent
+            fill = hov
             alpha = focused ? 1 : 0.6
           } else {
             alpha = 0.28
@@ -298,7 +304,7 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
       candidates.forEach(n => {
         const p = project(n)
         if (p.x < 0 || p.x > size.w || p.y < 0 || p.y > size.h) return
-        const r = Math.max(2, n.r * view.zoom)
+        const r = Math.max(2, n.r * view.zoom * nodeScale)
         const focused = n.id === hoverId
         const fontSize = n.type === "tag" || focused ? 12 : 11
         ctx.font = `500 ${fontSize}px "JetBrains Mono", monospace`
@@ -318,7 +324,7 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
         ctx.fill()
 
         ctx.globalAlpha = 1
-        ctx.fillStyle = focused ? c.accentText : c.secondaryText
+        ctx.fillStyle = focused ? hov : c.secondaryText
         ctx.fillText(text, p.x, y)
       })
       ctx.globalAlpha = 1
@@ -362,10 +368,11 @@ const GraphCanvas = forwardRef(({ graphData, fullscreen }, ref) => {
     const pointer = { down: false, moved: false, mode: null, dragNode: null }
 
     const nodeAt = (sx, sy) => {
+      const nodeScale = fullscreen ? 0.85 : 1 // draw()와 동일한 노드 스케일
       for (let i = nodes.length - 1; i >= 0; i--) {
         const n = nodes[i]
         const p = project(n)
-        const r = Math.max(2, n.r * view.zoom) + 4
+        const r = Math.max(2, n.r * view.zoom * nodeScale) + 4
         if ((p.x - sx) ** 2 + (p.y - sy) ** 2 <= r * r) return n
       }
       return null
@@ -674,7 +681,7 @@ const Overlay = styled.div`
   position: fixed;
   inset: 0;
   z-index: 9998;
-  background: ${props => props.theme.colors.bodyBackground}f2;
+  background: ${props => props.theme.colors.bodyBackground}cc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -685,7 +692,12 @@ const OverlayCanvasWrap = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  max-width: 1100px;
+  max-width: 1000px;
+  max-height: 800px;
+  border: 1px solid ${props => props.theme.colors.divider};
+  border-radius: ${props => props.theme.radius.lg};
+  background: ${props => props.theme.colors.bodyBackground};
+  overflow: hidden;
 `
 
 const OverlayHint = styled.p`
