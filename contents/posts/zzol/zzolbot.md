@@ -1,11 +1,12 @@
 ---
 title: 반복되는 운영 동선을 LLM에게 위임하다 — ZzolBot 도입기
 date: 2026-05-10 09:24:21
-updated: 2026-05-14 08:09:34
+updated: 2026-06-21 23:08:12
 publish: true
 tags:
   - ZZOL
   - LLM
+  - ZZOLBot
 series: ZZOL 개발록
 ---
 "A4BX 방 멈췄어요."
