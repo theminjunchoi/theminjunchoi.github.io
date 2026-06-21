@@ -1,7 +1,7 @@
 ---
 title: LLM 진단을 점수로 검증하다 — ZzolBot 평가 하네스 만들기
 date: 2026-06-21 15:24:34
-updated: 2026-06-22 04:13:15
+updated: 2026-06-22 04:20:52
 publish: true
 tags:
   - ZZOL
@@ -170,7 +170,7 @@ flowchart LR
 
 
 ![[zzolbot-eval-run.png]]
-실행이 끝나면 `baseline / gemini-2.5-flash / COMPLETED / 5/5` 처럼 성적표 한 줄이 쌓인다. 프롬프트나 모델을 바꿔 라벨을 달리하면, 같은 표에서 버전별 점수를 나란히 비교할 수 있다. 위 화면에서도 `baseline`과 `v2`가 한 표에 올라와 있어, 두 버전을 바로 견줄 수 있다.
+실행이 끝나면 `baseline / gemini-2.5-flash / COMPLETED / 5/5` 처럼 성적표 한 줄이 쌓인다. 프롬프트나 모델을 바꿔 라벨을 달리하면, 같은 표에서 버전별 점수를 나란히 비교할 수 있다. 위 화면에서도 `baseline`과 `v2`가 한 표에 올라와 있어, 두 버전을 바로 비교할 수 있다.
 
 
 ![[zzolbot-eval-detail.png]]
