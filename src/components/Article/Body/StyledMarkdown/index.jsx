@@ -264,6 +264,18 @@ const StyledMarkdown = styled.div`
     margin: ${props => props.theme.space[8]} auto;
   }
 
+  /* gatsby-remark-images: clip the blur-up placeholder so its
+     square corners don't peek out below the rounded image */
+  & .gatsby-resp-image-wrapper {
+    border-radius: ${props => props.theme.radius.lg};
+    overflow: hidden;
+  }
+
+  & .gatsby-resp-image-background-image,
+  & .gatsby-resp-image-image {
+    border-radius: ${props => props.theme.radius.lg};
+  }
+
   & figcaption {
     margin-top: ${props => props.theme.space[2]};
     text-align: center;
