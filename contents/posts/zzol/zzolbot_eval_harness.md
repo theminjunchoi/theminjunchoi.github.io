@@ -1,7 +1,7 @@
 ---
-title: "ZzolBot 평가 하네스 만들기: 프롬프트를 바꾸면 정말 좋아졌을까"
+title: ZzolBot 평가 하네스 만들기 — 프롬프트를 바꾸면 정말 좋아졌을까
 date: 2026-06-21 15:24:34
-updated: 2026-06-22 19:20:14
+updated: 2026-06-22 22:50:35
 publish: true
 tags:
   - ZZOL

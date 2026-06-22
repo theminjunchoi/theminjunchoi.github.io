@@ -1,7 +1,7 @@
 ---
-title: "ZzolBot 능동 모니터링 구축기: 이상할 때만 LLM을 깨우기"
+title: ZzolBot 능동 모니터링 구축기 — 한도 안에서 LLM 쓰기
 date: 2026-06-22 14:30:00
-updated: 2026-06-22 22:43:27
+updated: 2026-06-22 22:51:04
 publish: true
 tags:
   - ZZOL
