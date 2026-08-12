@@ -1,7 +1,7 @@
 ---
-title: 게임 이벤트가 100ms 늦게 도착하는데 아무도 몰랐다 — Redis Stream 관측 가능성 확보기
+title: 게임 이벤트가 100ms 늦게 도착하는데 아무도 몰랐다 - Redis Stream 관측 가능성 확보기
 date: 2026-03-03 07:14:41
-updated: 2026-03-05 21:54:44
+updated: 2026-08-12 21:07:10
 publish: true
 tags:
   - ZZOL
@@ -56,7 +56,7 @@ sequenceDiagram
     D->>D: Consumer.accept(event)
 ```
 
-## E2E Latency — Timer로 측정하기
+## E2E Latency - Timer로 측정하기
 
 `RedisStreamLatencyMetricService`를 만들어서 `EventDispatcher.handle()` 진입 시점에 지연을 기록하도록 했다. Micrometer의 Timer를 사용한다.
 
@@ -115,7 +115,7 @@ public void handle(BaseEvent event) {
 
 기존 catch가 이벤트 처리 전체를 감싸고 있었는데, 이 안에서 `recordLatency()`가 터지면 이벤트 처리까지 같이 catch되어 버린다. 메트릭 실패 로그가 찍히고 끝나야지, 게임이 멈추면 안 된다.
 
-## Backpressure 지표 — XLEN이 Lag가 아닌 이유
+## Backpressure 지표 - XLEN이 Lag가 아닌 이유
 
 E2E latency가 "메시지 하나가 얼마나 늦게 도착했는가"를 측정한다면, 그 다음으로 알아야 할 것은 "지금 시스템이 처리량을 감당하고 있는가"다. 처음에는 `XLEN`으로 스트림에 쌓인 메시지 수를 Lag 지표로 쓰려고 했다. Consumer Group 환경에서는 `XPENDING`으로 미처리 메시지 수를 구하지만, ZZOL은 Consumer Group을 쓰지 않으므로 `XLEN`이 대안이 될 수 있을 거라 생각했다.
 

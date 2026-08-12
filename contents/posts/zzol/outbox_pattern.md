@@ -1,7 +1,7 @@
 ---
 title: 지연 시간 0ms를 보장하는 Transactional Outbox 도입기
 date: 2026-03-08 01:19:31
-updated: 2026-03-10 21:39:02
+updated: 2026-08-12 21:07:10
 publish: true
 tags:
   - ZZOL
@@ -132,11 +132,11 @@ flowchart TD
     style DL fill:#f8d7da,stroke:#dc3545
 ```
 
-## 트랜잭션 경계 설계 — 이벤트를 언제 Redis에 보낼 것인가
+## 트랜잭션 경계 설계 - 이벤트를 언제 Redis에 보낼 것인가
 
 Outbox 테이블에 이벤트를 저장하는 것까지는 단순하다. 핵심은 **트랜잭션이 확실히 커밋된 후에** Redis Stream으로 이벤트를 릴레이하는 타이밍을 어떻게 잡느냐다.
 
-### 1차 시도: 폴링 전용 — 전부 Outbox로 돌리자
+### 1차 시도: 폴링 전용 - 전부 Outbox로 돌리자
 
 Outbox 테이블에 이벤트를 저장한 후, 그걸 Redis로 보내는 타이밍을 잡는 방법은 크게 두 가지가 있다.
 
@@ -179,20 +179,20 @@ Outbox 테이블에 이벤트를 저장한 후, 그걸 Redis로 보내는 타이
 
 하지만 여기에 500ms 폴링 지연을 넣으면 이벤트 순서 역전이 발생한다. 지연 시간 0ms를 보장하면서도 원자성을 지키는 방법이 필요했다.
 
-## 왜 AFTER_COMMIT인가 — Spring 트랜잭션 이벤트 리스너
+## 왜 AFTER_COMMIT인가 - Spring 트랜잭션 이벤트 리스너
 
 여기서 잠깐, Spring이 제공하는 트랜잭션 이벤트 리스너를 정리해야 한다. Spring에는 `@TransactionalEventListener`라는 어노테이션이 있다. 트랜잭션의 특정 시점에 이벤트를 수신할 수 있는데, `phase` 속성으로 타이밍을 지정한다.
 
 |phase|실행 시점|특징|
 |---|---|---|
-|`BEFORE_COMMIT`|트랜잭션 커밋 직전|커밋이 아직 안 됐으므로 여기서 실패하면 전체 롤백. Outbox용으로 부적합 — DB에 데이터가 확정되기 전에 Redis에 쏘면 Dual Write 문제가 그대로다|
+|`BEFORE_COMMIT`|트랜잭션 커밋 직전|커밋이 아직 안 됐으므로 여기서 실패하면 전체 롤백. Outbox용으로 부적합 - DB에 데이터가 확정되기 전에 Redis에 쏘면 Dual Write 문제가 그대로다|
 |`AFTER_COMMIT`|트랜잭션 커밋 직후|DB 데이터가 확정된 상태에서 실행. Redis 발행이 실패해도 DB 데이터에 영향 없음. **Outbox 즉시 발행에 적합**|
 |`AFTER_ROLLBACK`|트랜잭션 롤백 후|롤백된 이벤트를 보상 처리할 때 사용. Outbox와 무관|
 |`AFTER_COMPLETION`|커밋/롤백 상관없이 완료 후|성공/실패를 구분해야 해서 Outbox용으로 불필요하게 복잡|
 
 **`AFTER_COMMIT`을 선택한 이유**: 트랜잭션이 커밋된 직후에 실행되므로 DB에 비즈니스 데이터와 Outbox 레코드가 확실히 저장된 상태에서 Redis 발행을 시도할 수 있다. 발행이 실패해도 이미 커밋된 트랜잭션에는 영향이 없고, Outbox에 PENDING 상태로 레코드가 남아있으니 Worker가 재시도한다.
 
-## 2단 Outbox — AFTER_COMMIT 즉시 발행 + 폴링 재시도
+## 2단 Outbox - AFTER_COMMIT 즉시 발행 + 폴링 재시도
 
 처음에 "구현 복잡도" 때문에 버렸던 `@TransactionalEventListener(AFTER_COMMIT)` 카드를 다시 꺼냈다. 1차 시도에서 이걸 포기한 이유는 "트랜잭션이 없는 호출 경로에서 동작이 달라진다"였는데, 이제 Outbox를 적용하는 곳이 `createRoom()` 하나뿐이고 여기에는 `@Transactional`이 확실히 붙어있다. 처음에 우려했던 문제가 사라진 것이다.
 
@@ -214,7 +214,7 @@ sequenceDiagram
     Note over DB: TX COMMIT
 
     rect rgb(200, 255, 200)
-        Note right of AR: ⚡ Happy Path — 지연 0ms
+        Note right of AR: ⚡ Happy Path - 지연 0ms
         AR->>R: streamPublisher.publish()
         alt Redis 정상
             AR->>DB: markPublished() [REQUIRES_NEW]
@@ -224,7 +224,7 @@ sequenceDiagram
     end
 
     rect rgb(255, 220, 200)
-        Note right of W: 🔄 Fallback — Redis 장애 시에만 동작
+        Note right of W: 🔄 Fallback - Redis 장애 시에만 동작
         W->>DB: PENDING 조회 (SKIP LOCKED)
         W->>R: publish()
         W->>DB: markPublished()
@@ -235,7 +235,7 @@ sequenceDiagram
 
 **Redis 장애 시(주황 영역):** 즉시 발행이 실패하면 예외를 삼킨다. DB에는 이미 PENDING 상태로 Outbox 레코드가 커밋되어 있다. 500ms 후 Worker가 PENDING 레코드를 주워서 재시도한다.
 
-### OutboxEventRecorder — 저장 + Spring 이벤트 발행
+### OutboxEventRecorder - 저장 + Spring 이벤트 발행
 
 ```java
 @Component
@@ -257,9 +257,9 @@ public class OutboxEventRecorder {
 
 `saveAndFlush()`를 쓰는 이유가 있다. `save()`만 하면 `GenerationType.IDENTITY`에서 ID 할당이 flush 시점까지 지연될 수 있다. `OutboxSavedEvent`에 `outboxEventId`를 담아야 하므로 즉시 flush해서 ID를 확보한다.
 
-`Propagation.REQUIRED`로 설정한 이유도 있다. `createRoom()`에 이미 `@Transactional`이 붙어있으므로, `record()`는 그 트랜잭션에 참여한다. 비즈니스 데이터(`RoomEntity`)와 Outbox 레코드가 함께 커밋된다. 이게 Outbox 패턴의 핵심 — 단일 트랜잭션 원자성이다.
+`Propagation.REQUIRED`로 설정한 이유도 있다. `createRoom()`에 이미 `@Transactional`이 붙어있으므로, `record()`는 그 트랜잭션에 참여한다. 비즈니스 데이터(`RoomEntity`)와 Outbox 레코드가 함께 커밋된다. 이게 Outbox 패턴의 핵심 - 단일 트랜잭션 원자성이다.
 
-### OutboxAfterCommitRelay — 커밋 직후 즉시 발행
+### OutboxAfterCommitRelay - 커밋 직후 즉시 발행
 
 ```java
 @Component
@@ -296,7 +296,7 @@ public class OutboxAfterCommitRelay {
 
 다만 이건 JPA 더티 체킹 패턴(`findById()` → 엔티티 상태 변경 → flush 기대)에서만 발생하는 문제다. JPQL이나 네이티브 쿼리로 `UPDATE ... SET status = 'PUBLISHED'`처럼 SQL을 직접 실행하면 더티 체킹을 거치지 않으므로 `REQUIRED`로도 DB에 반영된다. 이 프로젝트의 `markPublished()`는 더티 체킹 패턴이므로 `REQUIRES_NEW`로 새 트랜잭션을 강제해야 했다.
 
-### createRoom() — 최종 형태
+### createRoom() - 최종 형태
 
 ```java
 @Transactional
@@ -314,7 +314,7 @@ public Room createRoom(String hostName) {
 
 나머지 이벤트 발행 경로(`broadcastReady()`, `enterRoomAsync()`, 미니게임 입력 등)는 `streamPublisher.publish()` 직접 발행을 유지한다. DB 원자성이 필요 없고 실시간성이 핵심인 경로들이다.
 
-## Outbox Relay Worker — 처음 구현에서 삽질한 이야기
+## Outbox Relay Worker - 처음 구현에서 삽질한 이야기
 
 ### 폴링 간격과 배치 설정값
 
@@ -369,17 +369,17 @@ sequenceDiagram
 ```java
 @Scheduled(fixedDelay = 500)
 public void relay() {
-    // 1단계: TX-1 — PENDING → IN_PROGRESS + COMMIT (DB 커넥션 즉시 반환)
+    // 1단계: TX-1 - PENDING → IN_PROGRESS + COMMIT (DB 커넥션 즉시 반환)
     final List<OutboxEvent> events = eventProcessor.fetchAndMarkInProgress(BATCH_SIZE);
     if (events.isEmpty()) return;
 
     for (final OutboxEvent event : events) {
         try {
-            // 2단계: No TX — Redis I/O (DB 커넥션 없이 실행)
+            // 2단계: No TX - Redis I/O (DB 커넥션 없이 실행)
             final BaseEvent baseEvent = objectMapper.readValue(event.getPayload(), BaseEvent.class);
             streamPublisher.publish(StreamKey.fromRedisKey(event.getStreamKey()), baseEvent);
 
-            // 3단계: TX-2 — 단건 업데이트
+            // 3단계: TX-2 - 단건 업데이트
             eventProcessor.markPublished(event.getId());
         } catch (Exception e) {
             eventProcessor.handleFailure(event.getId());
@@ -402,7 +402,7 @@ public void relay() {
 
 이 복구 시 중복 발행이 발생할 수 있다. 하지만 기존에 구축해둔 `@RedisLock` 기반 Consumer 멱등성이 안전하게 흡수한다. Outbox는 **At-least-once**(최소 한 번 전송)를 보장하는 구조이고, 중복은 Consumer 쪽에서 걸러내는 것이 설계 원칙이다.
 
-## 동시성 제어 — 다중 인스턴스에서 중복 발행 방어
+## 동시성 제어 - 다중 인스턴스에서 중복 발행 방어
 
 서버가 2대 이상일 때 각 서버의 Worker가 동시에 같은 PENDING 레코드를 읽으면 Redis에 이벤트가 2번 발행된다.
 

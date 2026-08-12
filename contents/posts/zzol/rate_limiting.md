@@ -1,7 +1,7 @@
 ---
 title: ZZOL의 효율적인 서버 자기보호 전략
 date: 2026-02-18 12:13:51
-updated: 2026-03-02 16:33:30
+updated: 2026-08-12 21:07:10
 publish: true
 tags:
   - ZZOL
@@ -54,15 +54,15 @@ Client → Nginx (HTTP Rate Limit) → Spring Boot (WebSocket Msg Rate Limit)
 
 Nginx의 `limit_req_zone`으로 API별 Rate Limiting을 설정했다. 여기서 중요한 건 설정 문법이 아니라 **각 값을 왜 그렇게 잡았는가**다.
 
-### 방 생성 API — rate=2r/s, burst=4
+### 방 생성 API - rate=2r/s, burst=4
 
 ZZOL의 사용 패턴은 "점심시간에 한 팀이 방 하나를 만들어서 게임 한 판 하는 것"이다. 한 사람이 방을 초당 2개 이상 만들 이유가 없다. burst=4는 네트워크 지연으로 클라이언트가 버튼을 연타하는 경우를 허용한다.
 
-### 방 참여 API — rate=5r/s, burst=10
+### 방 참여 API - rate=5r/s, burst=10
 
 방 생성보다 여유 있게 잡았다. 이유가 있다. 같은 회사 Wi-Fi를 사용하면 팀원 여러 명이 같은 IP로 잡힌다. burst=10은 한 방의 최대 인원(9명)이 거의 동시에 입장하는 케이스를 허용하기 위한 값이다.
 
-### WebSocket 핸드셰이크 — rate=3r/s, burst=5
+### WebSocket 핸드셰이크 - rate=3r/s, burst=5
 
 WebSocket 연결은 한 번 맺으면 유지된다. 초당 3회 이상 핸드셰이크를 시도하는 건 비정상이거나 SockJS fallback 재연결 폭풍이다.
 

@@ -1,7 +1,7 @@
 ---
 title: "비동기 컨텍스트 전파의 두 단계: 외부 브로커 경유와 내부 스레드풀 전파 분리하기"
 date: 2026-03-06 05:14:41
-updated: 2026-03-07 17:23:31
+updated: 2026-08-12 21:07:10
 publish: true
 tags:
   - ZZOL
@@ -116,7 +116,7 @@ Spring Data Redis의 `StreamRecords`는 `MapRecord`를 지원한다. 메시지�
 
 셋째, 방법 1의 `TaskDecorator`는 어차피 함께 적용한다. Consumer 스레드에서 trace를 복원한 뒤, 그 안에서 발생하는 추가 비동기 작업(`@Async`, outbound WebSocket 등)에 대한 전파는 `ContextSnapshotFactory`가 담당한다. 방법 2는 방법 1을 대체하는 게 아니라 보완하는 것이다.
 
-## 구현: Publisher 측 — TraceInfoExtractor
+## 구현: Publisher 측 - TraceInfoExtractor
 
 이벤트 생성 시점에 현재 스레드의 trace context를 추출해야 한다. Micrometer Tracing에서 현재 traceId를 꺼내는 방법은 여러 가지가 있는데, `Tracer.currentSpan()`을 직접 쓰는 건 피했다.
 
@@ -170,14 +170,14 @@ public record RoomJoinEvent(
 
 `Traceable` 인터페이스는 `traceInfo()` 메서드 하나만 가진다. `BaseEvent`와 분리한 이유는 모든 이벤트가 trace를 가지는 건 아니기 때문이다. 시스템 내부에서 생성되는 이벤트(스케줄러 기반 등)는 trace context가 없을 수 있다. `BaseEvent`에 `traceInfo()`를 강제하면 불필요한 빈 값을 다 넣어야 한다.
 
-## 구현: Consumer 측 — TracerProvider
+## 구현: Consumer 측 - TracerProvider
 
 Consumer 쪽이 핵심이다. `EventDispatcher`에서 이벤트를 소비할 때, `Traceable` 이벤트면 trace context를 복원하고 Span을 열어야 한다.
 
 처음에는 `EventDispatcher.handle()` 안에서 직접 MDC에 traceId를 넣으려고 했다. `MDC.put("traceId", traceInfo.traceId())`면 끝이니까.
 
 ```java
-// 처음 시도 — MDC 직접 조작
+// 처음 시도 - MDC 직접 조작
 MDC.put("traceId", traceable.traceInfo().traceId());
 MDC.put("spanId", traceable.traceInfo().spanId());
 try {
@@ -236,7 +236,7 @@ sequenceDiagram
     TR-->>TP: Span (child of abc)
     TR->>MDC: withSpan(span) → MDC.put("traceId", abc)
     TR->>OT: Span 시작 → Tempo 전송 대상 등록
-    TP->>TP: task.run() — 비즈니스 로직 실행
+    TP->>TP: task.run() - 비즈니스 로직 실행
     Note over MDC: 이 구간의 모든 로그에 traceId 출력
 
     alt 비즈니스 로직 성공
@@ -304,10 +304,10 @@ executor.setTaskDecorator(runnable -> snapshotFactory.captureAll().wrap(runnable
 ## 결과
 
 ```
-# Before — Consumer 스레드 traceId 없음
+# Before - Consumer 스레드 traceId 없음
 [redis-stream-thread-pool-concurrent1] INFO  [,] RoomJoinConsumer - 플레이어 입장 처리
 
-# After — Consumer 스레드 traceId 복원됨
+# After - Consumer 스레드 traceId 복원됨
 [redis-stream-thread-pool-concurrent1] INFO  [abc123,ghi789] RoomJoinConsumer - 플레이어 입장 처리
 ```
 

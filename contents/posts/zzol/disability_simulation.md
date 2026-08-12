@@ -1,7 +1,7 @@
 ---
 title: '"재시작하면 고쳐져요"라는 말을 없애기까지: 3단계 서버 자가 치유기'
 date: 2026-02-21 03:19:24
-updated: 2026-03-02 16:35:15
+updated: 2026-08-12 21:07:10
 publish: true
 tags:
   - ZZOL
@@ -63,7 +63,7 @@ Level 2: Docker restart (last resort)
 
 시나리오 1과 2는 Level 0과 Level 1의 경계를 확인한다. 시나리오 2와 3은 Level 1과 Level 2의 경계를 확인한다. 시나리오 5는 시나리오 3의 변형으로, "Recovery 실패가 항상 Docker 재시작으로 이어지는 건 아니다"라는 것을 보여준다.
 
-## 시나리오 1: Redis 3초 중단 — Level 0과 Level 1의 경계
+## 시나리오 1: Redis 3초 중단 - Level 0과 Level 1의 경계
 
 Redis를 3초간 중단했다가 재시작했다.
 
@@ -149,7 +149,7 @@ Recovery 1차에서 `container.start()`를 호출하지만, Redis가 죽어있�
 
 이 질문의 답은 시나리오 5에서 나온다. 운영에서 Redis가 "완전히 죽어서 안 돌아오는" 상황보다 "잠깐 죽었다가 수십 초 후에 돌아오는" 상황이 훨씬 흔하다. Recovery의 2회 시도가 확보하는 60초는 "Redis가 곧 살아날 가능성"에 베팅하는 것이다.
 
-## 시나리오 4: Graceful Shutdown — OUT_OF_SERVICE 확인
+## 시나리오 4: Graceful Shutdown - OUT_OF_SERVICE 확인
 
 SIGTERM을 전송하여 Graceful Shutdown 시작.
 

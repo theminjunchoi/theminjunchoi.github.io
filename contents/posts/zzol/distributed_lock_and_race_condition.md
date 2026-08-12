@@ -1,7 +1,7 @@
 ---
 title: "분산 락의 함정: 락을 걸었는데도 이벤트가 두 번 처리된 이유"
 date: 2026-03-01 11:44:21
-updated: 2026-03-02 16:36:07
+updated: 2026-08-12 21:07:10
 publish: true
 tags:
   - ZZOL
@@ -22,7 +22,7 @@ ZZOL에서 Redis Stream을 이벤트 버스로 사용하고 있다. 방 생성, 
 
 같은 `eventId`로 같은 이벤트가 두 번 처리됐다. 당첨자가 DB에 두 행으로 들어갔다.
 
-원인을 추적해보니 `StreamMessageListenerContainer`의 동작 방식 때문이었다. ZZOL은 Consumer Group 없이 `StreamOffset.fromStart()`로 메시지를 읽는 구조다. 이 방식은 Container가 시작될 때마다 Stream의 처음부터 읽는다. Docker HEALTHCHECK에 의한 컨테이너 재시작, Recovery에 의한 Container 재시작, 배포에 의한 재시작 — 이유가 뭐든 Container가 재시작되면 이미 처리한 이벤트를 다시 읽게 된다.
+원인을 추적해보니 `StreamMessageListenerContainer`의 동작 방식 때문이었다. ZZOL은 Consumer Group 없이 `StreamOffset.fromStart()`로 메시지를 읽는 구조다. 이 방식은 Container가 시작될 때마다 Stream의 처음부터 읽는다. Docker HEALTHCHECK에 의한 컨테이너 재시작, Recovery에 의한 Container 재시작, 배포에 의한 재시작 - 이유가 뭐든 Container가 재시작되면 이미 처리한 이벤트를 다시 읽게 된다.
 
 Redis Stream 자체가 at-least-once delivery다. "최소 한 번은 전달하지만 정확히 한 번은 보장하지 않는다."
 
@@ -223,7 +223,7 @@ sequenceDiagram
     participant R as Redis
     participant B as Thread B
 
-    Note over A,B: Single Check — Race Condition
+    Note over A,B: Single Check - Race Condition
 
     A->>R: GET done:abc
     R-->>A: nil
@@ -241,7 +241,7 @@ sequenceDiagram
     B->>R: LOCK lock:abc
     R-->>B: OK (acquired!)
 
-    Note over B: execute handler — DUPLICATE!
+    Note over B: execute handler - DUPLICATE!
 ```
 두 번째가 더블 체크(수정)
 
@@ -251,7 +251,7 @@ sequenceDiagram
     participant R as Redis
     participant B as Thread B
 
-    Note over A,B: Double Check — Race Condition Blocked
+    Note over A,B: Double Check - Race Condition Blocked
 
     A->>R: GET done:abc
     R-->>A: nil
@@ -272,7 +272,7 @@ sequenceDiagram
     B->>R: GET done:abc (2nd check)
     R-->>B: "done"
 
-    Note over B: return null — blocked
+    Note over B: return null - blocked
     B->>R: UNLOCK lock:abc
 ```
 핵심은 Thread B가 락을 잡은 직후에 done key를 **한 번 더 확인**하는 것이다. Thread A가 이미 done을 마킹해뒀기 때문에, B는 비즈니스 로직에 진입하지 않고 빠진다.
@@ -382,7 +382,7 @@ public class RedisLockAspect { ... }
 
 실제로 `@RedisLock`을 적용한 곳은 세 군데다.
 
-**1. 미니게임 결과 저장** — 가장 먼저 문제가 발견된 곳
+**1. 미니게임 결과 저장** - 가장 먼저 문제가 발견된 곳
 
 ```java
 @EventListener

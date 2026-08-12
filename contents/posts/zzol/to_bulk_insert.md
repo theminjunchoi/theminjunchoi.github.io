@@ -1,7 +1,7 @@
 ---
-title: saveAll()은 왜 9번의 INSERT를 날렸을까 — IDENTITY 전략의 함정과 Bulk Insert 전환기
+title: saveAll()은 왜 9번의 INSERT를 날렸을까 - IDENTITY 전략의 함정과 Bulk Insert 전환기
 date: 2026-02-07 11:52:21
-updated: 2026-03-03 13:43:06
+updated: 2026-08-12 21:07:10
 publish: true
 tags:
   - ZZOL
@@ -32,7 +32,7 @@ for (Player player : room.getPlayers()) {
 
 이 18번에는 두 가지 별개의 문제가 섞여 있었다. SELECT는 같은 방의 플레이어를 한 명씩 조회하는 전형적인 N+1이고, INSERT는 JPA의 IDENTITY 전략 때문에 배치가 불가능한 구조였다. 원인이 다르니 해결책도 따로 가져가야 했다.
 
-## 이게 왜 위험한가 — 커넥션 풀 고갈 시나리오
+## 이게 왜 위험한가 - 커넥션 풀 고갈 시나리오
 
 이 서비스의 트래픽은 점심시간 20분(12:50~13:10)에 집중된다. 여러 부서에서 동시에 게임을 돌리면 방 10개가 비슷한 시간대에 끝나고, 그 순간 10개의 트랜잭션이 동시에 시작된다.
 
@@ -61,7 +61,7 @@ HikariCP 커넥션 풀 사이즈는 Spring Boot 기본값(maximum-pool-size=10)�
 
 핵심은 **트랜잭션 하나가 커넥션을 물고 있는 시간**이다. 쿼리 수를 줄이면 점유 시간이 줄고, 점유 시간이 줄면 풀 고갈 위험이 낮아진다. SELECT든 INSERT든, 네트워크 라운드트립 횟수를 줄이는 것이 본질이다.
 
-## SELECT 9번을 1번으로 — IN 절 다건 조회
+## SELECT 9번을 1번으로 - IN 절 다건 조회
 
 for문 안의 `findByRoomSessionAndPlayerName()`은 매 반복마다 이 쿼리를 실행한다.
 
@@ -90,7 +90,7 @@ Map<String, PlayerEntity> playerEntityMap = playerJpaRepository
 
 이것만으로 SELECT가 9번에서 1번으로 줄어든다.
 
-## INSERT 9번을 1번으로 — saveAll()이 안 되는 이유
+## INSERT 9번을 1번으로 - saveAll()이 안 되는 이유
 
 SELECT를 잡았으니 INSERT 차례다. 처음에는 단순하게 생각했다. for문 안의 `save()`를 List에 모아서 `saveAll()`로 한 방에 넣으면 되겠지. 코드를 바꾸고 Hibernate SQL 로그를 켰다.
 
@@ -119,14 +119,14 @@ sequenceDiagram
     participant HC as Hibernate Context
     participant DB as MySQL
 
-    Note over App,DB: SEQUENCE Strategy — Batching Possible
+    Note over App,DB: SEQUENCE Strategy - Batching Possible
     App->>HC: persist(entity1)
     App->>HC: persist(entity2)
     App->>HC: persist(entity3)
     HC->>DB: INSERT entity1, 2, 3 (batch)
     DB-->>HC: OK
 
-    Note over App,DB: IDENTITY Strategy — No Batching
+    Note over App,DB: IDENTITY Strategy - No Batching
     App->>HC: persist(entity1)
     HC->>DB: INSERT entity1
     DB-->>HC: PK=1
@@ -153,7 +153,7 @@ IDENTITY 전략이 배치를 막는 거라면, SEQUENCE 전략으로 바꾸면 �
 
 `JdbcTemplate.batchUpdate()`를 선택했다. JPA 영속성 컨텍스트를 우회하고 JDBC 레벨에서 직접 배치 처리하는 방식이다. 포기하는 것은 1차 캐시, Dirty Checking, `@CreatedDate` 같은 JPA Auditing 기능이다. 하지만 `mini_game_result`는 게임 종료 시 한 번 쓰고 이후 수정이 발생하지 않는 append-only 데이터다. 변경 감지가 필요 없고, Auditing도 생성 시각 하나면 충분하다. 생성 시각은 엔티티 생성자에서 `LocalDateTime.now()`로 직접 세팅했다. 이 데이터 특성 때문에 JPA 기능을 포기하는 비용이 극히 낮았다.
 
-## batchUpdate()만으로는 부족하다 — rewriteBatchedStatements
+## batchUpdate()만으로는 부족하다 - rewriteBatchedStatements
 
 `JdbcTemplate.batchUpdate()`로 전환하고 MySQL의 General Query Log를 켜서 확인했다. 여전히 개별 INSERT가 하나씩 찍혀 있었다.
 
