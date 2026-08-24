@@ -207,14 +207,14 @@ const StyledMarkdown = styled.div`
     list-style: none;
   }
 
-  & ul li,
-  & ol li {
+  & ul > li,
+  & ol > li {
     padding-left: ${props => props.theme.space[6]};
     position: relative;
     line-height: 1.75;
   }
 
-  & ul li::before {
+  & ul > li::before {
     content: "";
     position: absolute;
     left: 6px;
@@ -229,11 +229,11 @@ const StyledMarkdown = styled.div`
     counter-reset: list;
   }
 
-  & ol li {
+  & ol > li {
     counter-increment: list;
   }
 
-  & ol li::before {
+  & ol > li::before {
     content: counter(list, decimal-leading-zero);
     position: absolute;
     left: 0;
