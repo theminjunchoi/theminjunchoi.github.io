@@ -1,7 +1,7 @@
 ---
-title: ZzolBot 도입기 - 운영 진단을 LLM에게 안전하게 맡기기
+title: "ZzolBot 도입기: 운영 진단을 LLM에게 안전하게 맡기기"
 date: 2026-05-10 09:24:21
-updated: 2026-08-12 21:07:10
+updated: 2026-10-03 21:37:49
 publish: true
 tags:
   - ZZOL

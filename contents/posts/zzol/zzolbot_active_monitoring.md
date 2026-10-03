@@ -1,7 +1,7 @@
 ---
-title: ZzolBot 능동 모니터링 구축기 - 한도 안에서 LLM 쓰기
+title: "ZzolBot 능동 모니터링 구축기: 한도 안에서 LLM 쓰기"
 date: 2026-06-22 14:30:00
-updated: 2026-08-12 21:07:10
+updated: 2026-10-03 21:37:54
 publish: true
 tags:
   - ZZOL
