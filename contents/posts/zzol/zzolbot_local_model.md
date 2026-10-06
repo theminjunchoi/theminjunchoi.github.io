@@ -1,12 +1,14 @@
 ---
 title: "Gemini 대신 소형 모델을 쓰기까지: 파인튜닝이 바꾼 것과 못 바꾼 것"
 date: 2026-09-21 01:12:37
-updated: 2026-10-06 21:35:05
+updated: 2026-10-06 23:29:55
 publish: true
 tags:
   - ZZOL
   - LLM
   - ZZOLBot
+  - fine-tuning
+  - lora
 series: ZZOL 개발록
 ---
 ## 들어가기 전에

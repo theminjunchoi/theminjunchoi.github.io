@@ -1,12 +1,14 @@
 ---
 title: "ZzolBot 평가 하네스 만들기: 프롬프트를 바꾸면 정말 좋아졌을까"
 date: 2026-06-21 15:24:34
-updated: 2026-10-03 21:38:02
+updated: 2026-10-06 23:29:55
 publish: true
 tags:
   - ZZOL
   - LLM
   - ZZOLBot
+  - evaluation
+  - llm-as-judge
 series: ZZOL 개발록
 ---
 지난 [[zzolbot]] 글에서 운영 동선을 LLM에게 위임한 ZzolBot을 만들었다. 개발자가 "A4BX 방 멈췄어요" 한 줄을 던지면 봇이 도구를 호출해 진단을 돌려준다.

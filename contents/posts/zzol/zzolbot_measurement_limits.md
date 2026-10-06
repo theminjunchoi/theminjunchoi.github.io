@@ -1,12 +1,13 @@
 ---
 title: "소형 모델 성능을 더 올릴 수는 없을까: 85%에서 더 오르지 않은 이유"
 date: 2026-09-24 03:53:10
-updated: 2026-10-06 23:28:41
+updated: 2026-10-06 23:29:55
 publish: true
 tags:
   - ZZOL
   - LLM
   - ZZOLBot
+  - evaluation
 series: ZZOL 개발록
 ---
 

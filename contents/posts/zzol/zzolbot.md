@@ -1,12 +1,14 @@
 ---
 title: "ZzolBot 도입기: 운영 진단을 LLM에게 안전하게 맡기기"
 date: 2026-05-10 09:24:21
-updated: 2026-10-03 21:37:49
+updated: 2026-10-06 23:29:55
 publish: true
 tags:
   - ZZOL
   - LLM
   - ZZOLBot
+  - tool-calling
+  - security
 series: ZZOL 개발록
 ---
 "A4BX 방 멈췄어요."

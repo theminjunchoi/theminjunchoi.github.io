@@ -1,12 +1,14 @@
 ---
 title: "ZzolBot 능동 모니터링 구축기: 한도 안에서 LLM 쓰기"
 date: 2026-06-22 14:30:00
-updated: 2026-10-03 21:37:54
+updated: 2026-10-06 23:29:55
 publish: true
 tags:
   - ZZOL
   - LLM
   - ZZOLBot
+  - monitoring
+  - alertmanager
 series: ZZOL 개발록
 ---
 "A4BX 방 멈췄어요" 한 줄이 올라오면 [[zzolbot]]이 알아서 도구를 돌려 진단해준다. 덕분에 운영 진단은 한결 수월해졌지만, 뒤집어 보면 그 한 줄이 올라오지 않는 한 봇은 아무것도 하지 않는다는 뜻이기도 했다.
