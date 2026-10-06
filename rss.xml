@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 05 Oct 2026 04:17:34 GMT</lastBuildDate><item><title><![CDATA[Gemini 대신 소형 모델을 쓰기까지: 파인튜닝이 바꾼 것과 못 바꾼 것]]></title><description><![CDATA[들어가기 전에 왜 작은 로컬 모델을 사용하나요 사내에서 내가 하는 일도 그렇고, 여기 ZZOL에서도 마찬가지로 보안과 비용 측면에서 Gemini…]]></description><link>https://minjun.blog/zzolbot_local_model/</link><guid isPermaLink="false">https://minjun.blog/zzolbot_local_model/</guid><pubDate>Mon, 21 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;들어가기 전에&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[RSS Feed of minjun.blog]]></title><description><![CDATA[안녕하세요, 최민준입니다 :)]]></description><link>https://minjun.blog</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 06 Oct 2026 12:37:54 GMT</lastBuildDate><item><title><![CDATA[Gemini 대신 소형 모델을 쓰기까지: 파인튜닝이 바꾼 것과 못 바꾼 것]]></title><description><![CDATA[들어가기 전에 왜 작은 로컬 모델을 사용하나요 사내에서 내가 하는 일도 그렇고, 여기 ZZOL에서도 마찬가지로 보안과 비용 측면에서 Gemini…]]></description><link>https://minjun.blog/zzolbot_local_model/</link><guid isPermaLink="false">https://minjun.blog/zzolbot_local_model/</guid><pubDate>Mon, 21 Sep 2026 01:12:37 GMT</pubDate><content:encoded>&lt;h2&gt;들어가기 전에&lt;/h2&gt;
 &lt;h3&gt;왜 작은 로컬 모델을 사용하나요&lt;/h3&gt;
 &lt;p&gt;사내에서 내가 하는 일도 그렇고, 여기 ZZOL에서도 마찬가지로 보안과 비용 측면에서 Gemini 같은 상용 모델보다 직접 서빙해서 쓰는 로컬 모델에 관심을 갖고 있는데, 과연 이 차이가 얼마나 나고, 그 간격을 어떻게 메꿀 수 있을지 요즘 고민을 하고 있다.&lt;/p&gt;
 &lt;p&gt;지난 &lt;a href=&quot;/zzolbot_eval_harness&quot; data-wiki-link=&quot;true&quot;&gt;평가 하네스&lt;/a&gt;에서는 프롬프트와 입력을 고정한 채 모델만 바꿔 평가할 수 있게 만들어뒀다. 그래서 하네스를 완성하고 제일 먼저 Gemini를 부르던 자리에 노트북에서 돌아가는 모델을 넣고 같은 평가셋을 돌려봤는데, Gemini는 91%가 나왔고 1.5B는 45%가 나왔다.&lt;/p&gt;
@@ -11,7 +11,7 @@
 &lt;th&gt;모델&lt;/th&gt;
 &lt;th&gt;파라미터&lt;/th&gt;
 &lt;th&gt;파싱 성공&lt;/th&gt;
-&lt;th&gt;곡선 값&lt;/th&gt;
+&lt;th&gt;AUC&lt;/th&gt;
 &lt;th&gt;프롬프트&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
@@ -46,7 +46,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;곡선 값은 근거가 있는 경우와 없는 경우를 얼마나 잘 가려내는지를 0.5에서 1 사이로 나타낸 값이고, 0.5면 찍는 것과 같다.&lt;/p&gt;
+&lt;p&gt;AUC는 근거가 있는 경우와 없는 경우를 얼마나 잘 가려내는지 나타내는 값이다. 근거가 있는 시나리오에 없는 시나리오보다 더 높은 확률을 줄수록 1에 가까워지고, 0.5면 찍는 것과 같다&lt;/p&gt;
 &lt;p&gt;맨 위의 두 모델은 JSON이 깨져서 판정을 할 수조차 없었고, 반대로 &lt;strong&gt;gemma는 0.908로 훨씬 잘 가려낸다.&lt;/strong&gt; 학습 전인데도 성능이 좋았다. 대신 gemma-2의 템플릿은 system 역할을 안 받아서 프롬프트를 따로 수정해야한다. 그리고 모델을 띄울 곳이 무료 티어 4코어 서버고 그 위에서 이미 다른 여러 컨테이너가 돌고 있었기 때문에, 여유공간을 생각했을 때 1.5B와 2.6B 차이는 무시할 수 없었다.&lt;/p&gt;
 &lt;p&gt;그래서 &lt;code class=&quot;language-text&quot;&gt;Qwen2.5-1.5B-Instruct-4bit&lt;/code&gt;를 선택했다. 프롬프트를 수정 없이 쓸 수 있고, 파싱을 오류 없이 해냈고, 서버에 남은 자원으로 올릴 수 있는 후보였다.&lt;/p&gt;
 &lt;p&gt;4비트는 가중치 하나를 16비트 대신 4비트로 줄여 저장한 버전이다. (이 모델로 학습을 돌리면 메모리를 48GB 중 18~19GB 쓴다.)&lt;/p&gt;
